@@ -1,0 +1,18 @@
+{
+    "supportEmail": "",
+    "isSigned": false,
+    "signature": "12345-MYSIGNATURE",
+    "name": "Fuel Transaction Import (by Geotab)",
+    "version": "1.0",
+    "items": [
+        {
+            "icon": "https://[host]/images/icon.png",
+            "path": "EngineMaintenanceLink/",
+            "menuName": {
+                "en": "Fuel Transaction Import"
+            },
+            "url": "https://[host]/fuelTransactionImport.html"
+        }
+    ],
+    "key": "12345-MYAPIKEY"
+}
