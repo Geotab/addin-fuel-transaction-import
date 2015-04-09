@@ -1,4 +1,4 @@
-geotab.addin.addinTemplate = function () {
+geotab.addin.fuelTransactionImport = function () {
     "use strict";
 
     // Geotab Addin variables
@@ -349,7 +349,7 @@ geotab.addin.addinTemplate = function () {
         toggleAlert();
     };
 
-    var uploadFailed = function (e) {
+    var uploadFailed = function () {
         toggleAlert(elAlertError, "There was an error attempting to upload the file.");
     };
 
@@ -427,7 +427,6 @@ geotab.addin.addinTemplate = function () {
             wex: function (headings, data) {
                 var transactions = [];
 
-                // TODO : millennium file?
                 data.forEach(function (dataRow) {
                     var rawTransaction = {},
                         fuelTransaction;
@@ -505,7 +504,6 @@ geotab.addin.addinTemplate = function () {
             Object.keys(headRow).forEach(function (columName) {
                 if (!isNaN(parseInt(columName, 10))) {
                     isHeadingRow = false;
-                    return;
                 }
             });
             if (isHeadingRow) {
@@ -514,8 +512,7 @@ geotab.addin.addinTemplate = function () {
             return [];
         };
 
-        var determineProvider = function (headings, data) {
-            // TODO: overly simplified here. Needs good logic.
+        var determineProvider = function (headings) {
             if (headings.ColumnA === "VIN" && headings.ColumnM === "Driver Name") {
                 return Providers.geotab;
             } else if (headings.ColumnA === "Fleet Name" && headings.ColumnB === "ACCOUNT NUMBER 5") {
@@ -542,7 +539,7 @@ geotab.addin.addinTemplate = function () {
                 toggleAlert(elAlertError, "missing row headings in file");
                 return;
             }
-            provider = determineProvider(headings, data);
+            provider = determineProvider(headings);
             return rowsToFuelTransactions(provider, headings, data);
         };
 
