@@ -6,12 +6,12 @@
     "version": "1.0",
     "items": [
         {
-            "icon": "https://[host]/images/icon.png",
+            "icon": "https://raw.githubusercontent.com/Geotab/addin-fuel-transaction-import/master/images/icon.png",
             "path": "EngineMaintenanceLink/",
             "menuName": {
                 "en": "Fuel Transaction Import"
             },
-            "url": "https://[host]/fuelTransactionImport.html"
+            "url": "https://raw.githubusercontent.com/Geotab/addin-fuel-transaction-import/master/fuelTransactionImport.html"
         }
     ],
     "key": "12345-MYAPIKEY"
