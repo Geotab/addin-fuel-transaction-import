@@ -20,16 +20,16 @@
                 <p>Import fuel card transactions to the application. Simply select the file, parse the file, select the corresponding fleet and import.</p>
             </div>
             <div class="col-sm-12">
-                <button disabled="disabled" class="btn btn-primary" id="parseButton" title="Import selected zones">Parse File</button>
+                <button disabled="disabled" class="btn btn-primary" id="parseButton" title="Load fuel card transactions from selected file">Load File</button>
                 <div class="input-group">
                     <div class="input-group-btn">
-                        <button disabled="disabled" class="btn btn-primary" id="importButton" title="Import selected zones">Import</button>
+                        <button disabled="disabled" class="btn btn-primary" id="importButton" title="Import fuel card transactions">Import</button>
                     </div>
                     <label class="sr-only" for="fleet">Fleet</label>
                     <select disabled class="form-control" id="fleet" title="When a file has more than one fleet, select the fleet from this list.">
                     </select>
                 </div>
-                <label class="btn btn-default" title="Shows a few example xls tables">
+                <label class="btn btn-default" title="Shows example of generic fuel card csv format">
                     <input style="display: none" type="checkbox" id="exampleButton">Sample Format
                 </label>
             </div>
