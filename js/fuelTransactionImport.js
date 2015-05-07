@@ -483,7 +483,7 @@ geotab.addin.fuelTransactionImport = function () {
                             getFloatValue(dataRow.ColumnJ),
                             getFloatValue(dataRow.ColumnH),
                             getStringValue(dataRow.ColumnI),
-                            {x: getFloatValue(dataRow.ColumnL), y: getFloatValue(dataRow.ColumnK)},
+                            {x: getFloatValue(dataRow.ColumnK), y: getFloatValue(dataRow.ColumnL)}, // x = lon, y = lat
                             "Unknown",
                             getStringValue(dataRow.ColumnM),
                             JSON.stringify(rawTransaction)
