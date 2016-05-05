@@ -9,11 +9,13 @@ geotab.addin.fuelTransactionImport = function () {
     var elFiles;
     var elParseButton;
     var elImportButton;
+    var elCancelButton;
     var elFleet;
     var elExampleButton;
     var elFileName;
     var elTransactionList;
     var elTransactionContainer;
+    var elFileSelectContainer;
     var elAlertSuccess;
     var elAlertInfo;
     var elAlertError;
@@ -94,6 +96,7 @@ geotab.addin.fuelTransactionImport = function () {
 
     var clearTransactionsList = function () {
         elTransactionContainer.style.display = 'none';
+        elFileSelectContainer.style.display = 'block';
 
         while (elTransactionList.firstChild) {
             elTransactionList.removeChild(elTransactionList.firstChild);
@@ -113,6 +116,24 @@ geotab.addin.fuelTransactionImport = function () {
         var visibleCount = 0;
         var totalRowsCount = 0;
         var fleetName = elFleet.options[elFleet.selectedIndex].value;
+        var getColumnHeading = function (column) {
+            var columnHeadings = {
+                "vehicleIdentificationNumber": "VIN",
+                "description": "Description",
+                "serialNumber": "Device Serial Number",
+                "licencePlate": "Licence Plate",
+                "comments": "Comment",
+                "dateTime": "Date (UTC)",
+                "volume": "Volume Added (litres)",
+                "odometer": "Odometer (km)",
+                "cost": "Cost",
+                "currencyCode": "Currency",
+                "location": "Location (lon,lat)",
+                "provider": "File Provider",
+                "driverName": "Driver Name"
+            };
+            return columnHeadings[column] || column;
+        };
         var createRow = function (row, isHeading) {
             var elRow = document.createElement('TR');
             var createColumn = function (columnName) {
@@ -120,7 +141,7 @@ geotab.addin.fuelTransactionImport = function () {
                     return;
                 }
                 var elColumn = document.createElement(isHeading ? 'TH' : 'TD');
-                elColumn.textContent = isHeading ? columnName : JSON.stringify(row[columnName]);
+                elColumn.textContent = isHeading ? getColumnHeading(columnName) : JSON.stringify(row[columnName]);
                 if (!isHeading) {
                     elColumn.setAttribute('data-th', columnName);
                 }
@@ -133,6 +154,7 @@ geotab.addin.fuelTransactionImport = function () {
         };
 
         elTransactionContainer.style.display = 'none';
+        elFileSelectContainer.style.display = 'block';
 
         while (elTransactionList.firstChild) {
             elTransactionList.removeChild(elTransactionList.firstChild);
@@ -158,6 +180,7 @@ geotab.addin.fuelTransactionImport = function () {
         elListCount.textContent = (ROW_LIMIT === visibleCount ? 'top ' : '') + visibleCount + '/' + totalRowsCount;
         elTransactionList.appendChild(elBody);
         elTransactionContainer.style.display = 'block';
+        elFileSelectContainer.style.display = 'none';
     };
 
     var clearFiles = function () {
@@ -619,11 +642,13 @@ geotab.addin.fuelTransactionImport = function () {
             elFiles = document.getElementById('files');
             elParseButton = document.getElementById('parseButton');
             elImportButton = document.getElementById('importButton');
+            elCancelButton = document.getElementById('cancelButton');
             elFleet = document.getElementById('fleet');
             elExampleButton = document.getElementById('exampleButton');
             elFileName = document.getElementById('fileName');
             elTransactionList = document.getElementById('transactionList');
             elTransactionContainer = document.getElementById('transactionContainer');
+            elFileSelectContainer = document.getElementById('fileSelectContainer');
             elAlertInfo = document.getElementById('alertInfo');
             elAlertSuccess = document.getElementById('alertSuccess');
             elAlertError = document.getElementById('alertError');
@@ -640,6 +665,7 @@ geotab.addin.fuelTransactionImport = function () {
             elImportButton.addEventListener('click', importFile, false);
             elFleet.addEventListener('change', renderTransactions, false);
             elExampleButton.addEventListener('change', toggleExample, false);
+            elCancelButton.addEventListener('click', clearTransactions, false);
 
             elContainer.style.display = 'block';
         },
@@ -651,6 +677,7 @@ geotab.addin.fuelTransactionImport = function () {
             elImportButton.removeEventListener('click', importFile, false);
             elFleet.removeEventListener('change', renderTransactions, false);
             elExampleButton.removeEventListener('change', toggleExample, false);
+            elCancelButton.removeEventListener('click', clearTransactions, false);
         }
     };
 };

@@ -38,25 +38,20 @@
                 <div class="col-sm-12">
                     <h1>Import Fuel Transactions</h1>
 
-                    <p>Import fuel card transactions to the application. Simply select the file, parse the file, select the
-                        corresponding fleet and import.</p>
-                </div>
-                <div class="col-sm-12">
-                    <button disabled="disabled" class="btn btn-primary" id="parseButton" title="Load fuel card transactions from selected file">Load File</button>
-                    <div class="input-group">
-                        <div class="input-group-btn">
-                            <button disabled="disabled" class="btn btn-primary" id="importButton" title="Import fuel card transactions">Import</button>
-                        </div>
-                        <label class="sr-only" for="fleet">Fleet</label>
-                        <select disabled class="form-control" id="fleet" title="When a file has more than one fleet, select the fleet from this list.">
-                    </select>
-                    </div>
-                    <label class="btn btn-default" title="Shows example of generic fuel card csv format">
-                    <input style="display: none" type="checkbox" id="exampleButton">Sample Format
-                </label>
+                    <p>Import fuel card transactions to your account. Simply select the file, click <q>Open File<q>, verify the columns are in the corect format and click <q>Import</q>.</p>
+                    <p>View fuel transactions by navigating to Engine and Maintenance -> Fuel Usage -> Fill-Ups</p>
+                    <p>Supported file providers:</p>
+                    <ul>
+                        <li>WEX FTP Files</li>
+                        <li>
+                            <label class="btn btn-default btn-xs" title="Shows example of generic fuel card csv format">
+                            <input style="display: none" type="checkbox" id="exampleButton">Generic Format
+                        </li>
+                    </ul>
                 </div>
             </section>
 
+            <!-- alert info -->
             <section class="row">
                 <div class="col-sm-12">
                     <div id="alertInfo" style="display: none" class="alert alert-info">
@@ -76,6 +71,7 @@
                 </div>
             </section>
 
+            <!-- sample -->
             <section class="row" id="sample" style="display: none">
                 <div class="col-sm-12">
                     <div class="panel panel-default">
@@ -153,14 +149,14 @@
                 </div>
             </section>
 
-            <section class="row">
+            <!-- file select -->
+            <section class="row" id="fileSelectContainer">
                 <div class="col-sm-12">
                     <form class="form-horizontal" role="form" id="form">
-
                         <fieldset>
                             <legend>Select File</legend>
                             <div class="form-group">
-                                <label class="col-sm-2 col-lg-1 control-label" for="files">Select files</label>
+                                <label class="col-sm-2 col-lg-1 control-label" for="files">Select file</label>
 
                                 <div class="col-sm-6 col-md-4 col-lg-3">
                                     <div class="input-group">
@@ -173,6 +169,9 @@
                                     </div>
                                     <p class="help-block">(.xls, .xlsx, .csv)</p>
                                 </div>
+                                <div class="col-sm-2 col-lg-1">
+                                    <button disabled="disabled" class="btn btn-primary" id="parseButton" title="Load fuel card transactions from selected file">Open File</button>
+                                </div>
                             </div>
                             <input type="hidden" name="JSON-RPC" />
                         </fieldset>
@@ -182,17 +181,31 @@
                 </div>
             </section>
 
-            <section class="row">
-                <div class="col-sm-12">
-                    <div id="transactionContainer" style="display: none">
-                        <h3>Showing <span id="listCount"></span> parsed records</h3>
-
+            <!-- import -->
+            <div id="transactionContainer" style="display: none">
+                <section class="row">
+                    <div class="col-sm-12">
+                        <h3>Found fuel transactions!</h3>
+                        <p>Showing first <span id="listCount"></span> fuel transactions. Verify the columns have the correct values then click import.</p>
                         <div class="table-responsive">
                             <table id="transactionList" class="table table-condensed table-striped"></table>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
+
+                <section class="row">
+                    <div class="col-sm-12">
+                        <button class="btn btn-default" id="cancelButton" title="Cancel">Cancel</button>
+                        <div class="input-group">
+                            <div class="input-group-btn">
+                                <button disabled="disabled" class="btn btn-primary" id="importButton" title="Import fuel card transactions">Import</button>
+                            </div>
+                            <label class="sr-only" for="fleet">Fleet</label>
+                            <select disabled class="form-control" id="fleet" title="When a file has more than one fleet, select the fleet from this list."></select>
+                        </div>
+                    </div>
+                </section>
+            </div>
 
         </div>
     </div>
