@@ -1,7 +1,7 @@
 {
   "name": "Fuel Transaction Import (by Geotab)",
   "supportEmail": "support@geotab.com",
-  "version": "1.0",
+  "version": "2.0.0",
   "items": [
     {
       "icon": "images/icon.png",
