@@ -431,7 +431,7 @@ geotab.addin.fuelTransactionImport = function () {
                         toggleAlert(elAlertInfo, parsingAddressesMessage);
                         // chunk resquests into more managable pieces
                         for (i = 0; i < addresses.length; i += chunkSize) {
-                            timeZonesPromise = timeZonesPromise.then(aggregateRequests('GetTimeZones', {
+                            timeZonesPromise = timeZonesPromise.then(aggregateRequests('GetCoordinateTimeZones', {
                                 coordinates: addresses.slice(i, i + chunkSize).map(toTemporalCoordinate)
                             }, parsingTimeZonesMessage, addresses.length));
                         }
