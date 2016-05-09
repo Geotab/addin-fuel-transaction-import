@@ -188,13 +188,19 @@
             <div id="transactionContainer" style="display: none">
                 <section class="row">
                     <div class="col-sm-12">
-                        <button class="btn btn-default" id="cancelButton" title="Cancel">Cancel</button>
-                        <div class="input-group">
-                            <div class="input-group-btn">
-                                <button disabled="disabled" class="btn btn-primary" id="importButton" title="Import fuel card transactions">Import</button>
+                        <div class="btn-toolbar" role="toolbar">
+                            <div class="btn-group" role="group" aria-label="...">
+                                <button class="btn btn-default" id="cancelButton" title="Cancel">Cancel</button>
                             </div>
-                            <label class="sr-only" for="fleet">Fleet</label>
-                            <select disabled class="form-control" id="fleet" title="When a file has more than one fleet, select the fleet from this list."></select>
+                            <div class="btn-group" role="group" aria-label="...">
+                                <div class="input-group">
+                                    <div class="input-group-btn">
+                                        <button disabled="disabled" class="btn btn-primary" id="importButton" title="Import fuel card transactions">Import</button>
+                                    </div>
+                                    <label class="sr-only" for="fleet">Fleet</label>
+                                    <select disabled class="form-control" id="fleet" title="When a file has more than one fleet, select the fleet from this list."></select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
