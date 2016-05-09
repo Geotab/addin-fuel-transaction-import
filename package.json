@@ -53,7 +53,8 @@
         "geotab": true,
         "dialogPolyfill": true,
         "GeotabApi": true,
-        "rison": true
+        "rison": true,
+        "moment": true
     }
   }
 }

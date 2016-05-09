@@ -21,6 +21,8 @@
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="/bower_components/bluebird/js/browser/bluebird.js"></script>
+    <script src="/bower_components/moment/moment.js"></script>
+    <script src="/bower_components/moment-timezone/builds/moment-timezone-with-data.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -43,6 +45,7 @@
                     <p>Supported file providers:</p>
                     <ul>
                         <li>WEX FTP Files</li>
+                        <li>WEX Customer Files (Level 1-2)</li>
                         <li>
                             <label class="btn btn-default btn-xs" title="Shows example of generic fuel card csv format">
                             <input style="display: none" type="checkbox" id="exampleButton">Generic Format
@@ -67,7 +70,7 @@
                     <div id="alertSuccess" style="display: none" class="alert alert-success">Successfully added
                         <span></span> fuel transactions
                     </div>
-                    <div id="alertError" style="display: none" class="alert alert-error">Error: <span></span></div>
+                    <div id="alertError" style="display: none" class="alert alert-danger">Error: <span></span></div>
                 </div>
             </section>
 
@@ -185,16 +188,6 @@
             <div id="transactionContainer" style="display: none">
                 <section class="row">
                     <div class="col-sm-12">
-                        <h3>Found fuel transactions!</h3>
-                        <p>Showing first <span id="listCount"></span> fuel transactions. Verify the columns have the correct values then click import.</p>
-                        <div class="table-responsive">
-                            <table id="transactionList" class="table table-condensed table-striped"></table>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="row">
-                    <div class="col-sm-12">
                         <button class="btn btn-default" id="cancelButton" title="Cancel">Cancel</button>
                         <div class="input-group">
                             <div class="input-group-btn">
@@ -202,6 +195,16 @@
                             </div>
                             <label class="sr-only" for="fleet">Fleet</label>
                             <select disabled class="form-control" id="fleet" title="When a file has more than one fleet, select the fleet from this list."></select>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="row">
+                    <div class="col-sm-12">
+                        <h3>Found fuel transactions!</h3>
+                        <p>Showing first <span id="listCount"></span> fuel transactions. Verify the columns have the correct values then click import.</p>
+                        <div class="table-responsive">
+                            <table id="transactionList" class="table table-condensed table-striped"></table>
                         </div>
                     </div>
                 </section>
