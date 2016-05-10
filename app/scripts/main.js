@@ -500,7 +500,7 @@ geotab.addin.fuelTransactionImport = function () {
                                 getDateValue((getFloatValue(dataRow.ColumnD) + getFloatValue(dataRow.ColumnE)).toFixed(15)),
                                 gallonsToLitres(getFloatValue(dataRow.ColumnS)),
                                 milesToKm(getFloatValue(dataRow.ColumnO)),
-                                getFloatValue(dataRow.ColumnU), // TODO: Many costs here, decide which is best to use
+                                getFloatValue(dataRow.ColumnAA), // ColumnU: Fuel Cost, ColumnV: Non-Fuel Cost, ColumnW: Gross Cost (Fuel + Non Fuel), ColumnAA: Net Cost (Fuel Cost - Tax Exempt + Trans Fee)
                                 'USD',
                                 null,
                                 'WexCustomer',
