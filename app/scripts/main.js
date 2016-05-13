@@ -1,4 +1,4 @@
-geotab.addin.fuelTransactionImport = function () {
+geotab.addin.importFuelTransactions = function () {
     'use strict';
 
     // Geotab Addin variables
@@ -871,7 +871,7 @@ geotab.addin.fuelTransactionImport = function () {
         initialize: function (geotabApi, pageState, initializeCallback) {
             api = geotabApi;
 
-            elContainer = document.getElementById('fuelTransactionImport');
+            elContainer = document.getElementById('importFuelTransactions');
             elFiles = document.getElementById('files');
             elParseButton = document.getElementById('parseButton');
             elImportButton = document.getElementById('importButton');

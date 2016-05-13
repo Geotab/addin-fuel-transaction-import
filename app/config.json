@@ -9,11 +9,11 @@
       "menuName": {
         "en": "Fuel Transaction Import"
       },
-      "url": "fuelTransactionImport.html"
+      "url": "importFuelTransactions.html"
     }
   ],
   "dev": {
-    "root": "fuelTransactionImport",
+    "root": "importFuelTransactions",
     "dist": {
       "host": "https://cdn.rawgit.com/Geotab/addin-fuel-transaction-import/master/dist/"
     }
