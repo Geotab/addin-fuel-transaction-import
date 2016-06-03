@@ -239,6 +239,10 @@ geotab.addin.importFuelTransactions = function () {
             fleetcore: 4,
             geotab: 1000
         };
+        var isVersionSupportted = (serverVersion) => {
+            var parts = serverVersion.split('.');
+            return parseInt(parts[2], 10) >= 1606;
+        };
 
         // value parsers
         var getStringValue = function (string) {
@@ -580,11 +584,6 @@ geotab.addin.importFuelTransactions = function () {
                 });
             }
         };
-        
-        var isVersionSupportted = (version) => {
-            var parts = version.split('.');
-            return parseInt(parts[2], 10)  >= 1606;
-        };
 
         var getHeadings = function (data) {
             var headRow = data[0];
@@ -899,14 +898,14 @@ geotab.addin.importFuelTransactions = function () {
             elSample = document.getElementById('sample');
             elForm = document.getElementById('form');
             elListCount = document.getElementById('listCount');
-            
+
             api.call('GetVersion', {}, (result) => {
                 version = result;
                 initializeCallback();
             }, (e) => {
                 toggleAlert(elAlertError, e.toString());
                 initializeCallback();
-            })
+            });
         },
 
         focus: function () {
