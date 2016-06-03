@@ -755,7 +755,8 @@ geotab.addin.importFuelTransactions = function () {
         form.submit();
     };
 
-    var uploadFile = function () {
+    var uploadFile = function (e) {
+        e.preventDefault();
         toggleAlert(elAlertInfo, 'Parsing... transferring file');
         api.getSession(function (credentials) {
             var fd;
