@@ -26,6 +26,7 @@ geotab.addin.importFuelTransactions = function () {
     // scoped vars
     var transactions;
     var database;
+    var version;
     var ROW_LIMIT = 10;
 
     // functions
@@ -322,6 +323,11 @@ geotab.addin.importFuelTransactions = function () {
                 });
             },
             wexCustomer: function (headings, data) {
+                if (!isVersionSupportted(version)) {
+                    return new Promise(function (resolve, reject) {
+                        reject(new Error(`Your server is not running a version that supports WEX Customer files. The minimum version is 5.7.1606.0 this server is ${version}.`));
+                    });
+                }
                 return new Promise(function (resolve, reject) {
                     var transactionList = [];
                     var addressesLookup = {};
@@ -573,6 +579,11 @@ geotab.addin.importFuelTransactions = function () {
                     return resolve(transactionList);
                 });
             }
+        };
+        
+        var isVersionSupportted = (version) => {
+            var parts = version.split('.');
+            return parseInt(parts[2], 10)  >= 1606;
         };
 
         var getHeadings = function (data) {
@@ -888,7 +899,14 @@ geotab.addin.importFuelTransactions = function () {
             elSample = document.getElementById('sample');
             elForm = document.getElementById('form');
             elListCount = document.getElementById('listCount');
-            initializeCallback();
+            
+            api.call('GetVersion', {}, (result) => {
+                version = result;
+                initializeCallback();
+            }, (e) => {
+                toggleAlert(elAlertError, e.toString());
+                initializeCallback();
+            })
         },
 
         focus: function () {
