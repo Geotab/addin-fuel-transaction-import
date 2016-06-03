@@ -85,10 +85,11 @@ gulp.task('html', ['styles', 'scripts'], () => {
 		.pipe($.if('*.js', $.uglify()))
 		.pipe($.if('*.css', $.cssSandbox('#' + options.root)))
 		.pipe($.if('*.css', $.cssnano()))
-		//convert urls to hard coded google drive url
-		.pipe($.if('*.html', $.cdnify({
-			base: options.dist.host
-		})))
+		//convert relative urls to hard coded google drive url
+		.pipe($.if('*.html',  $.cdnizer({
+            defaultCDNBase: options.dist.host,
+			files: ['**/*.{gif,png,jpg,jpeg,svg,js,css}']
+        })))
 		.pipe($.if('*.html', $.htmlmin({
 			collapseWhitespace: true
 		})))

@@ -6,18 +6,17 @@
     "node": ">=0.12.0"
   },
   "devDependencies": {
-    "cssp": "^1.0.6",
-    "traverse": "^0.6.6",
     "babel-core": "^6.4.0",
     "babel-plugin-transform-object-assign": "^6.5.0",
     "babel-preset-es2015": "^6.3.13",
     "browser-sync": "^2.2.1",
+    "cssp": "^1.0.6",
     "del": "^2.2.0",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.0.1",
     "gulp-babel": "^6.1.1",
     "gulp-cache": "^0.4.2",
-    "gulp-cdnify": "^1.0.5",
+    "gulp-cdnizer": "^1.1.6",
     "gulp-css-sandbox": "^0.0.0",
     "gulp-cssnano": "^2.0.0",
     "gulp-eslint": "^0.13.2",
@@ -34,6 +33,7 @@
     "gulp-useref": "^3.0.0",
     "main-bower-files": "^2.5.0",
     "nock": "^7.2.2",
+    "traverse": "^0.6.6",
     "wiredep": "^2.2.2",
     "zombie": "^4.2.1"
   },
@@ -50,11 +50,11 @@
       ]
     },
     "globals": {
-        "geotab": true,
-        "dialogPolyfill": true,
-        "GeotabApi": true,
-        "rison": true,
-        "moment": true
+      "geotab": true,
+      "dialogPolyfill": true,
+      "GeotabApi": true,
+      "rison": true,
+      "moment": true
     }
   }
 }
