@@ -1,0 +1,21 @@
+{
+  "name": "Fuel Transaction Import (by Geotab)",
+  "supportEmail": "support@geotab.com",
+  "version": "2.0.0",
+  "items": [
+    {
+      "icon": "images/icon.png",
+      "path": "EngineMaintenanceLink/",
+      "menuName": {
+        "en": "Fuel Transaction Import"
+      },
+      "url": "importFuelTransactions.html"
+    }
+  ],
+  "dev": {
+    "root": "importFuelTransactions",
+    "dist": {
+      "host": "https://4f3465123da62bdd31d958f0ad36d9b3485a550d.googledrive.com/host/0B2gIwKD5rJDcUGZLRy12X0J5dG8/"
+    }
+  }
+}

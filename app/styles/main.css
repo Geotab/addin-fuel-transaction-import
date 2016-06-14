@@ -1,9 +1,9 @@
-.app .btn-file {
+.btn-file {
     position: relative;
     overflow: hidden
 }
 
-.app .btn-file input[type=file] {
+.btn-file input[type=file] {
     position: absolute;
     top: 0;
     right: 0;
@@ -19,21 +19,23 @@
     display: block
 }
 
-.app section {
+section {
     margin-bottom: 2em;
     overflow: auto
 }
 
-.app .input-group {
+.input-group {
     display: inline-table;
     vertical-align: middle
 }
 
-.app .input-group .input-group-addon, .app .input-group .input-group-btn, .app .input-group .form-control {
+.input-group .input-group-addon, 
+.input-group .input-group-btn, 
+.input-group .form-control {
     width: auto !important
 }
 
-.app .spinner {
+.spinner {
     width: 50px;
     height: 10px;
     text-align: center;
@@ -41,7 +43,7 @@
     display: inline-block
 }
 
-.app .spinner > div {
+.spinner > div {
     background-color: #31708f;
     height: 100%;
     width: 3px;
@@ -50,22 +52,22 @@
     animation: stretchdelay 1.2s infinite ease-in-out
 }
 
-.app .spinner .rect2 {
+.spinner .rect2 {
     -webkit-animation-delay: -1.1s;
     animation-delay: -1.1s
 }
 
-.app .spinner .rect3 {
+.spinner .rect3 {
     -webkit-animation-delay: -1s;
     animation-delay: -1s
 }
 
-.app .spinner .rect4 {
+.spinner .rect4 {
     -webkit-animation-delay: -0.9s;
     animation-delay: -0.9s
 }
 
-.app .spinner .rect5 {
+.spinner .rect5 {
     -webkit-animation-delay: -0.8s;
     animation-delay: -0.8s
 }
