@@ -131,7 +131,8 @@ geotab.addin.importFuelTransactions = function () {
                 'currencyCode': 'Currency',
                 'location': 'Location (lon,lat)',
                 'provider': 'File Provider',
-                'driverName': 'Driver Name'
+                'driverName': 'Driver Name',
+                'productType': 'Product Type'
             };
             return columnHeadings[column] || column;
         };
@@ -209,7 +210,7 @@ geotab.addin.importFuelTransactions = function () {
         toggleAlert();
     };
 
-    var FuelTransaction = function (vin, description, serialNumber, licencePlate, comments, dateTime, volume, odometer, cost, currencyCode, location, provider, driverName, sourceData) {
+    var FuelTransaction = function (vin, description, serialNumber, licencePlate, comments, dateTime, volume, odometer, cost, currencyCode, location, provider, driverName, sourceData, productType) {
         var self = {
             vehicleIdentificationNumber: vin || '',
             description: description || '',
@@ -224,7 +225,8 @@ geotab.addin.importFuelTransactions = function () {
             location: location,
             provider: provider,
             driverName: driverName,
-            sourceData: sourceData
+            sourceData: sourceData,
+            productType: productType
         };
         return self;
     };
@@ -239,19 +241,31 @@ geotab.addin.importFuelTransactions = function () {
             fleetcore: 4,
             geotab: 1000
         };
+
         var isVersionSupportted = (serverVersion) => {
             var parts = serverVersion.split('.');
             return parseInt(parts[2], 10) >= 1606;
         };
 
         // value parsers
-        var getStringValue = function (string) {
-            return (string === '(null)' ? '' : string.trim());
+        var getStringValue = function (s) {
+            let length = s.length;
+            if (length > 0 && s[0] === '"') {
+                s = s.substring(1, s.length);
+                length--;
+
+                if (length > 0 && s[length - 1] === '"') {
+                    s = s.substring(0, s.length - 1);
+                }
+            }
+            return (s === '(null)' ? '' : s.trim());
         };
+
         var getFloatValue = function (float) {
             var value = parseFloat(float);
             return isNaN(value) ? 0.0 : value;
         };
+
         var getDateValue = function (date) {
             var fromStringDateUtc;
             var fromStringDate = new Date(date);
@@ -289,6 +303,101 @@ geotab.addin.importFuelTransactions = function () {
          */
         var parsers = {
             wex: function (headings, data) {
+                 /**
+                 * Parse product type from code for WEX classic and millennium files
+                 * @param {any} productType - The WEX prododuct type
+                 * @returns {any} params - The MyGeotab product type
+                 */
+                let getProductType = productType => {
+                    let productCode = parseInt(productType, 10) || 0;
+                    switch (productCode)
+                    {
+                        case 21:
+                        case 22:
+                        case 23:
+                        case 24:
+                        case 25:
+                        case 26:
+                        case 27:
+                        case 28:
+                        case 29:
+                        case 30:
+                        case 31:
+                        case 32:
+                        case 33:
+                        case 34:
+                        case 35:
+                        case 36:
+                        case 37:
+                        case 38:
+                        case 39:
+                        case 41:
+                        case 42:
+                        case 43:
+                        case 44:
+                        case 45:
+                        case 46:
+                        case 47:
+                        case 49:
+                        case 50:
+                        case 52:
+                        case 53:
+                        case 54:
+                        case 55:
+                        case 56:
+                        case 57:
+                        case 58:
+                        case 59:
+                        case 60:
+                        case 62:
+                        case 63:
+                        case 64:
+                        case 65:
+                        case 66:
+                        case 67:
+                        case 68:
+                        case 70:
+                        case 71:
+                        case 72:
+                        case 73:
+                        case 74:
+                        case 79:
+                        case 80:
+                        case 81:
+                        case 82:
+                        case 83:
+                        case 84:
+                        case 85:
+                        case 90:
+                            return 'NonFuel';
+                        case 3:
+                        case 7:
+                        case 12:
+                        case 15:
+                            return 'Regular';
+                        case 4:
+                        case 6:
+                        case 8:
+                        case 13:
+                        case 14:
+                        case 16:
+                        case 17:
+                        case 20:
+                            return 'Premium';
+                        case 2:
+                        case 9:
+                            return 'Diesel';
+                        case 1:
+                            return 'E85';
+                        case 11:
+                            return 'CNG';
+                        case 10:
+                            return 'LPG';
+                        default:
+                            return 'Unknown';
+                    }
+                };
+
                 return new Promise(function (resolve) {
                     var transactionList = [];
 
@@ -307,15 +416,16 @@ geotab.addin.importFuelTransactions = function () {
                                 '',
                                 getStringValue(dataRow.ColumnG),
                                 '',
-                                getDateValue(dataRow.ColumnAK), // may need convert to UTC date, columAK may not exist
-                                gallonsToLitres(getFloatValue(dataRow.ColumnN)),
-                                milesToKm(getFloatValue(dataRow.ColumnAH)),
-                                getFloatValue(dataRow.ColumnO),
+                                getDateValue(getStringValue(dataRow.ColumnAK)), // may need convert to UTC date, columAK may not exist
+                                gallonsToLitres(getFloatValue(getStringValue(dataRow.ColumnN))),
+                                milesToKm(getFloatValue(getStringValue(dataRow.ColumnAH))),
+                                getFloatValue(getStringValue(dataRow.ColumnO)),
                                 'USD',
-                                { x: getFloatValue(dataRow.ColumnAM), y: getFloatValue(dataRow.ColumnAL) },
+                                { x: getFloatValue(getStringValue(dataRow.ColumnAM)), y: getFloatValue(getStringValue(dataRow.ColumnAL)) },
                                 'Wex',
                                 (getStringValue(dataRow.ColumnU) + ' ' + getStringValue(dataRow.ColumnV) + ' ' + getStringValue(dataRow.ColumnT)).trim(),
-                                JSON.stringify(rawTransaction)
+                                JSON.stringify(rawTransaction),
+                                getProductType(getStringValue(dataRow.ColumnQ))
                             );
 
                             fuelTransaction.fleet = getStringValue(dataRow.ColumnA);
@@ -491,6 +601,68 @@ geotab.addin.importFuelTransactions = function () {
                         return moment.tz(dateTime.replace('T', ' ').replace('Z', ''), timezoneid).toISOString();
                     };
 
+                    /**
+                     * Parse product type from code for WEX customer files
+                     * @param {any} productType - The WEX prododuct type
+                     * @returns {any} params - The MyGeotab product type
+                     */
+                    var getProductType = (productType) => {
+                        switch (productType) {
+                            // case '':
+                            //     return 'NonFuel';
+                            case 'UNa':
+                            case 'UNb':
+                            case 'UNc':
+                            case 'UNL':
+                            case 'UNLEADED':
+                            case 'UNLALC57':
+                            case 'UNLALC10':
+                            case 'UNLALC77':
+                                return 'Regular';
+                            // case '':
+                            //     return 'Midgrade';
+                            case 'SUP':
+                            case 'UN+':
+                            case 'U+c':
+                            case 'U+a':
+                            case 'SUa':
+                            case 'U+b':
+                            case 'SUb':
+                            case 'SUc':
+                            case 'SUPER UN':
+                            case 'UNL PLUS':
+                            case 'UN+ALC57':
+                            case 'UN+ALC10':
+                            case 'SUPALC10':
+                            case 'UN+ALC77':
+                            case 'SUPALC77':
+                            case 'SUPALC57':
+                            case 'PREMIUM':
+                            case 'UN+EADED PLUS':
+                            case 'SUPER UNLEADED':
+                                return 'Premium';
+                            // case '':
+                            //     return 'Super';
+                            case 'DIESEL':
+                            case 'PREM DSL':
+                            case 'DSL':
+                            case 'DS+':
+                            case 'DSLDIESEL':
+                                return 'Diesel';
+                            case 'ETHANL85':
+                            case 'E85':
+                            case 'E85ETHANOL85':
+                                return 'E85';
+                            case 'CNG':
+                                return 'CNG';
+                            case 'PRO':
+                            case 'PROPANE':
+                                return 'LPG';
+                            default:
+                                return 'Unknown';
+                        }
+                    };
+
                     // Convert spread sheet rows to Fuel Transaction objects
                     data.forEach(function (dataRow) {
                         var rawTransaction = {},
@@ -514,8 +686,9 @@ geotab.addin.importFuelTransactions = function () {
                                 'USD',
                                 null,
                                 'WexCustomer',
-                                getStringValue(dataRow.ColumnL).trim(),
-                                JSON.stringify(rawTransaction)
+                                getStringValue(dataRow.ColumnL),
+                                JSON.stringify(rawTransaction),
+                                getProductType(getStringValue(dataRow.ColumnR))
                             );
 
                             fuelTransaction.address = getStringValue(dataRow.ColumnH) + ', ' + getStringValue(dataRow.ColumnI) + ', ' + getStringValue(dataRow.ColumnJ) + ', ' + getStringValue(dataRow.ColumnK);
@@ -546,6 +719,37 @@ geotab.addin.importFuelTransactions = function () {
                 });
             },
             geotab: function (headings, data) {
+                /**
+                * Parse product type from code for generic files
+                * @param {any} productType - The generic product type
+                * @returns {any} params - The MyGeotab product type
+                */
+                var getProductType = (productType) => {
+                    let pt = productType.toLowerCase().replace(' ', '');
+                    switch (pt) {
+                        case 'nonfuel':
+                                return 'NonFuel';
+                        case 'regular':
+                            return 'Regular';
+                            case 'midgrade':
+                                return 'Midgrade';
+                        case 'premium':
+                            return 'Premium';
+                        case 'super':
+                            return 'Super';
+                        case 'diesel':
+                            return 'Diesel';
+                        case 'e85':
+                            return 'E85';
+                        case 'cng':
+                            return 'CNG';
+                        case 'lpg':
+                            return 'LPG';
+                        default:
+                            return 'Unknown';
+                    }
+                };
+
                 return new Promise(function (resolve) {
                     var transactionList = [];
 
@@ -572,7 +776,8 @@ geotab.addin.importFuelTransactions = function () {
                                 { x: getFloatValue(dataRow.ColumnK), y: getFloatValue(dataRow.ColumnL) }, // x = lon, y = lat
                                 'Unknown',
                                 getStringValue(dataRow.ColumnM),
-                                JSON.stringify(rawTransaction)
+                                JSON.stringify(rawTransaction),
+                                getProductType(getStringValue(dataRow.ColumnN))
                             );
 
                             fuelTransaction.fleet = getStringValue(database);
@@ -602,9 +807,9 @@ geotab.addin.importFuelTransactions = function () {
         var determineProvider = function (headings) {
             if (headings.ColumnA === 'VIN' && headings.ColumnM === 'Driver Name') {
                 return Providers.geotab;
-            } else if (headings.ColumnA === 'Fleet Name' && headings.ColumnB === 'ACCOUNT NUMBER 5') {
+            } else if (getStringValue(headings.ColumnA) === 'Fleet Name' && getStringValue(headings.ColumnB) === 'ACCOUNT NUMBER 5') {
                 return Providers.wex;
-            } else if (headings.ColumnA === 'Card Number' && headings.ColumnB === 'Vehicle Card Department') {
+            } else if (getStringValue(headings.ColumnA) === 'Card Number' && getStringValue(headings.ColumnB) === 'Vehicle Card Department') {
                 return Providers.wexCustomer;
             }
             return Providers.unknown;

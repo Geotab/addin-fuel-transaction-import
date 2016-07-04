@@ -106,6 +106,7 @@
                                         <th>Longitude</th>
                                         <th>Latitude</th>
                                         <th>Driver Name</th>
+                                        <th>Product Type</th>
                                         <th>[user defined]...</th>
                                     </tr>
                                     <tr>
@@ -122,6 +123,7 @@
                                         <td>-79.70987919999999</td>
                                         <td>43.434810399999996</td>
                                         <td>Jane Doe</td>
+                                        <td>DIESEL</td>
                                         <td>*</td>
                                     </tr>
                                     <tr class="info">
@@ -138,6 +140,20 @@
                                         <td><em>number</em> - longitude</td>
                                         <td><em>number</em> - latitude</td>
                                         <td><em>string</em> - driver name</td>
+                                        <td><em>string</em> - product type, options:
+                                            <ul class="list-unstyled">
+                                                <li>Unknown</li>
+                                                <li>NonFuel</li>
+                                                <li>Regular</li>
+                                                <li>Midgrade</li>
+                                                <li>Premium</li>
+                                                <li>Super</li>
+                                                <li>Diesel</li>
+                                                <li>E85</li>
+                                                <li>CNG</li>
+                                                <li>LPG</li>
+                                            </ul>
+                                        </td>
                                         <td>other user defined columns can be defined after the mandatory columns. These columns
                                             must have a heading and data. The data will be stored in the "SourceData" JSON
                                             string.
@@ -145,7 +161,7 @@
                                     </tr>
                                 </table>
                             </div>
-                            <a class="btn btn-default" href="https://cdn.rawgit.com/Geotab/addin-fuel-transaction-import/master/generic_fuel_card_csv_file_sample.csv">Download sample csv file</a>
+                            <a class="btn btn-default" href="https://cdn.rawgit.com/Geotab/addin-fuel-transaction-import/master/app/generic_fuel_card_csv_file_sample.csv">Download sample csv file</a>
                         </div>
                     </div>
                 </div>
