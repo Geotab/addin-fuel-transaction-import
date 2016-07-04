@@ -7,7 +7,7 @@ Add the configuration below to the to the system setting -> add-ins section of t
 {
   "name": "Fuel Transaction Import (by Geotab)",
   "supportEmail": "support@geotab.com",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "items": [{
     "icon": "https://4f3465123da62bdd31d958f0ad36d9b3485a550d.googledrive.com/host/0B2gIwKD5rJDcUGZLRy12X0J5dG8/images/icon.png",
     "path": "EngineMaintenanceLink/",
