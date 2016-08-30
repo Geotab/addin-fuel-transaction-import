@@ -761,7 +761,7 @@ geotab.addin.importFuelTransactions = function () {
                             rawTransaction[headings[heading].replace(regex, '')] = dataRow[heading];
                         });
 
-                        if (dataRow.ColumnM) {
+                        if (dataRow.hasOwnProperty('ColumnM')) {
                             fuelTransaction = new FuelTransaction(
                                 getStringValue(dataRow.ColumnA),
                                 getStringValue(dataRow.ColumnB),

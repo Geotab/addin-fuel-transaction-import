@@ -1,6 +1,6 @@
 {
   "name": "addin-fuel-transaction-import",
-  "version": "1.1.0",
+  "version": "2.1.1",
   "private": true,
   "engines": {
     "node": ">=0.12.0"
