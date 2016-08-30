@@ -831,11 +831,20 @@ geotab.addin.importFuelTransactions = function () {
         self.parse = function (data) {
             var headings = getHeadings(data);
             var provider;
+
             if (!headings) {
-                toggleAlert(elAlertError, 'missing row headings in file');
-                return null;
+              return new Promise(function (resolve, reject) {
+                  reject(new Error('missing row headings in file'));
+              });
             }
+
             provider = determineProvider(headings);
+            if (provider === Providers.unknown) {
+              return new Promise(function (resolve, reject) {
+                  reject(new Error('unrecognised file provider'));
+              });
+            }
+
             return rowsToFuelTransactions(provider, headings, data);
         };
 
