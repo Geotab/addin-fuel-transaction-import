@@ -1,7 +1,7 @@
 {
   "name": "Fuel Transaction Import (by Geotab)",
   "supportEmail": "support@geotab.com",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "items": [
     {
       "icon": "images/icon.png",
@@ -15,7 +15,7 @@
   "dev": {
     "root": "importFuelTransactions",
     "dist": {
-      "host": "https://4f3465123da62bdd31d958f0ad36d9b3485a550d.googledrive.com/host/0B2gIwKD5rJDcUGZLRy12X0J5dG8/"
+      "host": "https://cdn.rawgit.com/Geotab/addin-fuel-transaction-import/master/dist/"
     }
   }
 }

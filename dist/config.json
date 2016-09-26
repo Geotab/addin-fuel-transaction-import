@@ -1,9 +1,3 @@
-# addin-fuel-transaction-import
-An add-in to read fuel card transactions from a file and import to MyGeotab database
-
-### Installation
-Add the configuration below to the to the system setting -> add-ins section of the MyGeotab database
-```
 {
   "name": "Fuel Transaction Import (by Geotab)",
   "supportEmail": "support@geotab.com",
@@ -17,7 +11,3 @@ Add the configuration below to the to the system setting -> add-ins section of t
     "url": "https://cdn.rawgit.com/Geotab/addin-fuel-transaction-import/master/dist/importFuelTransactions.html"
   }]
 }
-```
-
-### Contributing
-If there's a fuel card provider file you would like to add a parser for, please do! We welcome pull requests.
