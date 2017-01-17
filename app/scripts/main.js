@@ -239,6 +239,7 @@ geotab.addin.importFuelTransactions = function () {
             wex: 2,
             wexCustomer: 3,
             fleetcore: 4,
+            ultramarCST: 5,
             geotab: 1000
         };
 
@@ -461,9 +462,9 @@ geotab.addin.importFuelTransactions = function () {
                         return function (results) {
                             return new Promise(function (resolved) {
                                 api.call(method, params, function (result) {
-                                    var aggegate = results.concat(result);
-                                    toggleAlert(elAlertInfo, message + aggegate.length + '/' + total);
-                                    resolved(aggegate);
+                                    var aggregate = results.concat(result);
+                                    toggleAlert(elAlertInfo, message + aggregate.length + '/' + total);
+                                    resolved(aggregate);
                                 }, reject);
                             });
                         };
@@ -718,6 +719,250 @@ geotab.addin.importFuelTransactions = function () {
                         .catch(reject);
                 });
             },
+            ultramarCST: function(headings, data){
+                var getProductType = (productType) => {
+                    let pt = productType.toLowerCase().replace(' ', '');
+                    switch (pt) {
+                        case 'supreme':
+                            return 'Super';
+                        case 'diesel':
+                            return 'Diesel';
+                        default:
+                            return 'Unknown';
+                    }
+                };
+                
+                return new Promise(function (resolve, reject) {
+                    var transactionList = [];
+                    var addressesLookup = {};
+                    var addresses = [];
+                    var promiseChain = new Promise(resolved => { resolved(); });
+                    var chunkSize = 100;
+                    var parsingAddressesMessage = 'Parsing: converting addresses to coordinates... ';
+                    var parsingTimeZonesMessage = 'Parsing: finding timezone of coordinates... ';
+                    
+                    var devices = null;
+                    
+                    api.call("Get", {
+                        typeName: "Device"
+                    }, function (results) {
+                        devices = results;
+                        
+                        data.forEach(function (dataRow) {
+                            var rawTransaction = {},
+                                fuelTransaction;
+
+                            Object.keys(headings).forEach(function (heading) {
+                                rawTransaction[headings[heading].replace(regex, '')] = dataRow[heading];
+                            });
+
+                            if (dataRow.ColumnV) { //V = litres
+                                var serialNumber = null;
+                                for(var i = 0; i < devices.length; i++){
+                                    if(devices[i].name == getStringValue(dataRow.ColumnL)){
+                                        serialNumber = devices[i].serialNumber;
+                                        break;
+                                    }
+                                }
+                                fuelTransaction = new FuelTransaction(
+                                    '',/* no VIN data */
+                                    getStringValue(dataRow.ColumnL),
+                                    serialNumber,
+                                    '',
+                                    '',
+                                    getDateValue((getFloatValue(dataRow.ColumnC) + getFloatValue(dataRow.ColumnD)).toFixed(15)),
+                                    getFloatValue(getStringValue(dataRow.ColumnV)),
+                                    getFloatValue(getStringValue(dataRow.ColumnK)),
+                                    getFloatValue(getStringValue(dataRow.ColumnX)),
+                                    'CAD',
+                                    null,
+                                    'Unknown', /* TODO SHOULD BE ULTRAMAR CST BUT NOT SUPPORTED NOW */
+                                    '',
+                                    JSON.stringify(rawTransaction),
+                                    getProductType(getStringValue(dataRow.ColumnU))
+                                );
+                            
+                                fuelTransaction.address = getStringValue(dataRow.ColumnS) + ', ' + getStringValue(dataRow.ColumnT) + ', ' + getStringValue(dataRow.ColumnG);
+                                addressesLookup[fuelTransaction.address] = { coordinates: null, timezone: null };
+
+                                fuelTransaction.fleet = getStringValue(database);
+                                transactionList.push(fuelTransaction);
+                            } else {
+                                console.log("Skipped row");
+                            }
+                        
+                            addresses = Object.keys(addressesLookup);
+
+                            // populate transcations with coordinates and UTC date/time
+                            promiseChain
+                                .then(getCoordinatesFromAddresses)
+                                .then(processCoordinateResults)
+                                .then(retryLowerResolutionAddress)
+                                .then(processCoordinateResults)
+                                .then(getTimeZones)
+                                .then(processTimeZoneResults)
+                                .then(augmentTransactions)
+                                .then(() => {
+                                    resolve(transactionList);
+                                })
+                                .catch(reject);
+                        });
+
+                        return resolve(transactionList);
+                    }, reject);
+                    
+                    /**
+                     * Make an API request and aggregate the results
+                     * @param  {any} method - The method to call
+                     * @param  {any} params - The parameters to use in the call
+                     * @param  {any} message - The message to update the IU
+                     * @param  {any} total - The total expected in aggregate (used for message)
+                     */
+                    var aggregateRequests = function (method, params, message, total) {
+                        return function (results) {
+                            return new Promise(function (resolved) {
+                                api.call(method, params, function (result) {
+                                    var aggregate = results.concat(result);
+                                    toggleAlert(elAlertInfo, message + aggregate.length + '/' + total);
+                                    resolved(aggregate);
+                                }, reject);
+                            });
+                        };
+                    };
+                    /**
+                    * Get coordinates from addresses chuncked into more managable request sizes and aggregate results
+                    */
+                    var getCoordinatesFromAddresses = () => {
+                        var i;
+                        var getCoordinates = new Promise(resolved => {
+                            resolved([]);
+                        });
+                        toggleAlert(elAlertInfo, parsingAddressesMessage);
+                        // chunk resquests into more managable pieces
+                        for (i = 0; i < addresses.length; i += chunkSize) {
+                            getCoordinates = getCoordinates.then(aggregateRequests('GetCoordinates', { addresses: addresses.slice(i, i + chunkSize) }, parsingAddressesMessage, addresses.length));
+                        }
+                        return new Promise(resolved => {
+                            getCoordinates.then((coordinates) => {
+                                resolved({ addresses, coordinates });
+                            });
+                        });
+                    };
+                    /**
+                     * Process the results of getting coordinates for addesses, when no result found return these as addresses to retry
+                     * @param  {any} results - The coordinates
+                     */
+                    var processCoordinateResults = (results) => {
+                        var retry = [];
+                        results.addresses.forEach((address, index) => {
+                            var coordinate = results.coordinates[index];
+                            if (coordinate) {
+                                addressesLookup[address].coordinates = coordinate;
+                            } else {
+                                retry.push(address);
+                            }
+                        });
+                        return retry;
+                    };
+                    /**
+                     * Retry getting coordinates for addesses without street
+                     * @param  {any} results - The coordinates
+                     */
+                    var retryLowerResolutionAddress = (retry) => {
+                        // retry zero-results addresses with less specific address string
+                        var i;
+                        var getCoordinates = new Promise(resolved => {
+                            resolved([]);
+                        });
+                        var lowerAddressResolution = missed => {
+                            var parts = missed.split(',');
+                            return parts.slice(1, parts.length).join(',');
+                        };
+
+                        // chunk resquests into more managable pieces
+                        for (i = 0; i < retry.length; i += chunkSize) {
+                            getCoordinates = getCoordinates.then(aggregateRequests('GetCoordinates', {
+                                addresses: retry.slice(i, i + chunkSize).map(lowerAddressResolution)
+                            }));
+                        }
+                        return new Promise(resolved => {
+                            getCoordinates.then((coordinates) => {
+                                resolved({ addresses: retry, coordinates });
+                            });
+                        });
+                    };
+                    /**
+                    * Get time zones for coordinates
+                    */
+                    var getTimeZones = () => {
+                        var i;
+                        var now = new Date().toISOString();
+                        var timeZonesPromise = new Promise(resolved => {
+                            resolved([]);
+                        });
+                        var toTemporalCoordinate = address => {
+                            var location = addressesLookup[address].coordinates;
+                            return {
+                                x: location.x,
+                                y: location.y,
+                                dateTime: now // hack to do less look ups
+                            };
+                        };
+
+                        toggleAlert(elAlertInfo, parsingAddressesMessage);
+                        // chunk resquests into more managable pieces
+                        for (i = 0; i < addresses.length; i += chunkSize) {
+                            timeZonesPromise = timeZonesPromise.then(aggregateRequests('GetCoordinateTimeZones', {
+                                coordinates: addresses.slice(i, i + chunkSize).map(toTemporalCoordinate)
+                            }, parsingTimeZonesMessage, addresses.length));
+                        }
+                        return timeZonesPromise;
+                    };
+                    /**
+                     * Process the results of getting time zones
+                     * @param  {any} timezones - The time zone results
+                     */
+                    var processTimeZoneResults = timezones => {
+                        addresses.forEach((address, index) => {
+                            addressesLookup[address].timezone = timezones[index];
+                        });
+                    };
+                    /**
+                     * Add coordinate to fuel transactions and convert date times from local time zone to UTC
+                     */
+                    var augmentTransactions = () => {
+                        transactionList.forEach(transaction => {
+                            var info = addressesLookup[transaction.address];
+
+                            if (!info.coordinates || (info.coordinates.x === 0 && info.coordinates.y === 0)) {
+                                console.log('Invalid coordinates returned for address: ' + transaction.address);
+                            } else {
+                                transaction.location = info.coordinates;
+                            }
+
+                            if (!info.timezone) {
+                                console.log('Invalid timezone returned for coordinates: ' + transaction.address + ' ' + JSON.stringify(transaction.location));
+                            } else {
+                                transaction.dateTime = toUtcTimeFromTimeZone(transaction.dateTime, info.timezone.id);
+                            }
+
+                            delete transaction.address;
+                        });
+                    };
+
+                    /**
+                     * Convert date time to UTC
+                     * @param  {any} dateTime
+                     * @param  {any} timezoneid
+                     */
+                    var toUtcTimeFromTimeZone = (dateTime, timezoneid) => {
+                        if (!timezoneid) {
+                            return dateTime;
+                        }
+                        return moment.tz(dateTime.replace('T', ' ').replace('Z', ''), timezoneid).toISOString();
+                    };
+                });
+            },
             geotab: function (headings, data) {
                 /**
                 * Parse product type from code for generic files
@@ -761,7 +1006,7 @@ geotab.addin.importFuelTransactions = function () {
                             rawTransaction[headings[heading].replace(regex, '')] = dataRow[heading];
                         });
 
-                        if (dataRow.hasOwnProperty('ColumnM')) {
+                        if (dataRow.ColumnM) {
                             fuelTransaction = new FuelTransaction(
                                 getStringValue(dataRow.ColumnA),
                                 getStringValue(dataRow.ColumnB),
@@ -807,6 +1052,8 @@ geotab.addin.importFuelTransactions = function () {
         var determineProvider = function (headings) {
             if (headings.ColumnA === 'VIN' && headings.ColumnM === 'Driver Name') {
                 return Providers.geotab;
+            } else if (getStringValue(headings.ColumnU) === 'Produit_1' && getStringValue(headings.ColumnL) === 'NoDeVehicle'){
+                return Providers.ultramarCST;
             } else if (getStringValue(headings.ColumnA) === 'Fleet Name' && getStringValue(headings.ColumnB) === 'ACCOUNT NUMBER 5') {
                 return Providers.wex;
             } else if (getStringValue(headings.ColumnA) === 'Card Number' && getStringValue(headings.ColumnB) === 'Vehicle Card Department') {
@@ -821,6 +1068,8 @@ geotab.addin.importFuelTransactions = function () {
                     return parsers.wex(headings, data);
                 case Providers.wexCustomer:
                     return parsers.wexCustomer(headings, data);
+                case Providers.ultramarCST:
+                    return parsers.ultramarCST(headings, data);
                 case Providers.geotab:
                     return parsers.geotab(headings, data);
                 default:
@@ -831,20 +1080,11 @@ geotab.addin.importFuelTransactions = function () {
         self.parse = function (data) {
             var headings = getHeadings(data);
             var provider;
-
             if (!headings) {
-              return new Promise(function (resolve, reject) {
-                  reject(new Error('missing row headings in file'));
-              });
+                toggleAlert(elAlertError, 'missing row headings in file');
+                return null;
             }
-
             provider = determineProvider(headings);
-            if (provider === Providers.unknown) {
-              return new Promise(function (resolve, reject) {
-                  reject(new Error('unrecognised file provider'));
-              });
-            }
-
             return rowsToFuelTransactions(provider, headings, data);
         };
 
