@@ -1006,7 +1006,7 @@ geotab.addin.importFuelTransactions = function () {
                             rawTransaction[headings[heading].replace(regex, '')] = dataRow[heading];
                         });
 
-                        if (dataRow.ColumnM) {
+                        if (dataRow.hasOwnProperty('ColumnM')) {
                             fuelTransaction = new FuelTransaction(
                                 getStringValue(dataRow.ColumnA),
                                 getStringValue(dataRow.ColumnB),
@@ -1081,10 +1081,17 @@ geotab.addin.importFuelTransactions = function () {
             var headings = getHeadings(data);
             var provider;
             if (!headings) {
-                toggleAlert(elAlertError, 'missing row headings in file');
-                return null;
+              return new Promise(function (resolve, reject) {
+                  reject(new Error('missing row headings in file'));
+              });
             }
+
             provider = determineProvider(headings);
+            if (provider === Providers.unknown) {
+              return new Promise(function (resolve, reject) {
+                  reject(new Error('unrecognised file provider'));
+              });
+            }
             return rowsToFuelTransactions(provider, headings, data);
         };
 
