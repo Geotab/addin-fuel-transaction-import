@@ -988,8 +988,8 @@ geotab.addin.importFuelTransactions = function () {
                 fd = new FormData();
                 xhr = new XMLHttpRequest();
 
-                fd.append('fileToUpload', elFiles.files[0]);
                 fd.append('JSON-RPC', parameters);
+                fd.append('fileToUpload', elFiles.files[0]);
 
                 xhr.upload.addEventListener('progress', uploadProgress, false);
                 xhr.addEventListener('load', uploadComplete, false);
