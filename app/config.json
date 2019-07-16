@@ -15,7 +15,7 @@
   "dev": {
     "root": "importFuelTransactions",
     "dist": {
-      "host": "https://cdn.rawgit.com/Geotab/addin-fuel-transaction-import/master/dist/"
+      "host": "https://cdn.jsdelivr.net/gh/Geotab/addin-fuel-transaction-import@master/dist/"
     }
   }
 }
