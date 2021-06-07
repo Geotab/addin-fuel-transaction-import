@@ -1,0 +1,20 @@
+{
+  "name": "Fuel Transaction Import (by Geotab)",
+  "supportEmail": "fabiopolini@geotab.com",
+  "version": "2.2.0",
+  "items": [{
+    "url": "importFuelTransactions.html",
+    "path": "EngineMaintenanceLink/",
+    "menuName": {
+      "en": "Fuel Transaction Import"
+    },
+    "icon": "images/icon.svg"
+  }],
+  "dev": {
+    "root": "importFuelTransactions",
+    "dist": {
+      "host": "https://cdn.jsdelivr.net/gh/genobean11m/FuelAddin@master/dist/"
+      
+    }
+  }
+}
