@@ -1344,7 +1344,7 @@ var uploadFile = function (e) {
             id: -1,
             method: 'ExcelToJson',
             params: {
-                minColumnsAmount: 28,
+                minColumnsAmount: 58,
                 credentials: credentials
             }
         });               
@@ -1362,12 +1362,13 @@ var uploadFile = function (e) {
             xhr.addEventListener('abort', uploadFailed, false);
             if(getUrl()=='http://localhost/apiv1')
             {
-                xhr.open('POST','https://my1250.geotab.com/apiv1')
+                xhr.open('POST','https://my501.geotab.com/apiv1')
             }
             else
             {
                 xhr.open('POST', getUrl());
             }
+            //xhr.open('POST', getUrl());
             xhr.send(fd);
         } else {
             iframeUpload(elForm, getUrl(), parameters);
@@ -1470,52 +1471,44 @@ var toggleExample = function (e) {
 
 var parsingTransactionWithProvider = function(transactions,provider)
 {
-    var jsonObjParsed = {};
-
+    var jsonObjParsed = [];
     
     //loop transaction list row by row
     console.log(transactions);
     console.log(provider);
-
-    var newTranscationObj = new FuelTransactionProvider(); 
+    //var newTranscationObj = new FuelTransactionProvider(); 
 
     for (var k=0;k<transactions.length;k++)
-    {
-       
+    {                
+         //trovare il modo di appendere il ritorno all'obj jsonObjParsed
+         jsonObjParsed.append =  loopParseTransactionInTemplate(transactions[k][`${value}`],provider[0].data)
+         
+         
 
-       console.log("Array Nuovo Mappato: " +  newTranscationObj);
-    }
-    return newTranscationObj;
+        console.log( jsonObjParsed); 
+    }    
+
+// try catch here the json.parse(jsonObjParsed)
+
+    //jsonObjParsed will be the object with the transaction parsed into
+    //API template for fuel transaction and will returned into
+    //fuelTransactionImport object in uploadCompleteProvider function
+    return jsonObjParsed;
 }
 
-var GetFuelTransaction = function(transaction,providerMapping)
+var loopParseTransactionInTemplate = function(singleTransaction,provider)
 {
-  var fuelTransaction;
-  
-
-    for (var i=0;i<provider.length;i++){
-        console.log(transactions[k][provider[i]]);
-                newTranscationObj[provider[i]]= (transactions[k][provider[i]]);
-        
-                         
-                for (let [key, value] of Object.entries(transactions[k])) {
-        
-                    if(provider[i] == `${key}`)
-                    {
-                        //console.log(`${key}`);
-                        //jsonObjParsed['`${key}`'] = `${value}`;  
-                        newTranscationObj['`${key}`']= `${value}`;  
-                        //newTranscationObj.comments = transactions[k].colonnapresadaproviers[1];   
-                                        
-                    }            
-                  }
-                
-               }
-
-//return json object
-
+    var newTranscationObj = new FuelTransactionProvider();    
+    for (var [key, value] of Object.entries(provider[0].data))
+            {                
+                    //console.log(`${key}`);
+                    //console.log(`${value}`);                   
+                    newTranscationObj[`${key}`]= transactions[k][`${value}`];
+            }
+            return newTranscationObj;
 
 }
+
 
 var toggleJsonDropDownMenu = function()
 {
@@ -1708,12 +1701,15 @@ var uploadFileProvider = function(e)
             xhr.addEventListener('abort', uploadFailed, false);
             if(getUrl()=='http://localhost/apiv1')
             {
-                xhr.open('POST','https://my1250.geotab.com/apiv1')
+                xhr.open('POST','https://my501.geotab.com/apiv1')
             }
             else
             {
                 xhr.open('POST', getUrl());
             }
+            
+         
+
             xhr.send(fd);
         } else {
             iframeUpload(elForm, getUrl(), parameters);
@@ -1770,15 +1766,14 @@ var uploadCompleteProvider = function (e) {
     var extractedProviderTemplate = objProviderTemplate.providers.filter((provider) => provider.Name ===providerSelected);    
     
     results = resultsParser(e);
+    if (results.error) {
+        toggleAlert(elAlertError, results.error.message);
+        return;
+        }
 
 
 //remove the heading from transaction
 headingsExtracted= getHeadings(results.data);
-//console.log("header Transactions");
-//console.log(headingsExtracted);
-//console.log("Transactions from Excel");
-//console.log(results.data);
-
 //
 
 //Insert HERE the function that get the right column based on the provider selected
