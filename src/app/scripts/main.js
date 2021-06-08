@@ -1344,7 +1344,7 @@ var uploadFile = function (e) {
             id: -1,
             method: 'ExcelToJson',
             params: {
-                minColumnsAmount: 58,
+                minColumnsAmount: 28,
                 credentials: credentials
             }
         });               
@@ -1471,24 +1471,24 @@ var toggleExample = function (e) {
 
 var parsingTransactionWithProvider = function(transactions,provider)
 {
-    var jsonObjParsed = [];
+    var arrayOfParsedTransaction = [];
     
     //loop transaction list row by row
-    console.log(transactions);
-    console.log(provider);
+    //onsole.log(transactions);
+    //console.log(provider);
     //var newTranscationObj = new FuelTransactionProvider(); 
 
     for (var k=0;k<transactions.length;k++)
-    {                
-         //trovare il modo di appendere il ritorno all'obj jsonObjParsed
-         jsonObjParsed.append =  loopParseTransactionInTemplate(transactions[k][`${value}`],provider[0].data)
-         
-         
-
-        console.log( jsonObjParsed); 
-    }    
-
-// try catch here the json.parse(jsonObjParsed)
+    {
+        arrayOfParsedTransaction.push(loopParseTransactionInTemplate(transactions[k],provider[0].data));   
+    }   
+    try {
+        var jsonObjParsed= JSON.parse(JSON.stringify(arrayOfParsedTransaction));
+        console.log(jsonObjParsed);
+        
+    } catch(e) {        
+        console.log("Error: ",e );
+    }
 
     //jsonObjParsed will be the object with the transaction parsed into
     //API template for fuel transaction and will returned into
@@ -1499,11 +1499,11 @@ var parsingTransactionWithProvider = function(transactions,provider)
 var loopParseTransactionInTemplate = function(singleTransaction,provider)
 {
     var newTranscationObj = new FuelTransactionProvider();    
-    for (var [key, value] of Object.entries(provider[0].data))
+    for (var [key, value] of Object.entries(provider))
             {                
                     //console.log(`${key}`);
                     //console.log(`${value}`);                   
-                    newTranscationObj[`${key}`]= transactions[k][`${value}`];
+                    newTranscationObj[`${key}`]= singleTransaction[`${value}`];
             }
             return newTranscationObj;
 
@@ -1788,58 +1788,41 @@ for (let [key, value] of Object.entries(extractedProviderTemplate[0].data)) {
   fuelTransctionImport = parsingTransactionWithProvider(results.data,extractedProviderTemplate);
 
 
-//loop transaction -> json object
-//create array
+  //////// new code that need to be tested
+
+ // For each transaction check if fleet field is empty,
+    // if so, is filled with database name
+    var getFleets = function (trans) {
+        var fleets = {};
+        trans.forEach(function (transaction) {
+            fleets[transaction.fleet] = transaction.fleet || database;
+        });
+        return Object.keys(fleets);
+    };
+    // -------------
+
+  if (fuelTransctionImport === null) {
+    toggleAlert(elAlertError, 'Can not determine file provider type, try converting to MyGeotab file type');
+    return;
+}
+if (!fuelTransctionImport.length) {
+    toggleAlert(elAlertError, 'No transactions found in file');
+    return;
+}
+
+setFleetSelection(getFleets(fuelTransctionImport));
+            toggleImport(true);
+            renderTransactions(fuelTransctionImport);
+            toggleAlert();
 
 
-  //console.log(arrayColumns);
-// --------
+  ////////// end of new code need to be tested
 
-/*
-    fuelTransactionProvider = new FuelTransactionProvider(
-        //cardNumber -> arrayColumns[0] = columnA
-        //comments -> arrayColumns[1] = columnH
-        //description -> arrayColumns[2]
-        //device -> arrayColumns[3]
-        //driver
-        //driverName
-        //externalReference
-        //licencePlate//provider
-        //serialNumber
-        //siteName
-        //sourceData
-        //vehicleIdentificationNumber
-        //cost
-        //currencyCode
-        //dateTime
-        //location
-        //odometer
-        //productType
-        //volume
-        //version
-        //id
-        /*
-        getStringValue(dataRow.ColumnA),
-        getStringValue(dataRow.ColumnB),
-        getStringValue(dataRow.ColumnC),
-        getStringValue(dataRow.ColumnD),
-        getStringValue(dataRow.ColumnE),
-        getDateValue(dataRow.ColumnF),
-        getFloatValue(dataRow.ColumnG),
-        getFloatValue(dataRow.ColumnJ),
-        getFloatValue(dataRow.ColumnH),
-        getStringValue(dataRow.ColumnI),
-        { x: getFloatValue(dataRow.ColumnK), y: getFloatValue(dataRow.ColumnL) }, // x = lon, y = lat
-        'Unknown',
-        getStringValue(dataRow.ColumnM),
-        JSON.stringify(rawTransaction),
-        getProductType(getStringValue(dataRow.ColumnN))  
-           
-        
-    );    
-    transactionList.push(fuelTransactionProvider); 
-       */
-    
+
+
+
+
+
 };
 
 
