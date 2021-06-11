@@ -1,0 +1,61 @@
+{
+    "providers" : [
+        {
+            "Name" : "ENI",
+            "data" : {
+            "cardNumber" : "ColumnH",
+            "comments" : "ColumnQ",
+            "description": null,	
+            "device": null,	
+            "driver": null,
+            "driverName":"ColumnO",	
+            "externalReference" : "ColumnK",
+            "licencePlate" : "ColumnN",
+            "provider": "ColumnY",	
+            "serialNumber" : null,	
+            "siteName":["ColumnZ","ColumnAA","ColumnAB"],	
+            "sourceData": null,	
+            "vehicleIdentificationNumber":null,	
+            "cost":"ColumnAO",	
+            "currencyCode":"ColumnAJ",	
+            "dateTime":"ColumnL",	
+            "location":null,	
+            "odometer":"ColumnP",	
+            "productType":null,	
+            "volume":"ColumnAK",	
+            "version" : null,	
+            "id": null
+            }
+        },
+
+        {
+            "Name" : "Total Erg",
+            "data" : {
+            "cardNumber" : "ColumnH",
+            "comments" : "ColumnQ",
+            "description": null,	
+            "device": null,	
+            "driver": null,
+            "driverName":"ColumnO",	
+            "externalReference" : "ColumnK",
+            "licencePlate" : "ColumnN",
+            "provider": "ColumnY",	
+            "serialNumber" : null,	
+            "siteName":["ColumnZ","ColumnAA","ColumnAB"],	
+            "sourceData": null,	
+            "vehicleIdentificationNumber":null,	
+            "cost":"ColumnAO",	
+            "currencyCode":"ColumnAJ",	
+            "dateTime":"ColumnL",	
+            "location":null,	
+            "odometer":"ColumnP",	
+            "productType":"Regular",	
+            "volume":"AK",	
+            "version" : null,	
+            "id": null
+            }
+        }
+       
+       
+    ]
+}

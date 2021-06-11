@@ -1,7 +1,7 @@
 /**
  * @returns {{initialize: Function, focus: Function, blur: Function}}
  */
-
+ const excelToJson = require('convert-excel-to-json');
 
 
 geotab.addin.addinFuelTransactionImport20 = function () {
@@ -356,855 +356,30 @@ var FuelTransactionProvider = function (cardNumber,comments,description,device,d
         cardNumber: cardNumber || '',
         comments: comments || '',
         description: description || '',
-        device:device,
-        driver: driver,
-        driverName: driverName,
-        externalReference: externalReference,
+        device:device || '',
+        driver: driver|| '',
+        driverName: driverName|| '',
+        externalReference: externalReference|| '',
         licencePlate: licencePlate || '',
-        provider:provider,
+        provider:provider || '',
         serialNumber: serialNumber || '',
-        siteName:siteName,
-        sourceData: sourceData,
+        siteName:siteName || '',
+        sourceData: sourceData || '',
         vehicleIdentificationNumber: vehicleIdentificationNumber || '',
-        cost: cost,
-        currencyCode: currencyCode,
-        dateTime: dateTime,
-        location: location,
-        odometer: odometer,
-        productType:productType,
-        volume: volume,
-        version:version,
-        id:id
+        cost: cost || '',
+        currencyCode: currencyCode || '',
+        dateTime: dateTime || '',
+        location: location || '',
+        odometer: odometer || '',
+        productType:productType || '',
+        volume: volume || '',
+        version:version || '',
+        id:id || '',
     };
     return self;
 };
 
-var FuelTransactionParser = function () {
-    var self = this;
-    var regex = new RegExp(' ', 'g');
-    var Providers = {
-        unknown: 0,
-        wex: 2,
-        wexCustomer: 3,
-        fleetcore: 4,
-        geotab: 1000,
-        fuelProvider : 5
-    };
 
-    var isVersionSupportted = (serverVersion) => {
-        var parts = serverVersion.split('.');
-        return parseInt(parts[2], 10) >= 1606;
-    };
-
-    // value parsers
-    var getStringValue = function (s) {
-        let length = s.length;
-        if (length > 0 && s[0] === '"') {
-            s = s.substring(1, s.length);
-            length--;
-
-            if (length > 0 && s[length - 1] === '"') {
-                s = s.substring(0, s.length - 1);
-            }
-        }
-        return (s === '(null)' ? '' : s.trim());
-    };
-
-    var getFloatValue = function (float) {
-        var value = parseFloat(float);
-        return isNaN(value) ? 0.0 : value;
-    };
-
-    var getDateValue = function (date) {
-        var fromStringDateUtc;
-        var fromStringDate = new Date(date);
-        var fromOADate = function (oaDateValue) {
-            var oaDate = new Date(Date.UTC(1899, 11, 30));
-            var millisecondsOfaDay = 24 * 60 * 60 * 1000;
-            var result = new Date();
-            result.setTime((oaDateValue * millisecondsOfaDay) + Date.parse(oaDate));
-            return result;
-        };
-
-        // date in iso format
-        if (date.indexOf('T') > -1) {
-            return fromStringDate.toISOString();
-        }
-
-        // date in non oaDate format
-        fromStringDateUtc = new Date(Date.UTC(fromStringDate.getFullYear(), fromStringDate.getMonth(), fromStringDate.getDate(), fromStringDate.getHours(), fromStringDate.getMinutes(), fromStringDate.getMilliseconds()));
-        if (!isNaN(fromStringDateUtc.getTime())) {
-            return fromStringDateUtc.toISOString();
-        }
-
-        return fromOADate(getFloatValue(date)).toISOString();
-    };
-
-    var milesToKm = function (miles) {
-        return miles / 0.62137;
-    };
-    var gallonsToLitres = function (gallons) {
-        return gallons * 3.785;
-    };
-
-    /**
-     * Provider file parsers, must return a promise resolved with parsed transactions or rejected
-     */
-    var parsers = {
-        wex: function (headings, data) {
-             /**
-             * Parse product type from code for WEX classic and millennium files
-             * @param {any} productType - The WEX prododuct type
-             * @returns {any} params - The MyGeotab product type
-             */
-            let getProductType = productType => {
-                let productCode = parseInt(productType, 10) || 0;
-                switch (productCode)
-                {
-                    case 21:
-                    case 22:
-                    case 23:
-                    case 24:
-                    case 25:
-                    case 26:
-                    case 27:
-                    case 28:
-                    case 29:
-                    case 30:
-                    case 31:
-                    case 32:
-                    case 33:
-                    case 34:
-                    case 35:
-                    case 36:
-                    case 37:
-                    case 38:
-                    case 39:
-                    case 41:
-                    case 42:
-                    case 43:
-                    case 44:
-                    case 45:
-                    case 46:
-                    case 47:
-                    case 49:
-                    case 50:
-                    case 52:
-                    case 53:
-                    case 54:
-                    case 55:
-                    case 56:
-                    case 57:
-                    case 58:
-                    case 59:
-                    case 60:
-                    case 62:
-                    case 63:
-                    case 64:
-                    case 65:
-                    case 66:
-                    case 67:
-                    case 68:
-                    case 70:
-                    case 71:
-                    case 72:
-                    case 73:
-                    case 74:
-                    case 79:
-                    case 80:
-                    case 81:
-                    case 82:
-                    case 83:
-                    case 84:
-                    case 85:
-                    case 90:
-                        return 'NonFuel';
-                    case 3:
-                    case 7:
-                    case 12:
-                    case 15:
-                        return 'Regular';
-                    case 4:
-                    case 6:
-                    case 8:
-                    case 13:
-                    case 14:
-                    case 16:
-                    case 17:
-                    case 20:
-                        return 'Premium';
-                    case 2:
-                    case 9:
-                        return 'Diesel';
-                    case 1:
-                        return 'E85';
-                    case 11:
-                        return 'CNG';
-                    case 10:
-                        return 'LPG';
-                    default:
-                        return 'Unknown';
-                }
-            };
-
-            return new Promise(function (resolve) {
-                var transactionList = [];
-
-                data.forEach(function (dataRow) {
-                    var rawTransaction = {},
-                        fuelTransaction;
-
-                    Object.keys(headings).forEach(function (heading) {
-                        rawTransaction[headings[heading].replace(regex, '')] = dataRow[heading];
-                    });
-
-                    if (dataRow.ColumnN) {
-                        fuelTransaction = new FuelTransaction(
-                            getStringValue(dataRow.ColumnJ),
-                            getStringValue(dataRow.ColumnI),
-                            '',
-                            getStringValue(dataRow.ColumnG),
-                            '',
-                            getDateValue(getStringValue(dataRow.ColumnAK)), // may need convert to UTC date, columAK may not exist
-                            gallonsToLitres(getFloatValue(getStringValue(dataRow.ColumnN))),
-                            milesToKm(getFloatValue(getStringValue(dataRow.ColumnAH))),
-                            getFloatValue(getStringValue(dataRow.ColumnO)),
-                            'USD',
-                            { x: getFloatValue(getStringValue(dataRow.ColumnAM)), y: getFloatValue(getStringValue(dataRow.ColumnAL)) },
-                            'Wex',
-                            (getStringValue(dataRow.ColumnU) + ' ' + getStringValue(dataRow.ColumnV) + ' ' + getStringValue(dataRow.ColumnT)).trim(),
-                            JSON.stringify(rawTransaction),
-                            getProductType(getStringValue(dataRow.ColumnQ))
-                        );
-
-                        fuelTransaction.fleet = getStringValue(dataRow.ColumnA);
-                        transactionList.push(fuelTransaction);
-                    }
-                });
-
-                return resolve(transactionList);
-            });
-        },
-        wexCustomer: function (headings, data) {
-            if (!isVersionSupportted(version)) {
-                return new Promise(function (resolve, reject) {
-                    reject(new Error(`Your server is not running a version that supports WEX Customer files. The minimum version is 5.7.1606.0 this server is ${version}.`));
-                });
-            }
-            return new Promise(function (resolve, reject) {
-                var transactionList = [];
-                var addressesLookup = {};
-                var addresses = [];
-                var promiseChain = new Promise(resolved => { resolved(); });
-                var chunkSize = 100;
-                var parsingAddressesMessage = 'Parsing: converting addresses to coordinates... ';
-                var parsingTimeZonesMessage = 'Parsing: finding timezone of coordinates... ';
-                /**
-                 * Make an API request and aggregate the results
-                 * @param  {any} method - The method to call
-                 * @param  {any} params - The parameters to use in the call
-                 * @param  {any} message - The message to update the IU
-                 * @param  {any} total - The total expected in aggregate (used for message)
-                 */
-                var aggregateRequests = function (method, params, message, total) {
-                    return function (results) {
-                        return new Promise(function (resolved) {
-                            api.call(method, params, function (result) {
-                                var aggegate = results.concat(result);
-                                toggleAlert(elAlertInfo, message + aggegate.length + '/' + total);
-                                resolved(aggegate);
-                            }, reject);
-                        });
-                    };
-                };
-                /**
-                * Get coordinates from addresses chuncked into more managable request sizes and aggregate results
-                */
-                var getCoordinatesFromAddresses = () => {
-                    var i;
-                    var getCoordinates = new Promise(resolved => {
-                        resolved([]);
-                    });
-                    toggleAlert(elAlertInfo, parsingAddressesMessage);
-                    // chunk resquests into more managable pieces
-                    for (i = 0; i < addresses.length; i += chunkSize) {
-                        getCoordinates = getCoordinates.then(aggregateRequests('GetCoordinates', { addresses: addresses.slice(i, i + chunkSize) }, parsingAddressesMessage, addresses.length));
-                    }
-                    return new Promise(resolved => {
-                        getCoordinates.then((coordinates) => {
-                            resolved({ addresses, coordinates });
-                        });
-                    });
-                };
-                /**
-                 * Process the results of getting coordinates for addesses, when no result found return these as addresses to retry
-                 * @param  {any} results - The coordinates
-                 */
-                var processCoordinateResults = (results) => {
-                    var retry = [];
-                    results.addresses.forEach((address, index) => {
-                        var coordinate = results.coordinates[index];
-                        if (coordinate) {
-                            addressesLookup[address].coordinates = coordinate;
-                        } else {
-                            retry.push(address);
-                        }
-                    });
-                    return retry;
-                };
-                /**
-                 * Retry getting coordinates for addesses without street
-                 * @param  {any} results - The coordinates
-                 */
-                var retryLowerResolutionAddress = (retry) => {
-                    // retry zero-results addresses with less specific address string
-                    var i;
-                    var getCoordinates = new Promise(resolved => {
-                        resolved([]);
-                    });
-                    var lowerAddressResolution = missed => {
-                        var parts = missed.split(',');
-                        return parts.slice(1, parts.length).join(',');
-                    };
-
-                    // chunk resquests into more managable pieces
-                    for (i = 0; i < retry.length; i += chunkSize) {
-                        getCoordinates = getCoordinates.then(aggregateRequests('GetCoordinates', {
-                            addresses: retry.slice(i, i + chunkSize).map(lowerAddressResolution)
-                        }));
-                    }
-                    return new Promise(resolved => {
-                        getCoordinates.then((coordinates) => {
-                            resolved({ addresses: retry, coordinates });
-                        });
-                    });
-                };
-                /**
-                * Get time zones for coordinates
-                */
-                var getTimeZones = () => {
-                    var i;
-                    var now = new Date().toISOString();
-                    var timeZonesPromise = new Promise(resolved => {
-                        resolved([]);
-                    });
-                    var toTemporalCoordinate = address => {
-                        var location = addressesLookup[address].coordinates;
-                        return {
-                            x: location.x,
-                            y: location.y,
-                            dateTime: now // hack to do less look ups
-                        };
-                    };
-
-                    toggleAlert(elAlertInfo, parsingAddressesMessage);
-                    // chunk resquests into more managable pieces
-                    for (i = 0; i < addresses.length; i += chunkSize) {
-                        timeZonesPromise = timeZonesPromise.then(aggregateRequests('GetCoordinateTimeZones', {
-                            coordinates: addresses.slice(i, i + chunkSize).map(toTemporalCoordinate)
-                        }, parsingTimeZonesMessage, addresses.length));
-                    }
-                    return timeZonesPromise;
-                };
-                /**
-                 * Process the results of getting time zones
-                 * @param  {any} timezones - The time zone results
-                 */
-                var processTimeZoneResults = timezones => {
-                    addresses.forEach((address, index) => {
-                        addressesLookup[address].timezone = timezones[index];
-                    });
-                };
-                /**
-                 * Add coordinate to fuel transactions and convert date times from local time zone to UTC
-                 */
-                var augmentTransactions = () => {
-                    transactionList.forEach(transaction => {
-                        var info = addressesLookup[transaction.address];
-
-                        if (!info.coordinates || (info.coordinates.x === 0 && info.coordinates.y === 0)) {
-                            console.log('Invalid coordinates returned for address: ' + transaction.address);
-                        } else {
-                            transaction.location = info.coordinates;
-                        }
-
-                        if (!info.timezone) {
-                            console.log('Invalid timezone returned for coordinates: ' + transaction.address + ' ' + JSON.stringify(transaction.location));
-                        } else {
-                            transaction.dateTime = toUtcTimeFromTimeZone(transaction.dateTime, info.timezone.id);
-                        }
-
-                        delete transaction.address;
-                    });
-                };
-
-                /**
-                 * Convert date time to UTC
-                 * @param  {any} dateTime
-                 * @param  {any} timezoneid
-                 */
-                var toUtcTimeFromTimeZone = (dateTime, timezoneid) => {
-                    if (!timezoneid) {
-                        return dateTime;
-                    }
-                    return moment.tz(dateTime.replace('T', ' ').replace('Z', ''), timezoneid).toISOString();
-                };
-
-                /**
-                 * Parse product type from code for WEX customer files
-                 * @param {any} productType - The WEX prododuct type
-                 * @returns {any} params - The MyGeotab product type
-                 */
-                var getProductType = (productType) => {
-                    switch (productType) {
-                        // case '':
-                        //     return 'NonFuel';
-                        case 'UNa':
-                        case 'UNb':
-                        case 'UNc':
-                        case 'UNL':
-                        case 'UNLEADED':
-                        case 'UNLALC57':
-                        case 'UNLALC10':
-                        case 'UNLALC77':
-                            return 'Regular';
-                        // case '':
-                        //     return 'Midgrade';
-                        case 'SUP':
-                        case 'UN+':
-                        case 'U+c':
-                        case 'U+a':
-                        case 'SUa':
-                        case 'U+b':
-                        case 'SUb':
-                        case 'SUc':
-                        case 'SUPER UN':
-                        case 'UNL PLUS':
-                        case 'UN+ALC57':
-                        case 'UN+ALC10':
-                        case 'SUPALC10':
-                        case 'UN+ALC77':
-                        case 'SUPALC77':
-                        case 'SUPALC57':
-                        case 'PREMIUM':
-                        case 'UN+EADED PLUS':
-                        case 'SUPER UNLEADED':
-                            return 'Premium';
-                        // case '':
-                        //     return 'Super';
-                        case 'DIESEL':
-                        case 'PREM DSL':
-                        case 'DSL':
-                        case 'DS+':
-                        case 'DSLDIESEL':
-                            return 'Diesel';
-                        case 'ETHANL85':
-                        case 'E85':
-                        case 'E85ETHANOL85':
-                            return 'E85';
-                        case 'CNG':
-                            return 'CNG';
-                        case 'PRO':
-                        case 'PROPANE':
-                            return 'LPG';
-                        default:
-                            return 'Unknown';
-                    }
-                };
-
-                // Convert spread sheet rows to Fuel Transaction objects
-                data.forEach(function (dataRow) {
-                    var rawTransaction = {},
-                        fuelTransaction;
-
-                    Object.keys(headings).forEach(function (heading) {
-                        rawTransaction[headings[heading].replace(regex, '')] = dataRow[heading];
-                    });
-
-                    if (dataRow.ColumnS) {
-                        fuelTransaction = new FuelTransaction(
-                            '',
-                            getStringValue(dataRow.ColumnC),
-                            '',
-                            '',
-                            '',
-                            getDateValue((getFloatValue(dataRow.ColumnD) + getFloatValue(dataRow.ColumnE)).toFixed(15)),
-                            gallonsToLitres(getFloatValue(dataRow.ColumnS)),
-                            milesToKm(getFloatValue(dataRow.ColumnO)),
-                            getFloatValue(dataRow.ColumnAA), // ColumnU: Fuel Cost, ColumnV: Non-Fuel Cost, ColumnW: Gross Cost (Fuel + Non Fuel), ColumnAA: Net Cost (Fuel Cost - Tax Exempt + Trans Fee)
-                            'USD',
-                            null,
-                            'WexCustomer',
-                            getStringValue(dataRow.ColumnL),
-                            JSON.stringify(rawTransaction),
-                            getProductType(getStringValue(dataRow.ColumnR))
-                        );
-
-                        fuelTransaction.address = getStringValue(dataRow.ColumnH) + ', ' + getStringValue(dataRow.ColumnI) + ', ' + getStringValue(dataRow.ColumnJ) + ', ' + getStringValue(dataRow.ColumnK);
-                        addressesLookup[fuelTransaction.address] = { coordinates: null, timezone: null };
-
-                        fuelTransaction.fleet = getStringValue(database);
-                        transactionList.push(fuelTransaction);
-                    } else {
-                        console.log('Skipped row');
-                    }
-                });
-
-                addresses = Object.keys(addressesLookup);
-
-                // populate transcations with coordinates and UTC date/time
-                promiseChain
-                    .then(getCoordinatesFromAddresses)
-                    .then(processCoordinateResults)
-                    .then(retryLowerResolutionAddress)
-                    .then(processCoordinateResults)
-                    .then(getTimeZones)
-                    .then(processTimeZoneResults)
-                    .then(augmentTransactions)
-                    .then(() => {
-                        resolve(transactionList);
-                    })
-                    .catch(reject);
-            });
-        },
-         geotab: function (headings, data) {
-            /**
-            * Parse product type from code for generic files
-            * @param {any} productType - The generic product type
-            * @returns {any} params - The MyGeotab product type
-            */
-            var getProductType = (productType) => {
-                let pt = productType.toLowerCase().replace(' ', '');
-                switch (pt) {
-                    case 'nonfuel':
-                            return 'NonFuel';
-                    case 'regular':
-                        return 'Regular';
-                        case 'midgrade':
-                            return 'Midgrade';
-                    case 'premium':
-                        return 'Premium';
-                    case 'super':
-                        return 'Super';
-                    case 'diesel':
-                        return 'Diesel';
-                    case 'e85':
-                        return 'E85';
-                    case 'cng':
-                        return 'CNG';
-                    case 'lpg':
-                        return 'LPG';
-                    default:
-                        return 'Unknown';
-                }
-            };
-
-            return new Promise(function (resolve) {
-                var transactionList = [];                
-
-                data.forEach(function (dataRow) {
-                    var rawTransaction = {},
-                        fuelTransaction;
-
-                    Object.keys(headings).forEach(function (heading) {
-                        rawTransaction[headings[heading].replace(regex, '')] = dataRow[heading];
-                    });
-                    
-                    if (dataRow.hasOwnProperty('ColumnM')) {
-                        fuelTransaction = new FuelTransaction(
-                            getStringValue(dataRow.ColumnA),
-                            getStringValue(dataRow.ColumnB),
-                            getStringValue(dataRow.ColumnC),
-                            getStringValue(dataRow.ColumnD),
-                            getStringValue(dataRow.ColumnE),
-                            getDateValue(dataRow.ColumnF),
-                            getFloatValue(dataRow.ColumnG),
-                            getFloatValue(dataRow.ColumnJ),
-                            getFloatValue(dataRow.ColumnH),
-                            getStringValue(dataRow.ColumnI),
-                            { x: getFloatValue(dataRow.ColumnK), y: getFloatValue(dataRow.ColumnL) }, // x = lon, y = lat
-                            'Unknown',
-                            getStringValue(dataRow.ColumnM),
-                            JSON.stringify(rawTransaction),
-                            getProductType(getStringValue(dataRow.ColumnN))
-                            
-                            
-                        );                     
-
-                        fuelTransaction.fleet = getStringValue(database);
-                        transactionList.push(fuelTransaction);                     
-                    }
-                });              
-                return resolve(transactionList);
-            });
-        }
-    };
-
-    var getHeadings = function (data) {
-        var headRow = data[0];
-        var isHeadingRow = true;
-        Object.keys(headRow).forEach(function (columName) {
-            if (!isNaN(parseInt(columName, 10))) {
-                isHeadingRow = false;
-            }
-        });
-        if (isHeadingRow) {
-            return data.shift();
-        }
-        return [];
-    };
-
-    var determineProvider = function (headings) {
-        if (headings.ColumnA === 'VIN' && headings.ColumnM === 'Driver Name') {
-            return Providers.geotab;
-        } else if (getStringValue(headings.ColumnA) === 'Fleet Name' && getStringValue(headings.ColumnB) === 'ACCOUNT NUMBER 5') {
-            return Providers.wex;
-        } else if (getStringValue(headings.ColumnA) === 'Card Number' && getStringValue(headings.ColumnB) === 'Vehicle Card Department') {
-            return Providers.wexCustomer;
-        }
-        
-        return Providers.unknown;
-    };
-
-    var rowsToFuelTransactions = function (provider, headings, data) {
-        switch (provider) {
-            case Providers.wex:
-                return parsers.wex(headings, data);
-            case Providers.wexCustomer:
-                return parsers.wexCustomer(headings, data);
-            case Providers.geotab:
-                return parsers.geotab(headings, data);
-            case Providers.fuelProvider:
-                return parsers.geotab(headings, data);
-            default:
-                return null;
-        }
-    };
-
-    self.parse = function (data) {
-        var headings = getHeadings(data);
-        var provider;
-
-        if (!headings) {
-          return new Promise(function (resolve, reject) {
-              reject(new Error('missing row headings in file'));
-          });
-        }
-
-        provider = determineProvider(headings);
-        if (provider === Providers.unknown) {
-          return new Promise(function (resolve, reject) {
-              reject(new Error('unrecognised file provider'));
-          });
-        }
-
-        return rowsToFuelTransactions(provider, headings, data);
-        
-    };
-    
-    return self;
-    
-};
-
-var FuelTransactionParserProvider = function () {
-    var self = this;
-    var regex = new RegExp(' ', 'g');
-    var Providers = {
-        unknown: 0,
-        wex: 2,
-        wexCustomer: 3,
-        fleetcore: 4,
-        geotab: 1000,
-        fuelProvider : 5
-    };
-
-    var isVersionSupportted = (serverVersion) => {
-        var parts = serverVersion.split('.');
-        return parseInt(parts[2], 10) >= 1606;
-    };
-    // value parsers
-    var getStringValue = function (s) {
-        let length = s.length;
-        if (length > 0 && s[0] === '"') {
-            s = s.substring(1, s.length);
-            length--;
-
-            if (length > 0 && s[length - 1] === '"') {
-                s = s.substring(0, s.length - 1);
-            }
-        }
-        return (s === '(null)' ? '' : s.trim());
-    };
-    var getFloatValue = function (float) {
-        var value = parseFloat(float);
-        return isNaN(value) ? 0.0 : value;
-    };
-
-    var getDateValue = function (date) {
-        var fromStringDateUtc;
-        var fromStringDate = new Date(date);
-        var fromOADate = function (oaDateValue) {
-            var oaDate = new Date(Date.UTC(1899, 11, 30));
-            var millisecondsOfaDay = 24 * 60 * 60 * 1000;
-            var result = new Date();
-            result.setTime((oaDateValue * millisecondsOfaDay) + Date.parse(oaDate));
-            return result;
-        };
-
-        // date in iso format
-        if (date.indexOf('T') > -1) {
-            return fromStringDate.toISOString();
-        }
-
-        // date in non oaDate format
-        fromStringDateUtc = new Date(Date.UTC(fromStringDate.getFullYear(), fromStringDate.getMonth(), fromStringDate.getDate(), fromStringDate.getHours(), fromStringDate.getMinutes(), fromStringDate.getMilliseconds()));
-        if (!isNaN(fromStringDateUtc.getTime())) {
-            return fromStringDateUtc.toISOString();
-        }
-
-        return fromOADate(getFloatValue(date)).toISOString();
-    };
-    var milesToKm = function (miles) {
-        return miles / 0.62137;
-    };
-    var gallonsToLitres = function (gallons) {
-        return gallons * 3.785;
-    };
-
-    /**
-     * Provider file parsers, must return a promise resolved with parsed transactions or rejected
-     */
-    var parsers = {
-        providerSelected: function (headings, data) {
-            /**
-            * Parse product type from code for generic files
-            * @param {any} productType - The generic product type
-            * @returns {any} params - The MyGeotab product type
-            */
-            var getProductType = (productType) => {
-                let pt = productType.toLowerCase().replace(' ', '');
-                switch (pt) {
-                    case 'nonfuel':
-                            return 'NonFuel';
-                    case 'regular':
-                        return 'Regular';
-                        case 'midgrade':
-                            return 'Midgrade';
-                    case 'premium':
-                        return 'Premium';
-                    case 'super':
-                        return 'Super';
-                    case 'diesel':
-                        return 'Diesel';
-                    case 'e85':
-                        return 'E85';
-                    case 'cng':
-                        return 'CNG';
-                    case 'lpg':
-                        return 'LPG';
-                    default:
-                        return 'Unknown';
-                }
-            };
-
-            return new Promise(function (resolve) {
-                var transactionList = [];                
-
-                data.forEach(function (dataRow) {
-                    var rawTransaction = {},
-                        fuelTransaction;
-
-                    Object.keys(headings).forEach(function (heading) {
-                        rawTransaction[headings[heading].replace(regex, '')] = dataRow[heading];
-                    });
-                    
-                    if (dataRow.hasOwnProperty('ColumnM')) {
-                        fuelTransaction = new FuelTransaction(
-                            getStringValue(dataRow.ColumnA),
-                            getStringValue(dataRow.ColumnB),
-                            getStringValue(dataRow.ColumnC),
-                            getStringValue(dataRow.ColumnD),
-                            getStringValue(dataRow.ColumnE),
-                            getDateValue(dataRow.ColumnF),
-                            getFloatValue(dataRow.ColumnG),
-                            getFloatValue(dataRow.ColumnJ),
-                            getFloatValue(dataRow.ColumnH),
-                            getStringValue(dataRow.ColumnI),
-                            { x: getFloatValue(dataRow.ColumnK), y: getFloatValue(dataRow.ColumnL) }, // x = lon, y = lat
-                            'Unknown',
-                            getStringValue(dataRow.ColumnM),
-                            JSON.stringify(rawTransaction),
-                            getProductType(getStringValue(dataRow.ColumnN))
-                            
-                            
-                        );                     
-
-                        fuelTransaction.fleet = getStringValue(database);
-                        transactionList.push(fuelTransaction);                     
-                    }
-                });              
-                return resolve(transactionList);
-            });
-        }
-    };
-
-    var getHeadings = function (data) {
-        var headRow = data[0];
-        var isHeadingRow = true;
-        Object.keys(headRow).forEach(function (columName) {
-            if (!isNaN(parseInt(columName, 10))) {
-                isHeadingRow = false;
-            }
-        });
-        if (isHeadingRow) {
-            return data.shift();
-        }
-        return [];
-    };
-    var determineProvider = function (headings) {
-        
-            return Providers.providerSelected;       
-    };
-
-    var rowsToFuelTransactions = function (provider, headings, data) {
-        switch (provider) {
-            case Providers.wex:
-                return parsers.wex(headings, data);
-            case Providers.wexCustomer:
-                return parsers.wexCustomer(headings, data);
-            case Providers.geotab:
-                return parsers.geotab(headings, data);
-            case Providers.fuelProvider:
-                return parsers.geotab(headings, data);
-            default:
-                return null;
-        }
-    };
-
-    self.parse = function (data) {
-        var headings = getHeadings(data); 
-        var provider = getTemplateProviderNameFromSelection();
-
-        if (!headings) {
-          return new Promise(function (resolve, reject) {
-              reject(new Error('missing row headings in file'));
-          });
-        }
-
-        provider = determineProvider(headings);
-        if (provider === Providers.unknown) {
-          return new Promise(function (resolve, reject) {
-              reject(new Error('unrecognised file provider'));
-          });
-        }
-     
-        return rowsToFuelTransactions(provider, headings, data);
-        
-    };
-    
-    return self;
-    
-};
 
 var resultsParser = function (xhr) {
     var jsonResponse,
@@ -1474,10 +649,6 @@ var parsingTransactionWithProvider = function(transactions,provider)
     var arrayOfParsedTransaction = [];
     
     //loop transaction list row by row
-    //onsole.log(transactions);
-    //console.log(provider);
-    //var newTranscationObj = new FuelTransactionProvider(); 
-
     for (var k=0;k<transactions.length;k++)
     {
         arrayOfParsedTransaction.push(loopParseTransactionInTemplate(transactions[k],provider[0].data));   
@@ -1490,20 +661,41 @@ var parsingTransactionWithProvider = function(transactions,provider)
         console.log("Error: ",e );
     }
 
+
     //jsonObjParsed will be the object with the transaction parsed into
     //API template for fuel transaction and will returned into
     //fuelTransactionImport object in uploadCompleteProvider function
     return jsonObjParsed;
 }
-
 var loopParseTransactionInTemplate = function(singleTransaction,provider)
 {
-    var newTranscationObj = new FuelTransactionProvider();    
+    var newTranscationObj = new FuelTransactionProvider();  
+    
+   
     for (var [key, value] of Object.entries(provider))
             {                
                     //console.log(`${key}`);
-                    //console.log(`${value}`);                   
-                    newTranscationObj[`${key}`]= singleTransaction[`${value}`];
+                    //console.log(`${value}`);
+                    //console.log(typeof (`${value}`));
+
+                  
+                    if(Array.isArray(`${value}`))
+                    {                       
+                        for (let i in `${value}`)newTranscationObj[`${key}`][`${value}`].push(`${value}`[i]);                                                    
+                    }
+                    
+                    if(`${value}`=== "null")
+                    {
+                        
+                        newTranscationObj[`${key}`] = null;
+
+                    }
+                    else{
+                        if([`${key}`]=='siteName')console.log([`${value}`]);
+                        newTranscationObj[`${key}`]= singleTransaction[`${value}`];
+                    }
+                    
+                    
             }
             return newTranscationObj;
 
@@ -1630,7 +822,6 @@ var validateIfJsonFIle = function(fileJsonToCheck)
 
 }
 
-
 var showSelectorSection = function()
 {
     
@@ -1657,6 +848,7 @@ var showSelectorSection = function()
                default: 
                clearFiles();
                clearFilesJson();
+               clearTransactions();
                elFileJsonSelectContainer.style.display = 'none';
                elFileSelectContainer.style.display = 'block';
                elFileSelectContainerProvider.style.display = 'none';
@@ -1671,9 +863,39 @@ var showSelectorSection = function()
 
 }
 
+var addNullCloumn = function(transactionsToBeChecked)
+{    
+    for (var i=0; i<transactionsToBeChecked.data.length;i++ )
+    {
+    // get Headers object as master to compare, because header cannot 
+    // be empty
+    var keysHeader = Object.keys(transactionsToBeChecked.data[0]);
+    var keysTempTransaction = Object.keys(transactionsToBeChecked.data[i]);
+   
+    var z=0;
+    var tempVar = z;
+        for (z;z<keysHeader.length;z++)
+        {        
+            //compare the column header with the transaction column
+            //if not match I add column with key equal to Header name
+            // and value=null
+            if(keysHeader[z]!=keysTempTransaction[tempVar])
+            {
+                transactionsToBeChecked.data[i][keysHeader[z]]=null;
+                keysTempTransaction = Object.keys(transactionsToBeChecked.data[i]);
+            }
+            else tempVar++;
+        } 
+    }      
+    return transactionsToBeChecked;
+}
+
+
+
 var uploadFileProvider = function(e)
 {
     e.preventDefault();
+   
 
     toggleAlert(elAlertInfo, 'Parsing... transferring file');
     api.getSession(function (credentials) {
@@ -1757,66 +979,55 @@ var getHeadings = function getHeadings(data) {
 var uploadCompleteProvider = function (e) {
 
     var results;
-    var headingsExtracted;
-    var arrayColumns = new Array();
-    
+    var headingsExtracted;    
     // retrieve the name of the provider selected
     var providerSelected = getTemplateProviderNameFromSelection();
     // retrieve the keys of the provider selected from the full template ojbect
     var extractedProviderTemplate = objProviderTemplate.providers.filter((provider) => provider.Name ===providerSelected);    
     
-    results = resultsParser(e);
+    results = addNullCloumn(resultsParser(e));
     if (results.error) {
         toggleAlert(elAlertError, results.error.message);
         return;
-        }
+        }     
+
+    //remove the heading from transaction
+    headingsExtracted= getHeadings(results.data);
+    var fuelTransctionImport = {};
+    fuelTransctionImport = parsingTransactionWithProvider(results.data,extractedProviderTemplate);
+
+    clearFilesJson();
+    clearFilesProvider();
+
+    //////// new code that need to be tested
+
+    // For each transaction check if fleet field is empty,
+        // if so, is filled with database name
+        var getFleets = function (trans) {
+            var fleets = {};
+            trans.forEach(function (transaction) {
+                fleets[transaction.fleet] = transaction.fleet || database;
+            });
+            return Object.keys(fleets);
+        };
+        // -------------
+
+    if (fuelTransctionImport === null) {
+        toggleAlert(elAlertError, 'Can not determine file provider type, try converting to MyGeotab file type');
+        return;
+    }
+    if (!fuelTransctionImport.length) {
+        toggleAlert(elAlertError, 'No transactions found in file');
+        return;
+    }
+
+    setFleetSelection(getFleets(fuelTransctionImport));
+                toggleImport(true);
+                renderTransactions(fuelTransctionImport);
+                toggleAlert();
 
 
-//remove the heading from transaction
-headingsExtracted= getHeadings(results.data);
-//
-
-//Insert HERE the function that get the right column based on the provider selected
-
-for (let [key, value] of Object.entries(extractedProviderTemplate[0].data)) {
-    //console.log(`${key}: ${value}`);
-    arrayColumns.push(`${value}`);
-  }
-
-  var fuelTransctionImport = {};
-
-  fuelTransctionImport = parsingTransactionWithProvider(results.data,extractedProviderTemplate);
-
-
-  //////// new code that need to be tested
-
- // For each transaction check if fleet field is empty,
-    // if so, is filled with database name
-    var getFleets = function (trans) {
-        var fleets = {};
-        trans.forEach(function (transaction) {
-            fleets[transaction.fleet] = transaction.fleet || database;
-        });
-        return Object.keys(fleets);
-    };
-    // -------------
-
-  if (fuelTransctionImport === null) {
-    toggleAlert(elAlertError, 'Can not determine file provider type, try converting to MyGeotab file type');
-    return;
-}
-if (!fuelTransctionImport.length) {
-    toggleAlert(elAlertError, 'No transactions found in file');
-    return;
-}
-
-setFleetSelection(getFleets(fuelTransctionImport));
-            toggleImport(true);
-            renderTransactions(fuelTransctionImport);
-            toggleAlert();
-
-
-  ////////// end of new code need to be tested
+    ////////// end of new code need to be tested
 
 
 

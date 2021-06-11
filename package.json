@@ -64,5 +64,9 @@
       "GeotabApi": true,
       "rison": true
     }
+  },
+  "dependencies": {
+    "convert-excel-to-json": "^1.7.0",
+    "xlsx": "^0.17.0"
   }
 }
