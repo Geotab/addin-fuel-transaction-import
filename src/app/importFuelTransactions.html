@@ -17,9 +17,7 @@
     <script src="scripts/main.js"></script>
     <!-- endbuild -->
     
-    <script lang="javascript" src="/xlsx.full.min.js"></script>
-  
-    
+        
 
 
 </head>
@@ -189,9 +187,7 @@
               </div>
           </section>
 
-          <input class="geotabButton" type="button" value="test conn" id="buttonConnTest" />
-         
-
+        
 
             <!-- file select JSON-->
             <section class="row" id="jsonfileSelectContainer" style="display: none">
@@ -352,25 +348,39 @@
 </section>
 
           <!-- import -->
-          <div id="transactionContainer" style="display: none">
+          <div   id="transactionContainer" style="display: none">
               <section class="row">
                   <div class="col-sm-12">
+
+                 
                       <div class="btn-toolbar" role="toolbar">
-                          <div class="btn-group" role="group" aria-label="...">
-                              <button class="btn btn-default" id="cancelButton" title="Cancel">Cancel</button>
-                              
-                            </div>
-                          <div class="btn-group" role="group" aria-label="...">
-                              <div class="input-group">
-                                  <div class="input-group-btn">
-                                      <button disabled="disabled" class="btn btn-primary" id="importButton" title="Import fuel card transactions">Import</button>
-                                      </div>
-                                  <label class="sr-only" for="fleet">Fleet</label>
-                                  <select disabled class="form-control" id="fleet" title="When a file has more than one fleet, select the fleet from this list."></select>
-                              </div>
-                          </div>
+                        <table>
+                            <tr>
+                                <td> <div  class="btn-toolbar" role="group" aria-label="...">
+                                    <button class="geotabButton" id="cancelButton" title="Cancel">Cancel</button>
+                                    
+                                  </div></td>
+                                <td><div class="input-group-btn" role="group" aria-label="...">
+                                    <div class="input-group-btn">
+                                        <div class="input-group-btn">
+                                            <button disabled="disabled" class="geotabButton"  id="importButton" title="Import fuel card transactions">Import</button>
+                                            </div>
+                                         </div>
+                                </div></td>
+                            </tr>
+                         
+                          
+                        </table>
+
+                        <label class="sr-only" for="fleet">Fleet</label>
+                        <select disabled class="form-control" id="fleet" title="When a file has more than one fleet, select the fleet from this list."></select>
+                  
+
                       </div>
                       
+
+                    
+
                   </div>
               </section>
                              
@@ -384,6 +394,83 @@
                   </div>
               </section>
           </div>
+
+
+          <!-- import provider transactions -->
+          <div   id="transactionContainerProvider" style="display: none">
+            <section class="row">
+                <div class="col-sm-12">               
+                    <div class="btn-toolbar" role="toolbar">
+                        <section class="row">
+                            <div class="col-sm-12">
+                                <h3>Found fuel transactions!</h3>
+                                <p>Showing first <span id="listCount"></span> fuel transactions. Verify the columns have the correct values then click import.</p>
+                                <div class="table-responsive">
+                                    <table id="transactionList" class="table table-condensed table-striped"></table>
+                                </div>
+                            </div>
+                        </section>
+
+                      <table>
+                          <tr>
+                              <td> <div  class="btn-toolbar" role="group" aria-label="...">
+                                  <button class="geotabButton" id="cancelButtonProvider" title="Cancel">Cancel</button>
+                                  
+                                </div></td>
+                              <td><div class="input-group-btn" role="group" aria-label="...">
+                                  <div class="input-group-btn">
+                                      <div class="input-group-btn">
+                                          <button disabled="disabled" class="geotabButton"  id="importButtonProvider" title="Import fuel card transactions">Import</button>
+                                          </div>
+                                       </div>
+                              </div></td>
+                              
+                          </tr>  
+                      </table>
+
+                      <!-- Table of transactions -  Header are hardcoded-->
+
+                      <table id="tableTransactions" border="1">
+                        <tr>
+                            <th>Card Number</th>
+                            <th>Comments</th>
+                            <th>Cost</th>
+                            <th>Currency Code</th>
+                            <th>Date & Time</th>
+                            <th>Description</th>
+                            <th>Device</th>
+                            <th>Driver</th>
+                            <th>Diver Name</th>
+                            <th>External Reference</th>
+                            <th>id</th>
+                            <th>License Plate</th>
+                            <th>Location (lon,lat)</th>
+                            <th>Odometer (km)</th>
+                            <th>Product Type</th>
+                            <th>Provider</th>
+                            <th>Serial Number</th>
+                            <th>Site Name</th>
+                            <th>Source Data</th>
+                            <th>VIN</th>
+                            <th>Version</th>
+                            <th>Volume Added (litres)</th>
+
+                          </tr>
+                      </table>
+
+
+
+
+
+                    </div>   
+                </div>
+            </section>
+                           
+        
+        </div>
+
+
+
           <div>        
         </div>  
       </div>
