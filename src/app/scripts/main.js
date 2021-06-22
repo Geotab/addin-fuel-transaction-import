@@ -248,13 +248,94 @@ var renderTransactions = function () {
     elFileSelectContainer.style.display = 'none';
 };
 
+var renderTransactionsProvider = function (transactions) {
+
+   
+    var elBody;
+    var visibleCount = 0;
+    var totalRowsCount = 0;
+    //var fleetName = elFleet.options[elFleet.selectedIndex].value;
+    var getColumnHeading = function (column) {
+        var columnHeadings = {
+            'vehicleIdentificationNumber': 'VIN',
+            'description': 'Description',
+            'serialNumber': 'Device Serial Number',
+            'licencePlate': 'Licence Plate',
+            'comments': 'Comment',
+            'dateTime': 'Date (UTC)',
+            'volume': 'Volume Added (litres)',
+            'odometer': 'Odometer (km)',
+            'cost': 'Cost',
+            'currencyCode': 'Currency',
+            'location': 'Location (lon,lat)',
+            'provider': 'File Provider',
+            'driverName': 'Driver Name',
+            'productType': 'Product Type'
+        };
+        return columnHeadings[column] || column;
+    };
+    var createRow = function (row, isHeading) {
+        var elRow = document.createElement('TR');
+        var createColumn = function (columnName) {
+            if (columnName === 'sourceData' || columnName === 'fleet') {
+                return;
+            }
+            var elColumn = document.createElement(isHeading ? 'TH' : 'TD');
+            elColumn.textContent = isHeading ? getColumnHeading(columnName) : JSON.stringify(row[columnName]);
+            if (!isHeading) {
+                elColumn.setAttribute('data-th', columnName);
+            }
+            elRow.appendChild(elColumn);
+        };
+
+        Object.keys(row).forEach(createColumn);
+
+        return elRow;
+    };
+
+    elTransactionContainer.style.display = 'none';
+    elFileSelectContainer.style.display = 'block';
+
+    while (elTransactionList.firstChild) {
+        elTransactionList.removeChild(elTransactionList.firstChild);
+    }
+
+    elBody = document.createElement('TBODY');
+    transactions.forEach(function (transaction, i) {
+        var elHead;
+
+        if (i === 0) {
+            elHead = document.createElement('THEAD');
+            elHead.appendChild(createRow(transaction, true));
+            elTransactionList.appendChild(elHead);
+        }
+        /*
+        if (!fleetName || transaction.fleet === fleetName) {
+            totalRowsCount++;
+            if (visibleCount < ROW_LIMIT) {
+                visibleCount++;
+                elBody.appendChild(createRow(transaction));
+            }
+        }*/
+    });
+    elListCount.textContent = (ROW_LIMIT === visibleCount ? 'top ' : '') + visibleCount + '/' + totalRowsCount;
+    elTransactionList.appendChild(elBody);
+    elTransactionContainer.style.display = 'none';
+    elFileSelectContainer.style.display = 'none';
+};
+
 var clearFiles = function () {
     elFiles.value = null;
     elFileName.value = '';
 };
 var clearFilesJson = function () {
     elFilesJson.value = null;
-    elFileNameJson.value = '';
+    elFileNameJson.value =null;
+    elJsonDropDownMenu.style.display = 'none';
+
+    
+
+    
 
     toggleParseJson();
 };
@@ -263,6 +344,7 @@ var clearFilesJson = function () {
 var clearFilesProvider = function () {
     elFileProvider.value = null;
     elFileNameProvider.value = ''; 
+  
     
     toggleParseProvider();
 };
@@ -379,8 +461,6 @@ var FuelTransactionProvider = function (cardNumber,comments,description,device,d
     return self;
 };
 
-
-
 var resultsParser = function (xhr) {
     var jsonResponse,
         data,
@@ -446,11 +526,6 @@ var uploadComplete = function (e) {
             console.log(err);
             toggleAlert(elAlertError, 'Error parsing file: ' + (err.message || err));
         });
-
-        
-
-
-
 };
 
 // ie9
@@ -535,6 +610,7 @@ var uploadFile = function (e) {
             xhr.addEventListener('load', uploadComplete, false);
             xhr.addEventListener('error', uploadFailed, false);
             xhr.addEventListener('abort', uploadFailed, false);
+           
             if(getUrl()=='http://localhost/apiv1')
             {
                 xhr.open('POST','https://my501.geotab.com/apiv1')
@@ -554,6 +630,7 @@ var uploadFile = function (e) {
 };
 
 
+
 var uploadProgress = function (e) {
     if (e.lengthComputable) {
         var percentComplete = Math.round(e.loaded * 100 / e.tota);
@@ -566,8 +643,9 @@ var uploadProgress = function (e) {
     }
 };
 
-var uploadFailed = function () {
+var uploadFailed = function (e) {
     toggleAlert(elAlertError, 'There was an error attempting to upload the file.');
+    console.log(e);
 };
 
 var importFile = function () {
@@ -661,7 +739,6 @@ var parsingTransactionWithProvider = function(transactions,provider)
         console.log("Error: ",e );
     }
 
-
     //jsonObjParsed will be the object with the transaction parsed into
     //API template for fuel transaction and will returned into
     //fuelTransactionImport object in uploadCompleteProvider function
@@ -669,36 +746,25 @@ var parsingTransactionWithProvider = function(transactions,provider)
 }
 var loopParseTransactionInTemplate = function(singleTransaction,provider)
 {
-    var newTranscationObj = new FuelTransactionProvider();  
-    
-   
-    for (var [key, value] of Object.entries(provider))
-            {                
-                    //console.log(`${key}`);
-                    //console.log(`${value}`);
-                    //console.log(typeof (`${value}`));
-
-                  
-                    if(Array.isArray(`${value}`))
-                    {                       
-                        for (let i in `${value}`)newTranscationObj[`${key}`][`${value}`].push(`${value}`[i]);                                                    
-                    }
-                    
-                    if(`${value}`=== "null")
-                    {
-                        
-                        newTranscationObj[`${key}`] = null;
-
-                    }
-                    else{
-                        if([`${key}`]=='siteName')console.log([`${value}`]);
-                        newTranscationObj[`${key}`]= singleTransaction[`${value}`];
-                    }
-                    
-                    
+    var newTranscationObj = new FuelTransactionProvider();
+    for (var prop in provider) {
+         
+        if(provider[prop]!=null && typeof(provider[prop])=="object")
+        {
+           var temp;
+            for(var inner in provider[prop])
+            {
+                newTranscationObj[prop] += singleTransaction[provider[prop][inner]]+" ";   
             }
-            return newTranscationObj;
-
+            newTranscationObj[prop]=newTranscationObj[prop].slice(0,-1);
+        }
+        else
+        {
+            if(provider[prop]==null)newTranscationObj[prop] = null;
+            else newTranscationObj[prop]= singleTransaction[provider[prop]];           
+        }  
+      }
+    return newTranscationObj;
 }
 
 
@@ -710,7 +776,6 @@ var toggleJsonDropDownMenu = function()
     if(itemIndexSelected != "0")
     {
         //container that show the File selection
-    //elFileSelectContainer.style.display = 'block';
     clearFilesProvider();
     elFileSelectContainerProvider.style.display = 'block';
 
@@ -724,7 +789,6 @@ var toggleJsonDropDownMenu = function()
 
 
 };
-
 
 // Function fired when user click Import,
 // function is parsing the json file with providers
@@ -921,6 +985,7 @@ var uploadFileProvider = function(e)
             xhr.addEventListener('load', uploadCompleteProvider, false);
             xhr.addEventListener('error', uploadFailed, false);
             xhr.addEventListener('abort', uploadFailed, false);
+            
             if(getUrl()=='http://localhost/apiv1')
             {
                 xhr.open('POST','https://my501.geotab.com/apiv1')
@@ -929,22 +994,44 @@ var uploadFileProvider = function(e)
             {
                 xhr.open('POST', getUrl());
             }
-            
-         
+                    
 
             xhr.send(fd);
+        
+            xhr.onreadystatechange=function(){
+                if (xhr.readyState==4 && xhr.status==200)
+                {
+                           
+                   var data = JSON.parse(xhr.responseText);
+                   
+                   if(data['result'].length>0)
+                   {
+                   }
+                   else
+                   {
+                            var uploadResult = data['error']['message'];
+                            console.log('uploadResult=',uploadResult);
+                            if(uploadResult =="Incorrect login credentials")
+                            {
+                                window.alert("Incorrect Login Credentials");
+                                xhr.abort();
+                                toggleAlert(elAlertError, 'There was an error attempting to upload the file.');
+                            }
+                    }                   
+                }
+             }
+
+
+
         } else {
             iframeUpload(elForm, getUrl(), parameters);
         }
         database = credentials.database;
         toggleParse(false);
     });
-
-
-
-
-
 }
+
+
 
 //function return the provider selected 
 var getTemplateProviderNameFromSelection = function()
@@ -978,6 +1065,8 @@ var getHeadings = function getHeadings(data) {
 
 var uploadCompleteProvider = function (e) {
 
+   
+   
     var results;
     var headingsExtracted;    
     // retrieve the name of the provider selected
@@ -985,6 +1074,8 @@ var uploadCompleteProvider = function (e) {
     // retrieve the keys of the provider selected from the full template ojbect
     var extractedProviderTemplate = objProviderTemplate.providers.filter((provider) => provider.Name ===providerSelected);    
     
+   
+
     results = addNullCloumn(resultsParser(e));
     if (results.error) {
         toggleAlert(elAlertError, results.error.message);
@@ -998,18 +1089,20 @@ var uploadCompleteProvider = function (e) {
 
     clearFilesJson();
     clearFilesProvider();
-
+ 
+   
     //////// new code that need to be tested
 
     // For each transaction check if fleet field is empty,
         // if so, is filled with database name
-        var getFleets = function (trans) {
+        /*var getFleets = function (trans) {
             var fleets = {};
             trans.forEach(function (transaction) {
                 fleets[transaction.fleet] = transaction.fleet || database;
             });
             return Object.keys(fleets);
         };
+        */
         // -------------
 
     if (fuelTransctionImport === null) {
@@ -1021,9 +1114,9 @@ var uploadCompleteProvider = function (e) {
         return;
     }
 
-    setFleetSelection(getFleets(fuelTransctionImport));
+    //setFleetSelection(getFleets(fuelTransctionImport));
                 toggleImport(true);
-                renderTransactions(fuelTransctionImport);
+                renderTransactionsProvider(fuelTransctionImport);
                 toggleAlert();
 
 
