@@ -21,6 +21,7 @@ geotab.addin.addinFuelTransactionImport20 = function () {
   var elExampleButton;
   var elFileName;
   var elTransactionList;
+  var elTransactionListProvider;
   var elTransactionContainer;
   var elTransactionContainerProvider;
   var elFileSelectContainer;
@@ -30,6 +31,7 @@ geotab.addin.addinFuelTransactionImport20 = function () {
   var elSample;
   var elForm;
   var elListCount;
+  var elListCountProvider;
   
   var elFileJsonSelectContainer;
   var elFilesJson;
@@ -100,6 +102,14 @@ var toggleImport = function (toggle) {
         toggleFleet(false);
         clearFleets();
     }
+};
+
+var toggleImportProvider = function (toggle) {
+    if (toggle) {
+        elImportButtonProvider.removeAttribute('disabled');
+    } else {
+        elImportButtonProvider.setAttribute('disabled', 'disabled');
+      }
 };
 
 var toggleFleet = function (toggle) {
@@ -174,6 +184,8 @@ var clearTransactionsListProvider = function () {
     elTransactionContainerProvider.style.display = 'none';
   
     elFileSelectContainerProvider.style.display = 'none';
+    elFileJsonSelectContainer.style.display = 'block';
+    
    
 };
 
@@ -266,46 +278,29 @@ var renderTransactions = function () {
 
 var renderTransactionsProvider = function (transactions) {
 
-   
     var elBody;
     var visibleCount = 0;
     var totalRowsCount = 0;
-    //var fleetName = elFleet.options[elFleet.selectedIndex].value;
-
-
-    //my code...
-    var table = elTableTransactions;
-    var rowCount = table.rows.length;
-    var colCount = table.rows[0].cells.length
-    var transactionLenght = transactions.length;
     
-
-   for (var k=0;k<transactionLenght;k++)
-   {
-    var row = table.insertRow(rowCount);
-    
-    for(var i=0;i<colCount;i++)
-    {
-        var newcell	= row.insertCell(i);
-         //newcell.innerHTML = transactions[k][key];
-
-    }     
-    /*
-var x = document.getElementById("myTable").rows[0].cells;
-x[0].innerHTML = "NEW CONTENT";
-    */
-   
-    }
-
-
-
-    elTransactionContainerProvider.style.display = 'block';
-    elFileSelectContainer.style.display = 'none';
-
-
-    //end of my code
-
-  /*
+    var getColumnHeading = function (column) {
+        var columnHeadings = {
+            'vehicleIdentificationNumber': 'VIN',
+            'description': 'Description',
+            'serialNumber': 'Device Serial Number',
+            'licencePlate': 'Licence Plate',
+            'comments': 'Comment',
+            'dateTime': 'Date (UTC)',
+            'volume': 'Volume Added (litres)',
+            'odometer': 'Odometer (km)',
+            'cost': 'Cost',
+            'currencyCode': 'Currency',
+            'location': 'Location (lon,lat)',
+            'provider': 'File Provider',
+            'driverName': 'Driver Name',
+            'productType': 'Product Type'
+        };
+        return columnHeadings[column] || column;
+    };
     var createRow = function (row, isHeading) {
         var elRow = document.createElement('TR');
         var createColumn = function (columnName) {
@@ -326,10 +321,10 @@ x[0].innerHTML = "NEW CONTENT";
     };
 
     elTransactionContainerProvider.style.display = 'none';
-    elFileSelectContainer.style.display = 'block';
+    elFileSelectContainerProvider.style.display = 'block';
 
-    while (elTransactionList.firstChild) {
-        elTransactionList.removeChild(elTransactionList.firstChild);
+    while (elTransactionListProvider.firstChild) {
+        elTransactionListProvider.removeChild(elTransactionListProvider.firstChild);
     }
 
     elBody = document.createElement('TBODY');
@@ -339,38 +334,26 @@ x[0].innerHTML = "NEW CONTENT";
         if (i === 0) {
             elHead = document.createElement('THEAD');
             elHead.appendChild(createRow(transaction, true));
-            elTransactionList.appendChild(elHead);
+            elTransactionListProvider.appendChild(elHead);
         }
-       
+        
+            totalRowsCount++;
+            if (visibleCount < ROW_LIMIT) {
+                visibleCount++;
+                elBody.appendChild(createRow(transaction));
+            }
+        
     });
-    elListCount.textContent = (ROW_LIMIT === visibleCount ? 'top ' : '') + visibleCount + '/' + totalRowsCount;
-    elTransactionList.appendChild(elBody);
+    elListCountProvider.textContent = (ROW_LIMIT === visibleCount ? 'top ' : '') + visibleCount + '/' + totalRowsCount;
+    elTransactionListProvider.appendChild(elBody);
     elTransactionContainerProvider.style.display = 'block';
-    elFileSelectContainer.style.display = 'none';
+    elFileSelectContainerProvider.style.display = 'none';
+    elFileJsonSelectContainer.style.display = 'none';
 
-    */
+
+
 };
 
-function deleteRow(tableID) {
-    try {
-    var table = elTableTransactions;
-    var rowCount = table.rows.length;
-
-    for(var i=0; i<rowCount; i++) {
-        var row = table.rows[i];
-        var chkbox = row.cells[0].childNodes[0];
-        if(null != chkbox && true == chkbox.checked) {
-            table.deleteRow(i);
-            rowCount--;
-            i--;
-        }
-
-
-    }
-    }catch(e) {
-        alert(e);
-    }
-}
 
 var clearFiles = function () {
     elFiles.value = null;
@@ -383,15 +366,11 @@ var clearFilesJson = function () {
     toggleParseJson();
 };
 
-
 var clearFilesProvider = function () {
     elFileProvider.value = null;
     elFileNameProvider.value = '';    
     toggleParseProvider();
 };
-
-
-
 var getUrl = function () {
     return window.location.protocol + '//' + window.location.hostname + '/apiv1';
 };
@@ -1369,6 +1348,64 @@ var importFile = function () {
     });
 };
 
+var importFileProvider = function () {
+    //var fleetName = elFleet.options[elFleet.selectedIndex].value;
+    var callSets = [];
+    var callSet = [];
+    var caller;
+    var callLimit = 100;
+    var i;
+    var totalAdded = 0;
+    var total = 0;
+    var message = 'Importing fuel transactions...';
+    var updateTotal = function (results) {
+        totalAdded += typeof results === 'string' ? 1 : results.length;
+    };
+    var doCalls = function (calls) {
+        return new Promise(function (resolve, reject) {
+            api.multiCall(calls, resolve, reject);
+        });
+    };
+    var popNextCall = function () {
+        var calls = callSets.pop();
+        return function (results) {
+            updateTotal(results);
+            toggleAlert(elAlertInfo, message + ' ' + totalAdded + '/' + total);
+            return doCalls(calls);
+        };
+    };
+    toggleImport(false);
+    toggleBrowse(false);
+    toggleAlert(elAlertInfo, message);
+    transactions.forEach(function (transaction, j) {
+        if (!fleetName || transaction.fleet === fleetName) {
+            callSet.push(['Add', { typeName: 'FuelTransaction', entity: transaction }]);
+            total++;
+        }
+        if (callSet.length === callLimit || j === transactions.length - 1) {
+            callSets.push(callSet);
+            callSet = [];
+        }
+    });
+
+    caller = doCalls(callSets.pop());
+
+    for (i = 0; i < callSets.length; i++) {
+        caller = caller.then(popNextCall());
+        i--;
+    }
+
+    caller.then(function (results) {
+        updateTotal(results);
+        clearTransactions();
+        toggleAlert(elAlertSuccess, totalAdded);
+        toggleBrowse(true);
+    }).catch(function (e) {
+        toggleBrowse(true);
+        toggleAlert(elAlertError, e.toString());
+    });
+};
+
 // Generic format button
 var toggleExample = function (e) {
     var checked = e.target.checked;
@@ -1731,8 +1768,6 @@ var getHeadings = function getHeadings(data) {
 
 var uploadCompleteProvider = function (e) {
 
-   
-   
     var results;
     var headingsExtracted;    
     // retrieve the name of the provider selected
@@ -1740,8 +1775,6 @@ var uploadCompleteProvider = function (e) {
     // retrieve the keys of the provider selected from the full template ojbect
     var extractedProviderTemplate = objProviderTemplate.providers.filter((provider) => provider.Name ===providerSelected);    
     
-   
-
     results = addNullCloumn(resultsParser(e));
     if (results.error) {
         toggleAlert(elAlertError, results.error.message);
@@ -1756,20 +1789,6 @@ var uploadCompleteProvider = function (e) {
     clearFilesJson();
     clearFilesProvider();
  
-   
-    //////// new code that need to be tested
-
-    // For each transaction check if fleet field is empty,
-        // if so, is filled with database name
-        /*var getFleets = function (trans) {
-            var fleets = {};
-            trans.forEach(function (transaction) {
-                fleets[transaction.fleet] = transaction.fleet || database;
-            });
-            return Object.keys(fleets);
-        };
-        */
-        // -------------
 
     if (fuelTransctionImport === null) {
         toggleAlert(elAlertError, 'Can not determine file provider type, try converting to MyGeotab file type');
@@ -1780,23 +1799,13 @@ var uploadCompleteProvider = function (e) {
         return;
     }
 
-    //setFleetSelection(getFleets(fuelTransctionImport));
-                toggleImport(true);
+    
+                toggleImportProvider(true);
                 renderTransactionsProvider(fuelTransctionImport);
                 toggleAlert();
 
-
-    ////////// end of new code need to be tested
-
-
-
-
-
-
 };
-    // the root container
-    //var elAddin = document.getElementById('addinFuelTransactionImport20');
-  
+    
   return {
     /**
      * initialize() is called only once when the Add-In is first loaded. Use this function to initialize the
@@ -1816,13 +1825,14 @@ var uploadCompleteProvider = function (e) {
       elFiles = document.getElementById('files');
       elParseButton = document.getElementById('parseButton');
       elImportButton = document.getElementById('importButton');
-      elImportButtonProvider = document.getElementById('importButtonprovider');
+      elImportButtonProvider = document.getElementById('importButtonProvider');
       elCancelButton = document.getElementById('cancelButton');
       elCancelButtonProvider = document.getElementById('cancelButtonProvider');
       elFleet = document.getElementById('fleet');
       elExampleButton = document.getElementById('exampleButton');
       elFileName = document.getElementById('fileName');
       elTransactionList = document.getElementById('transactionList');
+      elTransactionListProvider = document.getElementById('transactionListProvider');
       elTransactionContainer = document.getElementById('transactionContainer');
       elTransactionContainerProvider = document.getElementById('transactionContainerProvider');
       elFileSelectContainer = document.getElementById('fileSelectContainer');
@@ -1832,6 +1842,7 @@ var uploadCompleteProvider = function (e) {
       elSample = document.getElementById('sample');
       elForm = document.getElementById('form');
       elListCount = document.getElementById('listCount');
+      elListCountProvider = document.getElementById('listCountProvider');
 
       elFilesJson = document.getElementById('filesJson');
         
@@ -1888,6 +1899,7 @@ var uploadCompleteProvider = function (e) {
             elFiles.addEventListener('change', fileSelected, false);
             elParseButton.addEventListener('click', uploadFile, false);
             elImportButton.addEventListener('click', importFile, false);
+            elImportButtonProvider.addEventListener('click', importFileProvider, false);
             elFleet.addEventListener('change', renderTransactions, false);
             elExampleButton.addEventListener('change', toggleExample, false);
             elCancelButton.addEventListener('click', clearTransactions, false);
@@ -1926,6 +1938,7 @@ var uploadCompleteProvider = function (e) {
       elParseButton.removeEventListener('click', uploadFile, false);
   
       elImportButton.removeEventListener('click', importFile, false);
+      elImportButtonProvider.removeEventListener('click', importFileProvider, false);
       elFleet.removeEventListener('change', renderTransactions, false);
       elExampleButton.removeEventListener('change', toggleExample, false);
       elCancelButton.removeEventListener('click', clearTransactions, false);

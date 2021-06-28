@@ -401,62 +401,35 @@
             <section class="row">
                 <div class="col-sm-12">               
                     <div class="btn-toolbar" role="toolbar">
+                        <table>
+                            <tr>
+                                <td> <div  class="btn-toolbar" role="group" aria-label="...">
+                                    <button class="geotabButton" id="cancelButtonProvider" title="Cancel">Cancel</button>
+                                    
+                                  </div></td>
+                                <td><div class="input-group-btn" role="group" aria-label="...">
+                                    <div class="input-group-btn">
+                                        <div class="input-group-btn">
+                                            <button disabled="disabled" class="geotabButton"  id="importButtonProvider" title="Import fuel card transactions">Import</button>
+                                            </div>
+                                         </div>
+                                </div></td>
+                                
+                            </tr>  
+                        </table>
                         <section class="row">
                             <div class="col-sm-12">
                                 <h3>Found fuel transactions!</h3>
-                                <p>Showing first <span id="listCount"></span> fuel transactions. Verify the columns have the correct values then click import.</p>
+                                <p>Showing first <span id="listCountProvider"></span> fuel transactions. Verify the columns have the correct values then click import.</p>
                                 <div class="table-responsive">
-                                    <table id="transactionList" class="table table-condensed table-striped"></table>
+                                    <table id="transactionListProvider" class="table table-condensed table-striped"></table>
                                 </div>
                             </div>
                         </section>
 
-                      <table>
-                          <tr>
-                              <td> <div  class="btn-toolbar" role="group" aria-label="...">
-                                  <button class="geotabButton" id="cancelButtonProvider" title="Cancel">Cancel</button>
-                                  
-                                </div></td>
-                              <td><div class="input-group-btn" role="group" aria-label="...">
-                                  <div class="input-group-btn">
-                                      <div class="input-group-btn">
-                                          <button disabled="disabled" class="geotabButton"  id="importButtonProvider" title="Import fuel card transactions">Import</button>
-                                          </div>
-                                       </div>
-                              </div></td>
-                              
-                          </tr>  
-                      </table>
+                     
 
-                      <!-- Table of transactions -  Header are hardcoded-->
-
-                      <table id="tableTransactions" border="1">
-                        <tr>
-                            <th>Card Number</th>
-                            <th>Comments</th>
-                            <th>Cost</th>
-                            <th>Currency Code</th>
-                            <th>Date & Time</th>
-                            <th>Description</th>
-                            <th>Device</th>
-                            <th>Driver</th>
-                            <th>Diver Name</th>
-                            <th>External Reference</th>
-                            <th>id</th>
-                            <th>License Plate</th>
-                            <th>Location (lon,lat)</th>
-                            <th>Odometer (km)</th>
-                            <th>Product Type</th>
-                            <th>Provider</th>
-                            <th>Serial Number</th>
-                            <th>Site Name</th>
-                            <th>Source Data</th>
-                            <th>VIN</th>
-                            <th>Version</th>
-                            <th>Volume Added (litres)</th>
-
-                          </tr>
-                      </table>
+                      
 
 
 
@@ -465,6 +438,10 @@
                     </div>   
                 </div>
             </section>
+
+            <table id="tableTransactions" border="1">
+                        
+            </table>
                            
         
         </div>
