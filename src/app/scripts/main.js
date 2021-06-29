@@ -1302,6 +1302,7 @@ var importFile = function () {
     var message = 'Importing fuel transactions...';
     var updateTotal = function (results) {
         totalAdded += typeof results === 'string' ? 1 : results.length;
+        
     };
     var doCalls = function (calls) {
         return new Promise(function (resolve, reject) {
@@ -1374,14 +1375,14 @@ var importFileProvider = function () {
             return doCalls(calls);
         };
     };
-    toggleImport(false);
-    toggleBrowse(false);
+    toggleImportProvider(false);
+    //toggleBrowse(false);
     toggleAlert(elAlertInfo, message);
     transactions.forEach(function (transaction, j) {
-        if (!fleetName || transaction.fleet === fleetName) {
+        
             callSet.push(['Add', { typeName: 'FuelTransaction', entity: transaction }]);
             total++;
-        }
+       
         if (callSet.length === callLimit || j === transactions.length - 1) {
             callSets.push(callSet);
             callSet = [];
@@ -1397,11 +1398,14 @@ var importFileProvider = function () {
 
     caller.then(function (results) {
         updateTotal(results);
-        clearTransactions();
+        console.log(results);
+        var temp = JSON.stringify(results);
+        console.log(temp);
+        clearTransactionsProvider();
         toggleAlert(elAlertSuccess, totalAdded);
-        toggleBrowse(true);
+        //toggleBrowse(true);
     }).catch(function (e) {
-        toggleBrowse(true);
+        //toggleBrowse(true);
         toggleAlert(elAlertError, e.toString());
     });
 };
@@ -1449,9 +1453,10 @@ var loopParseTransactionInTemplate = function(singleTransaction,provider)
     var newTranscationObj = new FuelTransactionProvider();
     for (var prop in provider) {
          
+        //Check if is not null and is an object in order to loop inside and concat what is inside
+        // for instance the address that may take more columns
         if(provider[prop]!=null && typeof(provider[prop])=="object")
-        {
-           var temp;
+        {           
             for(var inner in provider[prop])
             {
                 newTranscationObj[prop] += singleTransaction[provider[prop][inner]]+" ";   
@@ -1460,12 +1465,55 @@ var loopParseTransactionInTemplate = function(singleTransaction,provider)
         }
         else
         {
+            // if the value is null add null as value
             if(provider[prop]==null)newTranscationObj[prop] = null;
-            else newTranscationObj[prop]= singleTransaction[provider[prop]];           
+            else 
+            {
+                switch(prop) {
+                    case "dateTime":
+                        console.log(getDateValue(singleTransaction[provider[prop]]));
+                        newTranscationObj[prop] = getDateValue(singleTransaction[provider[prop]]);
+                      break;
+                    
+                    default:
+                      newTranscationObj[prop]= singleTransaction[provider[prop]];  
+                  }
+                
+            }
+                     
         }  
       }
     return newTranscationObj;
 }
+
+var getDateValue = function (date) {
+    var fromStringDateUtc;
+    var fromStringDate = new Date(date);
+    var fromOADate = function (oaDateValue) {
+        var oaDate = new Date(Date.UTC(1899, 11, 30));
+        var millisecondsOfaDay = 24 * 60 * 60 * 1000;
+        var result = new Date();
+        result.setTime((oaDateValue * millisecondsOfaDay) + Date.parse(oaDate));
+        return result;
+    };
+
+    // date in iso format
+    if (date.indexOf('T') > -1) {
+        return fromStringDate.toISOString();
+    }
+
+    // date in non oaDate format
+    fromStringDateUtc = new Date(Date.UTC(fromStringDate.getFullYear(), fromStringDate.getMonth(), fromStringDate.getDate(), fromStringDate.getHours(), fromStringDate.getMinutes(), fromStringDate.getMilliseconds()));
+    if (!isNaN(fromStringDateUtc.getTime())) {
+        return fromStringDateUtc.toISOString();
+    }
+
+    return fromOADate(getFloatValue(date)).toISOString();
+};
+var getFloatValue = function (float) {
+    var value = parseFloat(float);
+    return isNaN(value) ? 0.0 : value;
+};
 
 
 var toggleJsonDropDownMenu = function()
@@ -1788,6 +1836,8 @@ var uploadCompleteProvider = function (e) {
 
     clearFilesJson();
     clearFilesProvider();
+
+    transactions = fuelTransctionImport;
  
 
     if (fuelTransctionImport === null) {
@@ -1796,13 +1846,14 @@ var uploadCompleteProvider = function (e) {
     }
     if (!fuelTransctionImport.length) {
         toggleAlert(elAlertError, 'No transactions found in file');
+        clearTransactionsProvider();
         return;
     }
 
     
-                toggleImportProvider(true);
-                renderTransactionsProvider(fuelTransctionImport);
-                toggleAlert();
+    toggleImportProvider(true);
+    renderTransactionsProvider(fuelTransctionImport);
+    toggleAlert();
 
 };
     

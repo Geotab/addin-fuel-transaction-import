@@ -1,0 +1,65 @@
+"{"method":"ExecuteMultiCall",
+"params":
+    {"calls":
+        [
+            {
+                "method":"Add",
+                "params":
+                    {
+                        "typeName":"FuelTransaction",
+                        "entity":
+                            {
+                                "vehicleIdentificationNumber":"SJNFAAJ11U1353464",
+                                "description":".",
+                                "serialNumber":"G92F2116889A",
+                                "licencePlate":"FA942HE",
+                                "comments":"Nissan",
+                                "dateTime":"2020-12-01T10:27:08.277Z",
+                                "volume":19.07,
+                                "odometer":0,
+                                "cost":1.5,
+                                "currencyCode":"EUR",
+                                "location":{"x":8.76116,"y":45.26456},
+                                "provider":"Unknown",
+                                "driverName":"Fabio Polini",
+                                "sourceData":"{\"VIN\":\"SJNFAAJ11U1353464\",\"Description\":\".\",\"SerialNumber\":\"G92F2116889A\",\"LicencePlate\":\"FA942HE\",\"Comments\":\"Nissan\",\"DateTime\":\"2020-12-01T10:27:08.277Z\",\"Volume\":\"19.07\",\"Cost\":\"1.5\",\"CurrencyCode\":\"EUR\",\"Longitude\":\"8.76116\",\"Latitude\":\"45.26456\",\"DriverName\":\"Fabio Polini\",\"ProductType\":\"Petrol\",\"[userdefined]...\":\"fabiopolini@geotab.com\"}",
+                                "productType":"Unknown",
+                                "fleet":"geotab_roma"
+                                }
+                    }
+            },
+            {
+                "method":"Add",
+                "params":
+                    {
+                        "typeName":"FuelTransaction",
+                        "entity":
+                            {
+                                "vehicleIdentificationNumber":"SJNFAAJ11U1353464",
+                                "description":".",
+                                "serialNumber":"G92F2116889A",
+                                "licencePlate":"FA942HE",
+                                "comments":"Nissan",
+                                "dateTime":"2020-12-21T16:45:08.277Z",
+                                "volume":25.4,
+                                "odometer":0,
+                                "cost":1.5,
+                                "currencyCode":"EUR",
+                                "location":{"x":8.76117,"y":45.26456},
+                                "provider":"Unknown",
+                                "driverName":"Fabio Polini",
+                                "sourceData":"{\"VIN\":\"SJNFAAJ11U1353464\",\"Description\":\".\",\"SerialNumber\":\"G92F2116889A\",\"LicencePlate\":\"FA942HE\",\"Comments\":\"Nissan\",\"DateTime\":\"2020-12-21T16:45:08.277Z\",\"Volume\":\"25.4\",\"Cost\":\"1.5\",\"CurrencyCode\":\"EUR\",\"Longitude\":\"8.76117\",\"Latitude\":\"45.26456\",\"DriverName\":\"Fabio Polini\",\"ProductType\":\"Petrol\",\"[userdefined]...\":\"fabiopolini@geotab.com\"}",
+                                "productType":"Unknown","fleet":"geotab_roma"
+                            }
+                    }
+            }
+        ],
+        "credentials":
+            {
+                "database":"geotab_roma",
+                "sessionId":"4be6SgnvMz2WGp1805nrNQ",
+                "userName":"fabiopolini@geotab.com"
+            }
+    }
+    
+}"
