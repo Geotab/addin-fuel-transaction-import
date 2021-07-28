@@ -55,8 +55,9 @@ geotab.addin.addinFuelTransactionImport20 = function () {
 
   var fileJsonToParse;
   var objProviderTemplate;
+  var locationCoordinatesProvider;
   
-  
+  const moment= require('moment');
   
   // functions
 
@@ -1350,7 +1351,7 @@ var importFile = function () {
 };
 
 var importFileProvider = function () {
-    //var fleetName = elFleet.options[elFleet.selectedIndex].value;
+    
     var callSets = [];
     var callSet = [];
     var caller;
@@ -1437,7 +1438,7 @@ var parsingTransactionWithProvider = function(transactions,provider)
     }   
     try {
         var jsonObjParsed= JSON.parse(JSON.stringify(arrayOfParsedTransaction));
-        console.log(jsonObjParsed);
+        //console.log(jsonObjParsed);
         
     } catch(e) {        
         console.log("Error: ",e );
@@ -1451,70 +1452,163 @@ var parsingTransactionWithProvider = function(transactions,provider)
 var loopParseTransactionInTemplate = function(singleTransaction,provider)
 {
     var newTranscationObj = new FuelTransactionProvider();
-    for (var prop in provider) {
-         
-        //Check if is not null and is an object in order to loop inside and concat what is inside
-        // for instance the address that may take more columns
-        if(provider[prop]!=null && typeof(provider[prop])=="object")
-        {           
-            for(var inner in provider[prop])
-            {
-                newTranscationObj[prop] += singleTransaction[provider[prop][inner]]+" ";   
-            }
-            newTranscationObj[prop]=newTranscationObj[prop].slice(0,-1);
-        }
-        else
-        {
-            // if the value is null add null as value
-            if(provider[prop]==null)newTranscationObj[prop] = null;
-            else 
-            {
-                switch(prop) {
-                    case "dateTime":
-                        console.log(getDateValue(singleTransaction[provider[prop]]));
-                        newTranscationObj[prop] = getDateValue(singleTransaction[provider[prop]]);
-                      break;
+//NEW
+
+    for (var prop in provider) 
+    {
+        switch(prop)
+        {          
+            case "device":
+                console.log("device");
+                //get device from serialNumber if present
+            break;
+            case "driver":
+                console.log("driver");
+                // do nothing, try to get driver from driverName
+            break;
+            case "driverName":
+                console.log("driverName");
+                //try to get name and copy into driver
+            break;
+            case "licencePlate":
+                console.log("licencePlate");
+                // need to remove spaces 
+            break;
+            case "serialNumber":
+                console.log("serialNumber");
+                // try to get serial from licence plate 
+            break;
+             
+            
+            case "siteName":
+                if(provider[prop]!=null && typeof(provider[prop])=="object")
+                 {
+                    for(var inner in provider[prop])
+                    {
+                        newTranscationObj[prop] += singleTransaction[provider[prop][inner]]+" ";   
+                    }
+                    newTranscationObj[prop]=newTranscationObj[prop].slice(0,-1);
                     
-                    default:
-                      newTranscationObj[prop]= singleTransaction[provider[prop]];  
-                  }
-                
-            }
+                    //call the function to get the coordinates
+                    getCoordFromAddressProvider(newTranscationObj[prop]);
+                    console.log("3");  
+                    console.log(locationCoordinatesProvider);
+                    //put locationCoordinatesProvider into location
+                   
+                 }
+                 else 
+                 {
+                     if(provider[prop]==null)newTranscationObj[prop] = null;
+                     else newTranscationObj[prop]= singleTransaction[provider[prop]]; 
                      
-        }  
-      }
+                 }
+                 
+                break;
+
+            case "sourceData":
+                break;
+            case "dateTime":
+                    var dateFormattedNoSlash = singleTransaction[provider[prop]].replace(/\//g,"-");
+                    if(getDateValue(dateFormattedNoSlash)!==undefined)
+                    {   
+                        newTranscationObj[prop] = getDateValue(dateFormattedNoSlash);                      
+                    }
+                    else
+                    {                            
+                        window.alert("Error parsing the date, Allowed Format:"+"\n"+"YYYY-MM-DD"+"\n"+"YYYY-MM-DDTHH:MM:SS"+"\n"+"YYYY-MM-DDTHH:MM:SSZ"+"\n"+"YYYYMMDD"+"\n"+"MM-DD-YYYY");
+                        clearFiles();
+                        clearFilesJson();
+                        clearTransactions();
+                        clearTransactionsProvider();
+                        toggleAlert();
+                        elTransactionContainerProvider.style.display = 'none';                            
+                        elFileJsonSelectContainer.style.display = 'block';
+                        elFileSelectContainer.style.display = 'none';
+                        elFileSelectContainerProvider.style.display = 'none';
+                        elJsonDropDownMenu.style.display = "none";
+                        throw new Error('Execution aborted, wrong date format');                            
+                    }
+                break;
+            case "location":
+                break;
+            case "version":
+                break;
+            case "id":
+                break;
+            
+            //fields that fall into default
+            // cardNumber,comments,description,externalReference,provider
+            // vehicleIdentificationNumber,cost,currencyCode,odometer,productType
+            // volume
+            default:
+                if(provider[prop]==null)newTranscationObj[prop] = null;
+                else newTranscationObj[prop]= singleTransaction[provider[prop]];  
+
+        }
+    }
+    //NEW END
+
     return newTranscationObj;
 }
 
+
+
 var getDateValue = function (date) {
-    var fromStringDateUtc;
-    var fromStringDate = new Date(date);
-    var fromOADate = function (oaDateValue) {
-        var oaDate = new Date(Date.UTC(1899, 11, 30));
-        var millisecondsOfaDay = 24 * 60 * 60 * 1000;
-        var result = new Date();
-        result.setTime((oaDateValue * millisecondsOfaDay) + Date.parse(oaDate));
-        return result;
-    };
 
-    // date in iso format
-    if (date.indexOf('T') > -1) {
-        return fromStringDate.toISOString();
-    }
+    var dateFormatted;
+    
+    var dateFormats = {
+        "iso_int" : "YYYY-MM-DD",
+        "iso_date_time": "YYYY-MM-DDTHH:MM:SS",
+        "iso_date_time_utc": "YYYY-MM-DDTHH:MM:SSZ",
+        "iso_test":"YYYYMMDD",
+        "iso_2":"MM-DD-YYYY"
+         //define other well known formats if you want
+      }
+      
 
-    // date in non oaDate format
-    fromStringDateUtc = new Date(Date.UTC(fromStringDate.getFullYear(), fromStringDate.getMonth(), fromStringDate.getDate(), fromStringDate.getHours(), fromStringDate.getMinutes(), fromStringDate.getMilliseconds()));
-    if (!isNaN(fromStringDateUtc.getTime())) {
-        return fromStringDateUtc.toISOString();
-    }
+      
+      function getFormat(d){
+        for (var prop in dateFormats) {
+              if(moment(d, dateFormats[prop],true).isValid()){
+                 return dateFormats[prop];
+              }
+        }
+        return null;
+      }
+      
+      var dateInput = date;
+      
+      var formatFound = getFormat(dateInput); 
+      if(formatFound !==null){
+         
+         dateFormatted= moment.utc(moment(dateInput)).format();
+         
+      }
+      return dateFormatted;
 
-    return fromOADate(getFloatValue(date)).toISOString();
+
+    
 };
 var getFloatValue = function (float) {
     var value = parseFloat(float);
     return isNaN(value) ? 0.0 : value;
 };
 
+var getCoordFromAddressProvider = function(location)
+{
+    
+    api.call("GetCoordinates", {
+        addresses: [location]
+    }, (result) =>{        
+        locationCoordinatesProvider = result; 
+        console.log("1");     
+    }, (e) => {
+        console.error("Failed:", e);
+    });
+    console.log("2");  
+
+};
 
 var toggleJsonDropDownMenu = function()
 {
@@ -1599,15 +1693,7 @@ if (upload)
                 option.text = result.providers[i].Name;
                 elJsonDropDownMenu.appendChild(option);
                 }
-
-              }
-              else
-              {
-
-              }
-          
-              
-          
+              }      
           })   
 
 
@@ -1710,8 +1796,6 @@ var addNullCloumn = function(transactionsToBeChecked)
 var uploadFileProvider = function(e)
 {
     e.preventDefault();
-   
-
     toggleAlert(elAlertInfo, 'Parsing... transferring file');
     api.getSession(function (credentials) {
         var fd;
