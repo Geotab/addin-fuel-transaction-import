@@ -1459,8 +1459,11 @@ async function loopParseTransactionInTemplateAsync(singleTransaction,provider)
         {          
             
             case "comments":
-                
-                
+                console.log(singleTransaction[provider[prop]]);
+                if(singleTransaction[provider[prop]]!=null)
+                {
+                    if(singleTransaction[provider[prop]].length>1024)newTranscationObj[prop]=singleTransaction[provider[prop]].substring(0,1024);
+                }
                 break;
             
             case "device":
@@ -1472,28 +1475,23 @@ async function loopParseTransactionInTemplateAsync(singleTransaction,provider)
                 console.log("driverName");//try to get name and copy into driver
             break;
             case "licencePlate":
-                console.log("licencePlate");// need to remove spaces
-                if(provider[prop]==null)newTranscationObj[prop] = null;
+                
+                if(provider[prop]==null)
+                {
+                    window.alert("Licence Plate is not mapped into Json file"+"\n"+"Licence Plate is mandatory!");
+                    clearAllForException();  
+                }
                 else 
                 {                    
                     if(singleTransaction[provider[prop]]!=null)
                     {
-                        newTranscationObj[prop]= singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, ''); 
-                    
-                        var rseultOfApiCAll = await getSerialFromLicencePlate(newTranscationObj[prop]);
-                        
-                        newTranscationObj["serialNumber"]=rseultOfApiCAll[0];
-                        newTranscationObj["device"]=rseultOfApiCAll[1];
-                        
+                        newTranscationObj[prop]= singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, '');  
                     }
                     else 
                     {
-                        newTranscationObj[prop] = null;
-                        newTranscationObj["serialNumber"]=null;
-                        newTranscationObj["device"]=null;
+                        window.alert("Licence Plate is mandatory!");
+                        clearAllForException();                      
                     }
-                    
-                    
                 }
 
             break;
@@ -1539,17 +1537,7 @@ async function loopParseTransactionInTemplateAsync(singleTransaction,provider)
                     else
                     {                            
                         window.alert("Error parsing the date, Allowed Format:"+"\n"+"YYYY-MM-DD"+"\n"+"YYYY-MM-DDTHH:MM:SS"+"\n"+"YYYY-MM-DDTHH:MM:SSZ"+"\n"+"YYYYMMDD"+"\n"+"MM-DD-YYYY");
-                        clearFiles();
-                        clearFilesJson();
-                        clearTransactions();
-                        clearTransactionsProvider();
-                        toggleAlert();
-                        elTransactionContainerProvider.style.display = 'none';                            
-                        elFileJsonSelectContainer.style.display = 'block';
-                        elFileSelectContainer.style.display = 'none';
-                        elFileSelectContainerProvider.style.display = 'none';
-                        elJsonDropDownMenu.style.display = "none";
-                        throw new Error('Execution aborted, wrong date format');                            
+                        clearAllForException();                            
                     }
                 break;
             case "location":
@@ -1647,40 +1635,19 @@ var getCoordFromAddressProvider = function(location)
     });
 };
 
-var getSerialFromLicencePlate = function(licencePlate)
+var clearAllForException = function()
 {
-    var resultOfApiCAll=[];
-    return new Promise(function(resolve, reject){
-        api.call("Get", {   
-            "typeName": "Device",
-            "search":{
-                "licensePlate": licencePlate
-            }
-        }, (result) =>{        
-            
-            if(result.length!=0)
-            {
-                resultOfApiCAll[0] = result[0].serialNumber;
-                resultOfApiCAll[1] = result[0].deviceType;
-                resolve(resultOfApiCAll);
-
-            }
-            else 
-            {
-                resultOfApiCAll[0] = null;
-                resultOfApiCAll[1] = null;
-                resolve(resultOfApiCAll)
-            }
-                
-        }, (e) => {
-            console.error("Failed:", e); 
-            reject();
-        });
-       
-        });
-
-
-      
+    clearFiles();
+    clearFilesJson();
+    clearTransactions();
+    clearTransactionsProvider();
+    toggleAlert();
+    elTransactionContainerProvider.style.display = 'none';                            
+    elFileJsonSelectContainer.style.display = 'block';
+    elFileSelectContainer.style.display = 'none';
+    elFileSelectContainerProvider.style.display = 'none';
+    elJsonDropDownMenu.style.display = "none";
+    throw new Error('Execution aborted'); 
 }
 
 var gallonsToLitres = function (gallons) {
