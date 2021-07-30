@@ -52,7 +52,8 @@ geotab.addin.addinFuelTransactionImport20 = function () {
   var database;
   var version;
   var ROW_LIMIT = 10;
-
+  var unitVolumeLiters;
+  var unitOdoKm;
   var fileJsonToParse;
   var objProviderTemplate;
   var locationCoordinatesProvider;
@@ -1427,14 +1428,14 @@ var toggleExample = function (e) {
     elSample.style.display = checked ? 'block' : 'none';
 };
 
-var parsingTransactionWithProvider = function(transactions,provider)
+async function parsingTransactionWithProviderAsync(transactions,provider)
 {
     var arrayOfParsedTransaction = [];
     
     //loop transaction list row by row
     for (var k=0;k<transactions.length;k++)
     {
-        arrayOfParsedTransaction.push(loopParseTransactionInTemplate(transactions[k],provider[0].data));   
+        arrayOfParsedTransaction.push(await loopParseTransactionInTemplateAsync(transactions[k],provider[0].data));   
     }   
     try {
         var jsonObjParsed= JSON.parse(JSON.stringify(arrayOfParsedTransaction));
@@ -1446,61 +1447,83 @@ var parsingTransactionWithProvider = function(transactions,provider)
 
     //jsonObjParsed will be the object with the transaction parsed into
     //API template for fuel transaction and will returned into
-    //fuelTransactionImport object in uploadCompleteProvider function
+    //fuelTransactionImport object in uploadCompleteProviderAsync function
     return jsonObjParsed;
 }
-var loopParseTransactionInTemplate = function(singleTransaction,provider)
+async function loopParseTransactionInTemplateAsync(singleTransaction,provider)
 {
     var newTranscationObj = new FuelTransactionProvider();
-//NEW
-
     for (var prop in provider) 
     {
         switch(prop)
         {          
+            
+            case "comments":
+                
+                
+                break;
+            
             case "device":
-                console.log("device");
-                //get device from serialNumber if present
-            break;
+                break;
             case "driver":
-                console.log("driver");
-                // do nothing, try to get driver from driverName
-            break;
+                newTranscationObj[prop] = null;               
+                break;
             case "driverName":
-                console.log("driverName");
-                //try to get name and copy into driver
+                console.log("driverName");//try to get name and copy into driver
             break;
             case "licencePlate":
-                console.log("licencePlate");
-                // need to remove spaces 
+                console.log("licencePlate");// need to remove spaces
+                if(provider[prop]==null)newTranscationObj[prop] = null;
+                else 
+                {                    
+                    if(singleTransaction[provider[prop]]!=null)
+                    {
+                        newTranscationObj[prop]= singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, ''); 
+                    
+                        var rseultOfApiCAll = await getSerialFromLicencePlate(newTranscationObj[prop]);
+                        
+                        newTranscationObj["serialNumber"]=rseultOfApiCAll[0];
+                        newTranscationObj["device"]=rseultOfApiCAll[1];
+                        
+                    }
+                    else 
+                    {
+                        newTranscationObj[prop] = null;
+                        newTranscationObj["serialNumber"]=null;
+                        newTranscationObj["device"]=null;
+                    }
+                    
+                    
+                }
+
             break;
             case "serialNumber":
                 console.log("serialNumber");
                 // try to get serial from licence plate 
-            break;
-             
-            
+                // implement the function into licencePlate case
+                // leave this case and do nothing otherwise fall into 
+                // default case
+            break;      
             case "siteName":
                 if(provider[prop]!=null && typeof(provider[prop])=="object")
                  {
                     for(var inner in provider[prop])
                     {
-                        newTranscationObj[prop] += singleTransaction[provider[prop][inner]]+" ";   
+                        if(singleTransaction[provider[prop][inner]]!=null)newTranscationObj[prop] += singleTransaction[provider[prop][inner]]+" "; 
                     }
-                    newTranscationObj[prop]=newTranscationObj[prop].slice(0,-1);
-                    
-                    //call the function to get the coordinates
-                    getCoordFromAddressProvider(newTranscationObj[prop]);
-                    console.log("3");  
-                    console.log(locationCoordinatesProvider);
-                    //put locationCoordinatesProvider into location
-                   
+                    if(newTranscationObj[prop]=="")newTranscationObj["location"]=null;
+                    else
+                    {
+                        newTranscationObj[prop]=newTranscationObj[prop].slice(0,-1); 
+                        locationCoordinatesProvider = await getCoordFromAddressProvider(newTranscationObj[prop]);
+                        newTranscationObj["location"]=locationCoordinatesProvider; 
+                    }
+                                     
                  }
                  else 
                  {
                      if(provider[prop]==null)newTranscationObj[prop] = null;
-                     else newTranscationObj[prop]= singleTransaction[provider[prop]]; 
-                     
+                     else newTranscationObj[prop]= singleTransaction[provider[prop]];                      
                  }
                  
                 break;
@@ -1533,13 +1556,23 @@ var loopParseTransactionInTemplate = function(singleTransaction,provider)
                 break;
             case "version":
                 break;
+            case "odometer":
+                if(singleTransaction[provider[prop]]==null||singleTransaction[provider[prop]]=="")newTranscationObj[prop]=null;
+                else
+                {
+                    console.log("-->",singleTransaction[provider[prop]]);
+                    if(unitOdoKm!="Y")newTranscationObj[prop]= milesToKm(singleTransaction[provider[prop]]);
+                }
+                break;
+                case "volume":                
+                if(unitVolumeLiters!="Y")newTranscationObj[prop]= gallonsToLitres(singleTransaction[provider[prop]]);
+                break;
             case "id":
                 break;
             
             //fields that fall into default
             // cardNumber,comments,description,externalReference,provider
-            // vehicleIdentificationNumber,cost,currencyCode,odometer,productType
-            // volume
+            // vehicleIdentificationNumber,cost,currencyCode,productType 
             default:
                 if(provider[prop]==null)newTranscationObj[prop] = null;
                 else newTranscationObj[prop]= singleTransaction[provider[prop]];  
@@ -1597,19 +1630,66 @@ var getFloatValue = function (float) {
 
 var getCoordFromAddressProvider = function(location)
 {
-    
+    return new Promise(function(resolve, reject){
     api.call("GetCoordinates", {
         addresses: [location]
     }, (result) =>{        
-        locationCoordinatesProvider = result; 
-        console.log("1");     
+        
+        resolve(result);
+       
+            
     }, (e) => {
         console.error("Failed:", e);
+        locationCoordinatesProvider = null; 
+        reject();
     });
-    console.log("2");  
-
+   
+    });
 };
 
+var getSerialFromLicencePlate = function(licencePlate)
+{
+    var resultOfApiCAll=[];
+    return new Promise(function(resolve, reject){
+        api.call("Get", {   
+            "typeName": "Device",
+            "search":{
+                "licensePlate": licencePlate
+            }
+        }, (result) =>{        
+            
+            if(result.length!=0)
+            {
+                resultOfApiCAll[0] = result[0].serialNumber;
+                resultOfApiCAll[1] = result[0].deviceType;
+                resolve(resultOfApiCAll);
+
+            }
+            else 
+            {
+                resultOfApiCAll[0] = null;
+                resultOfApiCAll[1] = null;
+                resolve(resultOfApiCAll)
+            }
+                
+        }, (e) => {
+            console.error("Failed:", e); 
+            reject();
+        });
+       
+        });
+
+
+      
+}
+
+var gallonsToLitres = function (gallons) {
+    return gallons * 3.785;
+};
+
+var milesToKm = function (miles) {
+    return miles / 0.62137;
+};
 var toggleJsonDropDownMenu = function()
 {
     var itemIndexSelected = elJsonDropDownMenu.selectedIndex;
@@ -1817,7 +1897,7 @@ var uploadFileProvider = function(e)
             fd.append('fileToUpload', elFileProvider.files[0]);
 
             xhr.upload.addEventListener('progress', uploadProgress, false);
-            xhr.addEventListener('load', uploadCompleteProvider, false);
+            xhr.addEventListener('load', uploadCompleteProviderAsync, false);
             xhr.addEventListener('error', uploadFailed, false);
             xhr.addEventListener('abort', uploadFailed, false);
             
@@ -1898,7 +1978,7 @@ var getHeadings = function getHeadings(data) {
     return [];
   };
 
-var uploadCompleteProvider = function (e) {
+async function uploadCompleteProviderAsync(e) {
 
     var results;
     var headingsExtracted;    
@@ -1907,6 +1987,10 @@ var uploadCompleteProvider = function (e) {
     // retrieve the keys of the provider selected from the full template ojbect
     var extractedProviderTemplate = objProviderTemplate.providers.filter((provider) => provider.Name ===providerSelected);    
     
+    unitVolumeLiters = extractedProviderTemplate[0]["unitVolumeLiters"];
+    unitOdoKm = extractedProviderTemplate[0]["unitOdoKm"];
+    
+
     results = addNullCloumn(resultsParser(e));
     if (results.error) {
         toggleAlert(elAlertError, results.error.message);
@@ -1916,7 +2000,8 @@ var uploadCompleteProvider = function (e) {
     //remove the heading from transaction
     headingsExtracted= getHeadings(results.data);
     var fuelTransctionImport = {};
-    fuelTransctionImport = parsingTransactionWithProvider(results.data,extractedProviderTemplate);
+    fuelTransctionImport = await parsingTransactionWithProviderAsync(results.data,extractedProviderTemplate);
+
 
     clearFilesJson();
     clearFilesProvider();
