@@ -67,6 +67,7 @@
   },
   "dependencies": {
     "convert-excel-to-json": "^1.7.0",
+    "currency-codes": "^2.1.0",
     "moment": "^2.29.1",
     "xlsx": "^0.17.0"
   }

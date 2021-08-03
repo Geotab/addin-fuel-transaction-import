@@ -59,6 +59,7 @@ geotab.addin.addinFuelTransactionImport20 = function () {
   var locationCoordinatesProvider;
   
   const moment= require('moment');
+  const cc = require('currency-codes');
   
   // functions
 
@@ -287,6 +288,7 @@ var renderTransactionsProvider = function (transactions) {
     var getColumnHeading = function (column) {
         var columnHeadings = {
             'vehicleIdentificationNumber': 'VIN',
+            'sourceData':'Source Data',
             'description': 'Description',
             'serialNumber': 'Device Serial Number',
             'licencePlate': 'Licence Plate',
@@ -1453,122 +1455,181 @@ async function parsingTransactionWithProviderAsync(transactions,provider)
 async function loopParseTransactionInTemplateAsync(singleTransaction,provider)
 {
     var newTranscationObj = new FuelTransactionProvider();
+
     for (var prop in provider) 
     {
+        if(provider[prop]==null)provider[prop]="";//if json file has null field change in ""        
+    }
+
+
+    //check of the mandatory fields
+    //Stop the execution
+
+    if(provider["licencePlate"]==""&&provider["vehicleIdentificationNumber"]==""&&provider["serialNumber"]=="")
+    {
+        console.log("Not mapped into Json file, Licence Plate or Vin or Serial Number is needed");
+        window.alert("Licence Plate, VIN and Serial Number are not mapped into Json file at least one must be filled");
+        clearAllForException(); 
+
+    }
+    else
+    {
+        //console.log("->");
+        //console.log(singleTransaction[provider["licencePlate"]]);
+        //console.log(singleTransaction[provider["vehicleIdentificationNumber"]]);
+        //console.log(singleTransaction[provider["serialNumber"]]);
+
+        
+        if(singleTransaction[provider["licencePlate"]]==""&&singleTransaction[provider["vehicleIdentificationNumber"]]==""&&singleTransaction[provider["serialNumber"]]=="")
+        {
+            console.log("Licence Plate or Vin or Serial Number is needed");
+            window.alert("Licence Plate, VIN and Serial Number are not present, at least one must be filled");
+             clearAllForException();
+        }
+    }
+    //
+
+    console.log("asd "+ singleTransaction[provider["sourceData"]]);
+    console.log("bbb "+ singleTransaction[provider["version"]]);
+
+    for (var prop in provider) 
+    {
+
         switch(prop)
         {          
             
-            case "comments":
-                console.log(singleTransaction[provider[prop]]);
-                if(singleTransaction[provider[prop]]!=null)
+            case "comments":                
+                if(singleTransaction[provider[prop]]!=undefined && singleTransaction[provider[prop]]!="")
                 {
                     if(singleTransaction[provider[prop]].length>1024)newTranscationObj[prop]=singleTransaction[provider[prop]].substring(0,1024);
                 }
                 break;
-            
-            case "device":
-                break;
-            case "driver":
-                newTranscationObj[prop] = null;               
-                break;
-            case "driverName":
-                console.log("driverName");//try to get name and copy into driver
+            case "description":
+                if(singleTransaction[provider[prop]]!=undefined && singleTransaction[provider[prop]]!="")
+                {
+                    if(singleTransaction[provider[prop]].length>255)newTranscationObj[prop]=singleTransaction[provider[prop]].substring(0,255);
+                }
+                break;   
+            case "driverName":                
+                if(singleTransaction[provider[prop]]!=undefined && singleTransaction[provider[prop]]!="")
+                {
+                    if(singleTransaction[provider[prop]].length>255)newTranscationObj[prop]=singleTransaction[provider[prop]].substring(0,255);
+                }
+            break;
+            case "externalReference":                
+                if(singleTransaction[provider[prop]]!=undefined && singleTransaction[provider[prop]]!="")
+                {
+                    if(singleTransaction[provider[prop]].length>255)newTranscationObj[prop]=singleTransaction[provider[prop]].substring(0,255);
+                }
             break;
             case "licencePlate":
                 
-                if(provider[prop]==null)
+                if(singleTransaction[provider[prop]]!=undefined && singleTransaction[provider[prop]]!="")
                 {
-                    window.alert("Licence Plate is not mapped into Json file"+"\n"+"Licence Plate is mandatory!");
-                    clearAllForException();  
-                }
-                else 
-                {                    
-                    if(singleTransaction[provider[prop]]!=null)
-                    {
-                        newTranscationObj[prop]= singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, '');  
-                    }
-                    else 
-                    {
-                        window.alert("Licence Plate is mandatory!");
-                        clearAllForException();                      
-                    }
+                    newTranscationObj[prop]= singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, '');  
                 }
 
             break;
             case "serialNumber":
-                console.log("serialNumber");
-                // try to get serial from licence plate 
-                // implement the function into licencePlate case
-                // leave this case and do nothing otherwise fall into 
-                // default case
+               
+                if(singleTransaction[provider[prop]]!=undefined && singleTransaction[provider[prop]]!="")
+                {
+                    newTranscationObj[prop]= singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, '');  
+                }                   
+               
             break;      
             case "siteName":
-                if(provider[prop]!=null && typeof(provider[prop])=="object")
-                 {
-                    for(var inner in provider[prop])
+                if(provider[prop]!="")
+                 {                    
+                    if(typeof(provider[prop])=="object")
                     {
-                        if(singleTransaction[provider[prop][inner]]!=null)newTranscationObj[prop] += singleTransaction[provider[prop][inner]]+" "; 
+                        for(var inner in provider[prop])
+                        {
+                            if(singleTransaction[provider[prop][inner]]!=""&&singleTransaction[provider[prop][inner]]!=undefined)newTranscationObj[prop] += singleTransaction[provider[prop][inner]]+" "; 
+                        }
+                        if(newTranscationObj[prop]=="")newTranscationObj["location"]="";
+                        else newTranscationObj[prop]=newTranscationObj[prop].slice(0,-1);
                     }
-                    if(newTranscationObj[prop]=="")newTranscationObj["location"]=null;
-                    else
-                    {
-                        newTranscationObj[prop]=newTranscationObj[prop].slice(0,-1); 
-                        locationCoordinatesProvider = await getCoordFromAddressProvider(newTranscationObj[prop]);
-                        newTranscationObj["location"]=locationCoordinatesProvider; 
-                    }
-                                     
-                 }
-                 else 
-                 {
-                     if(provider[prop]==null)newTranscationObj[prop] = null;
-                     else newTranscationObj[prop]= singleTransaction[provider[prop]];                      
+                    else newTranscationObj[prop]= singleTransaction[provider[prop]];
                  }
                  
                 break;
 
-            case "sourceData":
-                break;
-            case "dateTime":
-                    var dateFormattedNoSlash = singleTransaction[provider[prop]].replace(/\//g,"-");
-                    if(getDateValue(dateFormattedNoSlash)!==undefined)
-                    {   
-                        newTranscationObj[prop] = getDateValue(dateFormattedNoSlash);                      
+        
+            case "vehicleIdentificationNumber":
+                
+                if(singleTransaction[provider[prop]]!=undefined&&singleTransaction[provider[prop]]!="")
+                {
+                    newTranscationObj[prop]= singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, '');  
+                }
+            break;
+
+            case "cost":
+                if(singleTransaction[provider[prop]]!=undefined&&singleTransaction[provider[prop]]!="")
+                {
+                    newTranscationObj[prop]= singleTransaction[provider[prop]].replace(/,/g, '.');  
+                }            
+
+            break;
+            case "currencyCode":
+                var currency;            
+
+                if(singleTransaction[provider[prop]]!=undefined&&singleTransaction[provider[prop]]!="")
+                {
+                    currency= singleTransaction[provider[prop]].trim().toUpperCase();
+                    currency = currency.replace(/[^a-zA-Z]/g, '');                    
+
+                    if (!cc.codes().includes(currency.toUpperCase())) 
+                    {
+                        window.alert("Invalid format for currency: " + currency + "\n"+" Please follow ISO 4217 3-letter standard for representing currency. Eg: USD");
+                        clearAllForException(); 
+                    }    
+                    else
+                    {
+                        newTranscationObj[prop]= currency;  
                     }
+                }
+            break;
+
+            case "dateTime":
+                    
+                if(singleTransaction[provider[prop]]!=undefined&&singleTransaction[provider[prop]]!="")
+                {
+                    var dateFormattedNoSlash = singleTransaction[provider[prop]].replace(/\//g,"-");
+                    if(getDateValue(dateFormattedNoSlash)!==undefined)newTranscationObj[prop] = getDateValue(dateFormattedNoSlash);  
                     else
                     {                            
                         window.alert("Error parsing the date, Allowed Format:"+"\n"+"YYYY-MM-DD"+"\n"+"YYYY-MM-DDTHH:MM:SS"+"\n"+"YYYY-MM-DDTHH:MM:SSZ"+"\n"+"YYYYMMDD"+"\n"+"MM-DD-YYYY");
-                        clearAllForException();                            
+                        clearAllForException();                                                
                     }
+                }
+                
                 break;
-            case "location":
-                break;
-            case "version":
-                break;
+            
             case "odometer":
                 if(singleTransaction[provider[prop]]==null||singleTransaction[provider[prop]]=="")newTranscationObj[prop]=null;
                 else
                 {
-                    console.log("-->",singleTransaction[provider[prop]]);
+                    newTranscationObj[prop]= singleTransaction[provider[prop]].replace(/,/g, '.'); 
                     if(unitOdoKm!="Y")newTranscationObj[prop]= milesToKm(singleTransaction[provider[prop]]);
                 }
                 break;
-                case "volume":                
-                if(unitVolumeLiters!="Y")newTranscationObj[prop]= gallonsToLitres(singleTransaction[provider[prop]]);
+                case "productType":// Da Fare
+                    
+                    break;
+                case "volume": 
+                if(singleTransaction[provider[prop]]!=undefined&&singleTransaction[provider[prop]]!="")
+                {
+                    if(unitVolumeLiters!="Y")newTranscationObj[prop]= gallonsToLitres(singleTransaction[provider[prop]]);
+                }               
                 break;
-            case "id":
-                break;
-            
-            //fields that fall into default
-            // cardNumber,comments,description,externalReference,provider
-            // vehicleIdentificationNumber,cost,currencyCode,productType 
-            default:
-                if(provider[prop]==null)newTranscationObj[prop] = null;
-                else newTranscationObj[prop]= singleTransaction[provider[prop]];  
 
+            default:
+                if(singleTransaction[provider[prop]]!=undefined&&singleTransaction[provider[prop]]!="")newTranscationObj[prop]= singleTransaction[provider[prop]];  
+                break;
         }
     }
-    //NEW END
-
+   
     return newTranscationObj;
 }
 
@@ -1607,33 +1668,8 @@ var getDateValue = function (date) {
          
       }
       return dateFormatted;
-
-
-    
-};
-var getFloatValue = function (float) {
-    var value = parseFloat(float);
-    return isNaN(value) ? 0.0 : value;
 };
 
-var getCoordFromAddressProvider = function(location)
-{
-    return new Promise(function(resolve, reject){
-    api.call("GetCoordinates", {
-        addresses: [location]
-    }, (result) =>{        
-        
-        resolve(result);
-       
-            
-    }, (e) => {
-        console.error("Failed:", e);
-        locationCoordinatesProvider = null; 
-        reject();
-    });
-   
-    });
-};
 
 var clearAllForException = function()
 {
@@ -1813,7 +1849,7 @@ var showSelectorSection = function()
 
 }
 
-var addNullCloumn = function(transactionsToBeChecked)
+var addBlanckColumn = function(transactionsToBeChecked)
 {    
     for (var i=0; i<transactionsToBeChecked.data.length;i++ )
     {
@@ -1831,7 +1867,7 @@ var addNullCloumn = function(transactionsToBeChecked)
             // and value=null
             if(keysHeader[z]!=keysTempTransaction[tempVar])
             {
-                transactionsToBeChecked.data[i][keysHeader[z]]=null;
+                transactionsToBeChecked.data[i][keysHeader[z]]="";
                 keysTempTransaction = Object.keys(transactionsToBeChecked.data[i]);
             }
             else tempVar++;
@@ -1958,7 +1994,7 @@ async function uploadCompleteProviderAsync(e) {
     unitOdoKm = extractedProviderTemplate[0]["unitOdoKm"];
     
 
-    results = addNullCloumn(resultsParser(e));
+    results = addBlanckColumn(resultsParser(e));
     if (results.error) {
         toggleAlert(elAlertError, results.error.message);
         return;
