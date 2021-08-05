@@ -2060,18 +2060,17 @@ async function uploadCompleteProviderAsync(e) {
         toggleAlert(elAlertError, results.error.message);
         return;
         }     
-
+    else if(results.data.length==1)
+    {
+        window.alert("The file doesn't contain any transactions");
+        clearAllForException();
+    }
     //remove the heading from transaction
     headingsExtracted= getHeadings(results.data);
-    var fuelTransctionImport = {};
     transactions = await parsingTransactionWithProviderAsync(results.data,extractedProviderTemplate);
-
 
     clearFilesJson();
     clearFilesProvider();
-
-    //transactions = fuelTransctionImport;
- 
 
     if (transactions === null) {
         toggleAlert(elAlertError, 'Can not determine file provider type, try converting to MyGeotab file type');
@@ -2082,13 +2081,10 @@ async function uploadCompleteProviderAsync(e) {
         clearTransactionsProvider();
         return;
     }
-
     
     toggleImportProvider(true);
     renderTransactionsProvider(transactions);
-    toggleAlert();
-
-};
+    toggleAlert();;
     
   return {
     /**
