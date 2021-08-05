@@ -56,7 +56,7 @@ geotab.addin.addinFuelTransactionImport20 = function () {
   var unitOdoKm;
   var fileJsonToParse;
   var objProviderTemplate;
-  var locationCoordinatesProvider;
+  
   
   const moment= require('moment');
   const cc = require('currency-codes');
@@ -204,6 +204,7 @@ var clearTransactionsProvider = function () {
     clearFleets();
     toggleParse(false);
     toggleImport(false);
+    toggleAlert();
 };
 
 var renderTransactions = function () {
@@ -287,28 +288,29 @@ var renderTransactionsProvider = function (transactions) {
     
     var getColumnHeading = function (column) {
         var columnHeadings = {
-            'vehicleIdentificationNumber': 'VIN',
-            'sourceData':'Source Data',
+            'cardNumber' : "Card Number",
+            'comments': 'Comments',
             'description': 'Description',
-            'serialNumber': 'Device Serial Number',
-            'licencePlate': 'Licence Plate',
-            'comments': 'Comment',
-            'dateTime': 'Date (UTC)',
-            'volume': 'Volume Added (litres)',
-            'odometer': 'Odometer (km)',
+            'driverName' : 'Driver Name',
+            'externalReference' : 'External Reference',
+            'licencePlate' : 'Licence Plate',
+            'provider' : 'Fuel Provider',
+            'siteName': 'Site Name',
+            'vehicleIdentificationNumber': 'VIN',
             'cost': 'Cost',
-            'currencyCode': 'Currency',
-            'location': 'Location (lon,lat)',
-            'provider': 'File Provider',
-            'driverName': 'Driver Name',
-            'productType': 'Product Type'
+            'currencyCode': 'Currency',            
+            'dateTime': 'Date (UTC)',
+            'odometer': 'Odometer',            
+            'productType': 'Product Type',
+            'volume': 'Volume Added',
+
         };
         return columnHeadings[column] || column;
     };
     var createRow = function (row, isHeading) {
         var elRow = document.createElement('TR');
         var createColumn = function (columnName) {
-            if (columnName === 'sourceData' || columnName === 'fleet') {
+            if (columnName === 'device' || columnName === 'driver' || columnName === 'serialNumber' || columnName === 'sourceData' || columnName === 'location' || columnName === 'version' || columnName === 'id'|| columnName === 'fleet') {
                 return;
             }
             var elColumn = document.createElement(isHeading ? 'TH' : 'TD');
@@ -459,31 +461,31 @@ var FuelTransaction = function (vin, description, serialNumber, licencePlate, co
     return self;
 };
 
-var FuelTransactionProvider = function (cardNumber,comments,description,device,driver,driverName,externalReference,licencePlate,provider,serialNumber,siteName,sourceData,vehicleIdentificationNumber,cost,currencyCode,dateTime,location,odometer,productType,volume,version,id) {
+var FuelTransactionProvider = function (cardNumber,comments,description,driverName,externalReference,licencePlate,provider,serialNumber,siteName,vehicleIdentificationNumber,cost,currencyCode,dateTime,odometer,productType,volume) {
     var self = {
 
         cardNumber: cardNumber || '',
         comments: comments || '',
         description: description || '',
-        device:device || '',
-        driver: driver|| '',
+        //device:device || '',
+        //driver: driver|| '',
         driverName: driverName|| '',
         externalReference: externalReference|| '',
         licencePlate: licencePlate || '',
         provider:provider || '',
         serialNumber: serialNumber || '',
         siteName:siteName || '',
-        sourceData: sourceData || '',
+        //sourceData: sourceData || '',
         vehicleIdentificationNumber: vehicleIdentificationNumber || '',
         cost: cost || '',
         currencyCode: currencyCode || '',
         dateTime: dateTime || '',
-        location: location || '',
+        //location: location || '',
         odometer: odometer || '',
         productType:productType || '',
         volume: volume || '',
-        version:version || '',
-        id:id || '',
+        //version:version || '',
+        //id:id || '',
     };
     return self;
 };
@@ -1411,6 +1413,7 @@ var importFileProvider = function () {
     }).catch(function (e) {
         //toggleBrowse(true);
         toggleAlert(elAlertError, e.toString());
+        
     });
 };
 
@@ -1473,31 +1476,29 @@ async function loopParseTransactionInTemplateAsync(singleTransaction,provider)
 
     }
     else
-    {
-        //console.log("->");
-        //console.log(singleTransaction[provider["licencePlate"]]);
-        //console.log(singleTransaction[provider["vehicleIdentificationNumber"]]);
-        //console.log(singleTransaction[provider["serialNumber"]]);
-
-        
-        if(singleTransaction[provider["licencePlate"]]==""&&singleTransaction[provider["vehicleIdentificationNumber"]]==""&&singleTransaction[provider["serialNumber"]]=="")
+    {        
+        if(singleTransaction[provider["licencePlate"]]==""||singleTransaction[provider["licencePlate"]]==undefined)
         {
-            console.log("Licence Plate or Vin or Serial Number is needed");
-            window.alert("Licence Plate, VIN and Serial Number are not present, at least one must be filled");
-             clearAllForException();
+            if(singleTransaction[provider["vehicleIdentificationNumber"]]==""||singleTransaction[provider["vehicleIdentificationNumber"]]==undefined)
+            {
+                if(singleTransaction[provider["serialNumber"]]==""||singleTransaction[provider["serialNumber"]]==undefined)
+                {
+                    console.log("One of Licence Plate or Vin or Serial Number is needed");
+                    window.alert("Licence Plate, VIN and Serial Number are not present, at least one must be filled");
+                     clearAllForException();
+                }
+            }
         }
+        
+       
     }
-    //
-
-    console.log("asd "+ singleTransaction[provider["sourceData"]]);
-    console.log("bbb "+ singleTransaction[provider["version"]]);
+    
 
     for (var prop in provider) 
     {
 
         switch(prop)
         {          
-            
             case "comments":                
                 if(singleTransaction[provider[prop]]!=undefined && singleTransaction[provider[prop]]!="")
                 {
@@ -1526,6 +1527,8 @@ async function loopParseTransactionInTemplateAsync(singleTransaction,provider)
                 
                 if(singleTransaction[provider[prop]]!=undefined && singleTransaction[provider[prop]]!="")
                 {
+                    
+                    if(singleTransaction[provider[prop]].length>255)singleTransaction[provider[prop]].substring(0,255);
                     newTranscationObj[prop]= singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, '');  
                 }
 
@@ -1537,7 +1540,8 @@ async function loopParseTransactionInTemplateAsync(singleTransaction,provider)
                     newTranscationObj[prop]= singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, '');  
                 }                   
                
-            break;      
+            break;   
+            
             case "siteName":
                 if(provider[prop]!="")
                  {                    
@@ -1547,8 +1551,7 @@ async function loopParseTransactionInTemplateAsync(singleTransaction,provider)
                         {
                             if(singleTransaction[provider[prop][inner]]!=""&&singleTransaction[provider[prop][inner]]!=undefined)newTranscationObj[prop] += singleTransaction[provider[prop][inner]]+" "; 
                         }
-                        if(newTranscationObj[prop]=="")newTranscationObj["location"]="";
-                        else newTranscationObj[prop]=newTranscationObj[prop].slice(0,-1);
+                        newTranscationObj[prop]=newTranscationObj[prop].slice(0,-1);
                     }
                     else newTranscationObj[prop]= singleTransaction[provider[prop]];
                  }
@@ -1607,20 +1610,51 @@ async function loopParseTransactionInTemplateAsync(singleTransaction,provider)
                 break;
             
             case "odometer":
-                if(singleTransaction[provider[prop]]==null||singleTransaction[provider[prop]]=="")newTranscationObj[prop]=null;
-                else
-                {
-                    newTranscationObj[prop]= singleTransaction[provider[prop]].replace(/,/g, '.'); 
-                    if(unitOdoKm!="Y")newTranscationObj[prop]= milesToKm(singleTransaction[provider[prop]]);
-                }
-                break;
-                case "productType":// Da Fare
-                    
-                    break;
-                case "volume": 
+                var tmp;
                 if(singleTransaction[provider[prop]]!=undefined&&singleTransaction[provider[prop]]!="")
                 {
-                    if(unitVolumeLiters!="Y")newTranscationObj[prop]= gallonsToLitres(singleTransaction[provider[prop]]);
+                    tmp = singleTransaction[provider[prop]].replace(/,/g, '.');
+                    newTranscationObj[prop]= parseFloat(tmp).toFixed(1);
+                    unitOdoKm=unitOdoKm.toUpperCase();
+                    if(unitOdoKm!="Y"&&unitOdoKm!="N")
+                    {
+                        console.log("Units of Odometer field mapping in Json file must be 1 characters either Y or N");
+                        window.alert("Units of Odometer field mapping in Json file must be 1 characters either Y or N");
+                        clearAllForException();
+                    }
+                    else if(unitOdoKm!="Y")
+                    {
+                        tmp= milesToKm(singleTransaction[provider[prop]]);
+                        newTranscationObj[prop]= parseFloat(tmp).toFixed(1);
+                    }   
+                }
+                break;
+
+            case "productType":
+                
+                if(singleTransaction[provider[prop]]!=undefined&&singleTransaction[provider[prop]]!="")
+                {
+                    newTranscationObj[prop]= getProductType(singleTransaction[provider[prop]]);
+                }               
+            break;
+            case "volume": 
+                var tmp;
+                if(singleTransaction[provider[prop]]!=undefined&&singleTransaction[provider[prop]]!="")
+                {
+                    tmp = singleTransaction[provider[prop]].replace(/,/g, '.');
+                    newTranscationObj[prop]= parseFloat(tmp).toFixed(1);
+                    unitVolumeLiters = unitVolumeLiters.toUpperCase();
+                    if(unitVolumeLiters!="Y"&&unitVolumeLiters!="N")
+                    {
+                        console.log("Units of Fuel Volume field mapping in Json file must be 1 characters either Y or N");
+                        window.alert("Units of Fuel Volume field mapping in Json file must be 1 characters either Y or N");
+                        clearAllForException();
+                    }
+                    else if(unitVolumeLiters!="Y")
+                    {
+                        tmp = gallonsToLitres(singleTransaction[provider[prop]]);
+                        newTranscationObj[prop]= parseFloat(tmp).toFixed(1);
+                    }
                 }               
                 break;
 
@@ -1691,8 +1725,35 @@ var gallonsToLitres = function (gallons) {
 };
 
 var milesToKm = function (miles) {
-    return miles / 0.62137;
+    return miles / 0.62137;    
 };
+
+var getProductType = (productType) => {
+    let pt = productType.toLowerCase().replace(' ', '');
+    switch (pt) {
+        case 'nonfuel':
+                return 'NonFuel';
+        case 'regular':
+            return 'Regular';
+            case 'midgrade':
+                return 'Midgrade';
+        case 'premium':
+            return 'Premium';
+        case 'super':
+            return 'Super';
+        case 'diesel':
+            return 'Diesel';
+        case 'e85':
+            return 'E85';
+        case 'cng':
+            return 'CNG';
+        case 'lpg':
+            return 'LPG';
+        default:
+            return 'Unknown';
+    }
+};
+
 var toggleJsonDropDownMenu = function()
 {
     var itemIndexSelected = elJsonDropDownMenu.selectedIndex;
@@ -2003,20 +2064,20 @@ async function uploadCompleteProviderAsync(e) {
     //remove the heading from transaction
     headingsExtracted= getHeadings(results.data);
     var fuelTransctionImport = {};
-    fuelTransctionImport = await parsingTransactionWithProviderAsync(results.data,extractedProviderTemplate);
+    transactions = await parsingTransactionWithProviderAsync(results.data,extractedProviderTemplate);
 
 
     clearFilesJson();
     clearFilesProvider();
 
-    transactions = fuelTransctionImport;
+    //transactions = fuelTransctionImport;
  
 
-    if (fuelTransctionImport === null) {
+    if (transactions === null) {
         toggleAlert(elAlertError, 'Can not determine file provider type, try converting to MyGeotab file type');
         return;
     }
-    if (!fuelTransctionImport.length) {
+    if (!transactions.length) {
         toggleAlert(elAlertError, 'No transactions found in file');
         clearTransactionsProvider();
         return;
@@ -2024,7 +2085,7 @@ async function uploadCompleteProviderAsync(e) {
 
     
     toggleImportProvider(true);
-    renderTransactionsProvider(fuelTransctionImport);
+    renderTransactionsProvider(transactions);
     toggleAlert();
 
 };
