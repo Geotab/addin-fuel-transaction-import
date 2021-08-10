@@ -8,12 +8,12 @@
     "menuName": {
       "en": "Fuel Transaction Import"
     },
-    "icon": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@master/src/app/images/icon.svg"
+    "icon": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@master/dist/images/icon.svg"
   }],
   "dev": {
     "root": "importFuelTransactions",
     "dist": {
-      "host": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@master/src/app/importFuelTransactions.html"
+      "host": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@master/dist/importFuelTransactions.html"
       
     }
   }
