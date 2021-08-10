@@ -1,7 +1,7 @@
 {
   "name": "Fuel Transaction Import (by Geotab)",
   "supportEmail": "fabiopolini@geotab.com",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "items": [{
     "url": "importFuelTransactions.html",
     "path": "EngineMaintenanceLink/",
