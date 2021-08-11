@@ -2205,10 +2205,6 @@
         elParseButtonProvider = document.getElementById('parseButtonProvider');
         elTableTransactions = document.getElementById('tableTransactions');
   
-        
-        //console.log("->",moment.utc(moment("25/01/202217:12:23","DD/MM/YYYYHH:MM:SS",true)).add(1, 'day').format());
-        console.log(moment("01-10-2020 08:07:33","DD-MM-YYYY hh:mm:ss", false).isValid());
-  
       // Loading translations if available
       if (freshState.translate) {
         freshState.translate(elContainer || '');
