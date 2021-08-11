@@ -14,7 +14,7 @@ Add the configuration below to the to the system setting -> add-ins section of t
     "menuName": {
       "en": "Fuel Transaction Import"
     },
-    "icon": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@master/dist/images/icon.svg"
+    "icon": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@master/dist/images/icon.png"
   }],
   "dev": {
     "root": "importFuelTransactions",

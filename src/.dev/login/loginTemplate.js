@@ -1,7 +1,7 @@
 let body = document.getElementsByTagName('body')[0];
 import icon from '../images/Font_Awesome_5_solid_chevron-left.svg';
 import xIcon from '../images/close-round.svg';
-import addinIcon from '../../app/images/icon.svg';
+import addinIcon from '../../app/images/icon.png';
 let loginExample = `
 
     <link rel="stylesheet" href="https://my112.geotab.com/geotab/checkmate/app.less?skin=my_geotab">
