@@ -4,18 +4,18 @@
 	"version": "3.0.0",
 	"items": [
 		{
-			"url": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@master/src/app/importFuelTransactions.html",
+			"url": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@3.0.1/dist/importFuelTransactions.html",
 			"path": "EngineMaintenanceLink/",
 			"menuName": {
 				"en": "Fuel Transaction Import (by Fabio)"
 			},
-			"icon": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@master/src/app/images/icon.png"
+			"icon": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@3.0.1/dist/images/icon.png"
 		}
 	],
   "dev": {
     "root": "importFuelTransactions",
     "dist": {
-      "host": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@master/src/app/"
+      "host": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@3.0.1/dist/"
       
     }
   }
