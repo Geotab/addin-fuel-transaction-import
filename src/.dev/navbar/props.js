@@ -14,7 +14,7 @@ const props = [
         hasSubmenu: true,
         submenuItems: [
                 {
-                    name: 'addinFuelTransactionImport20',
+                    name: 'addinFuelTransactionImport300',
                     labelText:config.items[0].menuName,
                 }
             ]

@@ -181,10 +181,10 @@ class NavHandler {
         displayToggle.addEventListener('click', () => {
             if(this.focus){
                 displayToggle.innerHTML = 'Focus add-in';
-                global.geotab.addin.addinFuelTransactionImport20.blur();
+                global.geotab.addin.addinFuelTransactionImport300.blur();
             } else {
                 displayToggle.innerHTML = 'Blur add-in';
-                global.geotab.addin.addinFuelTransactionImport20.focus(global.api, global.state);
+                global.geotab.addin.addinFuelTransactionImport300.focus(global.api, global.state);
             }
             this.focus = !this.focus;
         });
@@ -203,10 +203,10 @@ class NavHandler {
         setInterval(()=>{
             if(window.location.hash !== this.storedHash){
                 this.storedHash = window.location.hash;
-                if(this.storedHash !== '#' + 'addinFuelTransactionImport20'){
-                    geotab.addin.addinFuelTransactionImport20.blur();
+                if(this.storedHash !== '#' + 'addinFuelTransactionImport300'){
+                    geotab.addin.addinFuelTransactionImport300.blur();
                 } else {
-                    geotab.addin.addinFuelTransactionImport20.focus(global.api, global.state);
+                    geotab.addin.addinFuelTransactionImport300.focus(global.api, global.state);
                 }
             }
         }, 100);

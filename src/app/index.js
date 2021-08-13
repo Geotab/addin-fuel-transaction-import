@@ -9,7 +9,7 @@ const regeneratorRuntime = require('regenerator-runtime');
 
 if(!geotab.addin.importFuelTransactions){
     
-    require('./scripts/main.js');
+    require('./scripts/main');
     
 }
 

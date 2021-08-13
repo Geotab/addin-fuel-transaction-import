@@ -9,10 +9,10 @@ class ToggleHandler{
         displayToggle.addEventListener('click', () => {
             if(this.focus){
                 displayToggle.innerHTML = 'Focus add-in';
-                global.geotab.addin.addinFuelTransactionImport20.blur();
+                global.geotab.addin.addinFuelTransactionImport300.blur();
             } else {
                 displayToggle.innerHTML = 'Blur add-in';
-                global.geotab.addin.addinFuelTransactionImport20.focus(global.api, global.state);
+                global.geotab.addin.addinFuelTransactionImport300.focus(global.api, global.state);
             }
             this.focus = !this.focus;
         });

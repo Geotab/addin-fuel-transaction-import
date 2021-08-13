@@ -223,7 +223,7 @@ let loginExample = `
         margin: 0.5em 0;
     }
 
-    .geotabIcons_addinFuelTransactionImport20 {
+    .geotabIcons_addinFuelTransactionImport300 {
         background-image: url("${addinIcon}");
     } 
     </style>
