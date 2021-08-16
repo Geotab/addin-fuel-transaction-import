@@ -1,6 +1,7 @@
 {
   "name": "addin-fuel-transaction-import",
   "version": "3.0.1",
+  "private":"true",
   "main": "index.js",
   "engines": {
     "node": ">=0.12.0"
@@ -11,7 +12,8 @@
     "build": "webpack --mode=production --config webpack.production.js",
     "serve": "webpack-dev-server --mode=development --config webpack.development.js",
     "test": "start-server-and-test serve http://localhost:9000 mocha",
-    "mocha": "mocha test/**/*.js"
+    "mocha": "mocha test/**/*.js",
+    "start": "webpack"
   },
   "devDependencies": {
     "@babel/core": "^7.8.3",
