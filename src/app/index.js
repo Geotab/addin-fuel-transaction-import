@@ -10,6 +10,11 @@ const regeneratorRuntime = require('regenerator-runtime');
 if(!geotab.addin.importFuelTransactions){
     
     require('./scripts/main');
+    require('bluebird');
+    require('moment');
+    require('bootstrap');
+    require('moment-timezone');
+
     
 }
 

@@ -12,6 +12,7 @@ const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const config = require('./src/app/config.json');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 /**
  * Removes "dev" element of the config tree on production build
@@ -101,6 +102,10 @@ module.exports = merge(common, {
         ]
     },
     plugins: [
+        new HtmlWebpackPlugin({
+            template: "./src/app/importFuelTransactions.html", //source html file
+            filename: "importFuelTransactions.html" //dest filename in the dest folder
+        }),
         new FixStyleOnlyEntriesPlugin(),
         new OptimizeCSSAssetsPlugin({}),
         new UglifyJsPlugin({

@@ -1,0 +1,13 @@
+{
+  "name": "addin-fuel-transction-import",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "bluebird": "^3.3.5",
+    "moment": "^2.13.0",
+    "moment-timezone": "^0.5.4"
+  },
+  "devDependencies": {
+    "dialog-polyfill": "^0.4.3"
+  }
+}
