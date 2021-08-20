@@ -2206,7 +2206,7 @@
         elParseButtonProvider = document.getElementById('parseButtonProvider');
         elTableTransactions = document.getElementById('tableTransactions');
   
-        window.alert("Ciao!");
+        
 
       // Loading translations if available
       if (freshState.translate) {
