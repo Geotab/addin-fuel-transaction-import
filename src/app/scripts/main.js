@@ -468,26 +468,21 @@
   
           cardNumber: cardNumber || '',
           comments: comments || '',
-          description: description || '',
-          //device:device || '',
-          //driver: driver|| '',
+          description: description || '',         
           driverName: driverName|| '',
           externalReference: externalReference|| '',
           licencePlate: licencePlate || '',
           provider:provider || '',
           serialNumber: serialNumber || '',
-          siteName:siteName || '',
-          //sourceData: sourceData || '',
+          siteName:siteName || '',          
           vehicleIdentificationNumber: vehicleIdentificationNumber || '',
           cost: cost || '',
           currencyCode: currencyCode || '',
-          dateTime: dateTime || '',
-          //location: location || '',
+          dateTime: dateTime || '',         
           odometer: odometer || '',
           productType:productType || '',
           volume: volume || '',
-          //version:version || '',
-          //id:id || '',
+          
       };
       return self;
   };
@@ -1422,15 +1417,10 @@
   // Generic format button
   var toggleExample = function (e) {
       var checked = e.target.checked;
-      if (!checked) {
-        
-          e.target.parentNode.className = e.target.parentNode.className.replace('active', '');
-            
-  
-      } else {
-       
-          e.target.parentNode.className += ' active';
-          
+      if (!checked) {       
+          e.target.parentNode.className = e.target.parentNode.className.replace('active', '');  
+      } else {      
+          e.target.parentNode.className += ' active';          
       }
       elSample.style.display = checked ? 'block' : 'none';
   };
@@ -1446,7 +1436,7 @@
       }   
       try {
           var jsonObjParsed= JSON.parse(JSON.stringify(arrayOfParsedTransaction));
-          //console.log(jsonObjParsed);
+         
           
       } catch(e) {        
           console.log("Error: ",e );
@@ -1597,21 +1587,10 @@
               break;
   
               case "dateTime":
-              /*    
-              var temp;
-              temp = moment.utc(moment('01-12-2016', 'DD/MM/YYYY', false)).add(1, 'day').format();
-              console.log(temp);
-              */
+              
                   if(singleTransaction[provider[prop]]!=undefined&&singleTransaction[provider[prop]]!="")
-                  {
-                      //var dateFormattedNoSlash = singleTransaction[provider[prop]].replace(/\//g,"-");
-                      if(getDateValue(singleTransaction[provider[prop]])!==undefined)newTranscationObj[prop] = getDateValue(singleTransaction[provider[prop]]);  
-                      /*else
-                      {                            
-                          window.alert("Error parsing the date, Allowed Format:"+"\n"+"YYYY-MM-DD"+"\n"+"YYYY-MM-DDTHH:MM:SS"+"\n"+"YYYY-MM-DDTHH:MM:SSZ"+"\n"+"YYYYMMDD"+"\n"+"MM-DD-YYYY");
-                          clearAllForException();                                                
-                      }
-                      */
+                  {                      
+                      if(getDateValue(singleTransaction[provider[prop]])!==undefined)newTranscationObj[prop] = getDateValue(singleTransaction[provider[prop]]);                       
                   }
                   
                   break;
@@ -1717,10 +1696,10 @@
 
             for (var prop in dateFormats) {
 
-                //console.log(dateFormats[prop]);
+               
                 if(dateFormats[prop]==dateFormat)
                 {
-                    console.log(dateInput," ",moment(dateInput, dateFormat,true).isValid());
+                    //console.log(dateInput," ",moment(dateInput, dateFormat,true).isValid());
                     if(moment(dateInput, dateFormat,true).isValid())
                     {
                         return dateFormats[prop];
@@ -2041,28 +2020,23 @@
                   {
                              
                      var data = JSON.parse(xhr.responseText);
-                     
-                     if(data['error']['message']="data['error']['message']");
+                    
+                     if(data['error']['message']="Incorrect login credentials")
                      {
-                        alert("Error importing transaction file"+"\n"+"Please check your xlsx file");     
+                        console.log(data['error']['message']);
+                        window.alert("Incorrect Login Credentials");
+                        xhr.abort();
+                        toggleAlert(elAlertError, 'There was an error attempting to upload the file.');
                         clearAllForException();
                      }
 
-                     if(data['result'].length>0)
+                     if(data['error']['message']="data['error']['message']");
                      {
-                        
+                        console.log(data['error']['message']);
+                        alert("Error importing transaction file"+"\n"+"Please check your xlsx file");
+                        clearAllForException();
                      }
-                     else
-                     {
-                              var uploadResult = data['error']['message'];
-                              console.log('uploadResult=',uploadResult);
-                              if(uploadResult =="Incorrect login credentials")
-                              {
-                                  window.alert("Incorrect Login Credentials");
-                                  xhr.abort();
-                                  toggleAlert(elAlertError, 'There was an error attempting to upload the file.');
-                              }
-                      }                   
+   
                   }
                }
   
