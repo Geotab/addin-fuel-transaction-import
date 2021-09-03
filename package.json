@@ -1,6 +1,6 @@
 {
   "name": "addin-fuel-transaction-import",
-  "version": "3.0.1",
+  "version": "3.0.0",
   "private":"true",
   "main": "index.js",
   "engines": {

@@ -311,6 +311,7 @@
       };
       var createRow = function (row, isHeading) {
           var elRow = document.createElement('TR');
+          //elRow.setAttribute('border: 1px solid black');
           var createColumn = function (columnName) {
               if (columnName === 'device' || columnName === 'driver' || columnName === 'serialNumber' || columnName === 'sourceData' || columnName === 'location' || columnName === 'version' || columnName === 'id'|| columnName === 'fleet') {
                   return;
@@ -319,6 +320,7 @@
               elColumn.textContent = isHeading ? getColumnHeading(columnName) : JSON.stringify(row[columnName]);
               if (!isHeading) {
                   elColumn.setAttribute('data-th', columnName);
+                  
               }
               elRow.appendChild(elColumn);
           };
@@ -336,6 +338,7 @@
       }
   
       elBody = document.createElement('TBODY');
+      
       transactions.forEach(function (transaction, i) {
           var elHead;
   
@@ -1401,9 +1404,11 @@
   
       caller.then(function (results) {
           updateTotal(results);
-          console.log(results);
+          
           var temp = JSON.stringify(results);
-          console.log(temp);
+          console.log("Transaction Imported with ID: ",temp.replace(/[^a-zA-Z ]/g, ""));
+         
+          window.alert("Transaction ID: "+temp.replace(/[^a-zA-Z ]/g, ""));
           clearTransactionsProvider();
           toggleAlert(elAlertSuccess, totalAdded);
           //toggleBrowse(true);
@@ -1587,12 +1592,48 @@
               break;
   
               case "dateTime":
-              
-                  if(singleTransaction[provider[prop]]!=undefined&&singleTransaction[provider[prop]]!="")
-                  {                      
-                      if(getDateValue(singleTransaction[provider[prop]])!==undefined)newTranscationObj[prop] = getDateValue(singleTransaction[provider[prop]]);                       
-                  }
-                  
+
+                  var temp="";
+                  var tempHours;
+                  if(provider[prop]!="")
+                    {
+                        if(typeof(provider[prop])=="object")
+                        {
+                            for(var inner in provider[prop])
+                            {
+
+                                                    
+                                    if(singleTransaction[provider[prop][inner]]!=""&&singleTransaction[provider[prop][inner]]!=undefined)
+                                    {
+                                        
+                                        
+
+                                        if(singleTransaction[provider[prop][inner]].length==4)
+                                        {
+                                            tempHours=singleTransaction[provider[prop][inner]];
+                                            tempHours= tempHours.substring(0,2) + ":" +tempHours.substring(2)+":00";
+                                            temp += tempHours;
+                                        }
+                                        else
+                                        {
+                                            temp += singleTransaction[provider[prop][inner]]+" ";
+                                            //temp = temp.slice(0,-1);  
+                                        }
+                                        
+                                       
+                                   
+                                    }
+                                        
+                            }
+                                                      
+                            newTranscationObj[prop] = getDateValue(temp);                           
+                            
+                        }
+                        else newTranscationObj[prop] = getDateValue(singleTransaction[provider[prop]]);
+
+                    }
+                    
+                    
                   break;
               
               case "odometer":
@@ -1686,6 +1727,8 @@
 
           "iso_9":"DD/MM/YYYY h:m:s",
           "iso_10":"DD/MM/YYYY HH:mm:ss",
+
+          "iso_int11":"YYYYMMDD"
           
           
 
@@ -1699,7 +1742,7 @@
                
                 if(dateFormats[prop]==dateFormat)
                 {
-                    //console.log(dateInput," ",moment(dateInput, dateFormat,true).isValid());
+                   
                     if(moment(dateInput, dateFormat,true).isValid())
                     {
                         return dateFormats[prop];
@@ -1717,8 +1760,9 @@
 
         //var dateInput = date.replace(/\//g,"-");        
         var formatFound = getFormat(date); 
-        if(formatFound !==null){           
-           dateFormatted= moment.utc(moment(date,formatFound,true)).format();
+        if(formatFound !==null){  
+            console.log("date",date);
+           dateFormatted= moment.utc(date,formatFound,true).format();
         }
         else
         {
