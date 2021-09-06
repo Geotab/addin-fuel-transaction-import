@@ -56,6 +56,7 @@
     var unitVolumeLiters;
     var unitOdoKm;
     var dateFormat;
+    var hourFormat;
     var fileJsonToParse;
     var objProviderTemplate;
     
@@ -1593,48 +1594,32 @@
   
               case "dateTime":
 
-                  var temp="";
-                  var tempHours;
+                var temp="";
+               
                   if(provider[prop]!="")
                     {
                         if(typeof(provider[prop])=="object")
                         {
+                            dateFormat = dateFormat + " "+hourFormat;
                             for(var inner in provider[prop])
                             {
-
-                                                    
+                                                   
                                     if(singleTransaction[provider[prop][inner]]!=""&&singleTransaction[provider[prop][inner]]!=undefined)
-                                    {
-                                        
-                                        
-
-                                        if(singleTransaction[provider[prop][inner]].length==4)
-                                        {
-                                            tempHours=singleTransaction[provider[prop][inner]];
-                                            tempHours= tempHours.substring(0,2) + ":" +tempHours.substring(2)+":00";
-                                            temp += tempHours;
-                                        }
-                                        else
-                                        {
-                                            temp += singleTransaction[provider[prop][inner]]+" ";
-                                            //temp = temp.slice(0,-1);  
-                                        }
-                                        
-                                       
-                                   
+                                    {                                             
+                                        temp = newTranscationObj[prop] += singleTransaction[provider[prop][inner]]+" ";                                    
                                     }
                                         
                             }
-                                                      
-                            newTranscationObj[prop] = getDateValue(temp);                           
+                            temp = temp.slice(0,-1);                                                     
+                            newTranscationObj[prop] = getDateValue(temp);                          
                             
                         }
                         else newTranscationObj[prop] = getDateValue(singleTransaction[provider[prop]]);
 
                     }
+                break;
                     
-                    
-                  break;
+                
               
               case "odometer":
                   var tmp;
@@ -1728,7 +1713,7 @@
           "iso_9":"DD/MM/YYYY h:m:s",
           "iso_10":"DD/MM/YYYY HH:mm:ss",
 
-          "iso_int11":"YYYYMMDD"
+          "iso_int11":"YYYYMMDD HHmm"
           
           
 
@@ -2138,6 +2123,7 @@
       unitVolumeLiters = extractedProviderTemplate[0]["unitVolumeLiters"];
       unitOdoKm = extractedProviderTemplate[0]["unitOdoKm"];
       dateFormat = extractedProviderTemplate[0]["dateFormat"];
+      hourFormat = extractedProviderTemplate[0]["timeFormat"];
       
   
       results = addBlanckColumn(resultsParser(e));
@@ -2185,7 +2171,9 @@
       initialize: function (geotabApi, freshState, initializeCallback) {
   
         api = geotabApi;
+        
   
+
         elContainer = document.getElementById('importFuelTransactions');
         elFiles = document.getElementById('files');
         elParseButton = document.getElementById('parseButton');
@@ -2224,6 +2212,8 @@
         elParseButtonProvider = document.getElementById('parseButtonProvider');
         elTableTransactions = document.getElementById('tableTransactions');
   
+
+        console.log(moment.utc("01-10-2020 08:07","DD-MM-YYYY HH:mm", true).format());
         
 
       // Loading translations if available

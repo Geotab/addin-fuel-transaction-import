@@ -1,0 +1,138 @@
+{
+    "providers" : [
+        {
+            "Name" : "ENI",
+            "unitVolumeLiters" : "Y",
+            "unitOdoKm" : "Y",
+            "dateFormat" :"YYYYMMDD",
+            "timeFormat" :"HHmm",
+            "data" : {
+            "cardNumber" : "ColumnH",
+            "comments" : "ColumnQ",
+            "description": "",	
+            "device": "",	
+            "driver": "",
+            "driverName":"ColumnO",	
+            "externalReference" : "ColumnK",
+            "licencePlate" : "ColumnN",
+            "provider": "ColumnY",	
+            "serialNumber" : "",	
+            "siteName":["ColumnZ","ColumnAA","ColumnAB"],	
+            "sourceData": "",	
+            "vehicleIdentificationNumber":"",	
+            "cost":"ColumnAO",	
+            "currencyCode":"ColumnAJ",	
+            "dateTime":["ColumnL","ColumnM"],	
+            "location":"",	
+            "odometer":"ColumnP",	
+            "productType":"ColumnAF",	
+            "volume":"ColumnAK",	
+            "version" : "",	
+            "id": ""
+            }
+        },
+
+        {
+            "Name" : "Total Erg",
+            "unitVolumeLiters" : "Y",
+            "unitOdoKm" : "Y",
+            "dateFormat" :"",
+            "timeFormat" :"",
+            "data" : {
+            "cardNumber" : "",
+            "comments" : "",
+            "description": "",	
+            "device": "",	
+            "driver": "",
+            "driverName":"ColumnA",	
+            "externalReference" : "",
+            "licencePlate" : "ColumnD",
+            "provider": "",	
+            "serialNumber": "",	
+            "siteName":"ColumnF",
+            "sourceData": "",	
+            "vehicleIdentificationNumber":"",	
+            "cost":"ColumnK",	
+            "currencyCode":"",	
+            "dateTime":"ColumnB",	
+            "location":"",	
+            "odometer":"ColumnE",	
+            "productType":"",	
+            "volume":"ColumnH",	
+            "version" : "",	
+            "id": ""
+            }
+            
+        }
+        ,
+
+        {
+            "Name" : "IP",
+            "unitVolumeLiters" : "Y",
+            "unitOdoKm" : "Y",
+            "dateFormat" :"DD-MM-YYYY",
+            "timeFormat" :"",
+            "data" : {
+            "cardNumber" : "ColumnA",
+            "comments" : "ColumnC",
+            "description": "",	
+            "device": "",	
+            "driver": "",
+            "driverName":"",	
+            "externalReference" : "",
+            "licencePlate" : "ColumnL",
+            "provider": "ColumnI",	
+            "serialNumber" : "",	
+            "siteName":"ColumnK",	
+            "sourceData": "",	
+            "vehicleIdentificationNumber":"",	
+            "cost":"ColumnD",	
+            "currencyCode":"",	
+            "dateTime":"ColumnB",	
+            "location":"",	
+            "odometer":"ColumnQ",	
+            "productType":"ColumnT",	
+            "volume":"ColumnV",	
+            "version" : "",	
+            "id": ""
+            }
+            
+            
+        }
+        ,
+
+        {
+            "Name" : "Q8 Vodafone Ita",
+            "unitVolumeLiters" : "Y",
+            "unitOdoKm" : "Y",
+            "dateFormat" :"",
+            "timeFormat" :"",
+            "data" : {
+            "cardNumber" : "ColumnD",
+            "comments" : "",
+            "description": "",	
+            "device": "",	
+            "driver": "",
+            "driverName":"ColumnK",	
+            "externalReference" : "",
+            "licencePlate" : "ColumnJ",
+            "provider": "",	
+            "serialNumber" : "",	
+            "siteName":["ColumnR","ColumnS"],	
+            "sourceData": "",	
+            "vehicleIdentificationNumber":"",	
+            "cost":"ColumnT",	
+            "currencyCode":"",	
+            "dateTime":"ColumnG",	
+            "location":"",	
+            "odometer":"ColumnN",	
+            "productType":"ColumnI",	
+            "volume":"ColumnV",	
+            "version" : "",	
+            "id": ""
+            }
+            
+            
+        }
+    ]
+}

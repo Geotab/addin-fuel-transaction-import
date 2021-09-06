@@ -56,6 +56,7 @@
     var unitVolumeLiters;
     var unitOdoKm;
     var dateFormat;
+    var hourFormat;
     var fileJsonToParse;
     var objProviderTemplate;
     
@@ -311,6 +312,7 @@
       };
       var createRow = function (row, isHeading) {
           var elRow = document.createElement('TR');
+          //elRow.setAttribute('border: 1px solid black');
           var createColumn = function (columnName) {
               if (columnName === 'device' || columnName === 'driver' || columnName === 'serialNumber' || columnName === 'sourceData' || columnName === 'location' || columnName === 'version' || columnName === 'id'|| columnName === 'fleet') {
                   return;
@@ -319,6 +321,7 @@
               elColumn.textContent = isHeading ? getColumnHeading(columnName) : JSON.stringify(row[columnName]);
               if (!isHeading) {
                   elColumn.setAttribute('data-th', columnName);
+                  
               }
               elRow.appendChild(elColumn);
           };
@@ -336,6 +339,7 @@
       }
   
       elBody = document.createElement('TBODY');
+      
       transactions.forEach(function (transaction, i) {
           var elHead;
   
@@ -468,26 +472,21 @@
   
           cardNumber: cardNumber || '',
           comments: comments || '',
-          description: description || '',
-          //device:device || '',
-          //driver: driver|| '',
+          description: description || '',         
           driverName: driverName|| '',
           externalReference: externalReference|| '',
           licencePlate: licencePlate || '',
           provider:provider || '',
           serialNumber: serialNumber || '',
-          siteName:siteName || '',
-          //sourceData: sourceData || '',
+          siteName:siteName || '',          
           vehicleIdentificationNumber: vehicleIdentificationNumber || '',
           cost: cost || '',
           currencyCode: currencyCode || '',
-          dateTime: dateTime || '',
-          //location: location || '',
+          dateTime: dateTime || '',         
           odometer: odometer || '',
           productType:productType || '',
           volume: volume || '',
-          //version:version || '',
-          //id:id || '',
+          
       };
       return self;
   };
@@ -1406,9 +1405,11 @@
   
       caller.then(function (results) {
           updateTotal(results);
-          console.log(results);
+          
           var temp = JSON.stringify(results);
-          console.log(temp);
+          console.log("Transaction Imported with ID: ",temp.replace(/[^a-zA-Z ]/g, ""));
+         
+          window.alert("Transaction ID: "+temp.replace(/[^a-zA-Z ]/g, ""));
           clearTransactionsProvider();
           toggleAlert(elAlertSuccess, totalAdded);
           //toggleBrowse(true);
@@ -1422,15 +1423,10 @@
   // Generic format button
   var toggleExample = function (e) {
       var checked = e.target.checked;
-      if (!checked) {
-        
-          e.target.parentNode.className = e.target.parentNode.className.replace('active', '');
-            
-  
-      } else {
-       
-          e.target.parentNode.className += ' active';
-          
+      if (!checked) {       
+          e.target.parentNode.className = e.target.parentNode.className.replace('active', '');  
+      } else {      
+          e.target.parentNode.className += ' active';          
       }
       elSample.style.display = checked ? 'block' : 'none';
   };
@@ -1446,7 +1442,7 @@
       }   
       try {
           var jsonObjParsed= JSON.parse(JSON.stringify(arrayOfParsedTransaction));
-          //console.log(jsonObjParsed);
+         
           
       } catch(e) {        
           console.log("Error: ",e );
@@ -1597,24 +1593,33 @@
               break;
   
               case "dateTime":
-              /*    
-              var temp;
-              temp = moment.utc(moment('01-12-2016', 'DD/MM/YYYY', false)).add(1, 'day').format();
-              console.log(temp);
-              */
-                  if(singleTransaction[provider[prop]]!=undefined&&singleTransaction[provider[prop]]!="")
-                  {
-                      //var dateFormattedNoSlash = singleTransaction[provider[prop]].replace(/\//g,"-");
-                      if(getDateValue(singleTransaction[provider[prop]])!==undefined)newTranscationObj[prop] = getDateValue(singleTransaction[provider[prop]]);  
-                      /*else
-                      {                            
-                          window.alert("Error parsing the date, Allowed Format:"+"\n"+"YYYY-MM-DD"+"\n"+"YYYY-MM-DDTHH:MM:SS"+"\n"+"YYYY-MM-DDTHH:MM:SSZ"+"\n"+"YYYYMMDD"+"\n"+"MM-DD-YYYY");
-                          clearAllForException();                                                
-                      }
-                      */
-                  }
-                  
-                  break;
+
+                var temp="";
+               
+                  if(provider[prop]!="")
+                    {
+                        if(typeof(provider[prop])=="object")
+                        {
+                            dateFormat = dateFormat + " "+hourFormat;
+                            for(var inner in provider[prop])
+                            {
+                                                   
+                                    if(singleTransaction[provider[prop][inner]]!=""&&singleTransaction[provider[prop][inner]]!=undefined)
+                                    {                                             
+                                        temp = newTranscationObj[prop] += singleTransaction[provider[prop][inner]]+" ";                                    
+                                    }
+                                        
+                            }
+                            temp = temp.slice(0,-1);                                                     
+                            newTranscationObj[prop] = getDateValue(temp);                          
+                            
+                        }
+                        else newTranscationObj[prop] = getDateValue(singleTransaction[provider[prop]]);
+
+                    }
+                break;
+                    
+                
               
               case "odometer":
                   var tmp;
@@ -1707,6 +1712,8 @@
 
           "iso_9":"DD/MM/YYYY h:m:s",
           "iso_10":"DD/MM/YYYY HH:mm:ss",
+
+          "iso_int11":"YYYYMMDD HHmm"
           
           
 
@@ -1717,10 +1724,10 @@
 
             for (var prop in dateFormats) {
 
-                //console.log(dateFormats[prop]);
+               
                 if(dateFormats[prop]==dateFormat)
                 {
-                    console.log(dateInput," ",moment(dateInput, dateFormat,true).isValid());
+                   
                     if(moment(dateInput, dateFormat,true).isValid())
                     {
                         return dateFormats[prop];
@@ -1738,8 +1745,9 @@
 
         //var dateInput = date.replace(/\//g,"-");        
         var formatFound = getFormat(date); 
-        if(formatFound !==null){           
-           dateFormatted= moment.utc(moment(date,formatFound,true)).format();
+        if(formatFound !==null){  
+            console.log("date",date);
+           dateFormatted= moment.utc(date,formatFound,true).format();
         }
         else
         {
@@ -2041,28 +2049,23 @@
                   {
                              
                      var data = JSON.parse(xhr.responseText);
-                     
-                     if(data['error']['message']="data['error']['message']");
+                    
+                     if(data['error']['message']="Incorrect login credentials")
                      {
-                        alert("Error importing transaction file"+"\n"+"Please check your xlsx file");     
+                        console.log(data['error']['message']);
+                        window.alert("Incorrect Login Credentials");
+                        xhr.abort();
+                        toggleAlert(elAlertError, 'There was an error attempting to upload the file.');
                         clearAllForException();
                      }
 
-                     if(data['result'].length>0)
+                     if(data['error']['message']="data['error']['message']");
                      {
-                        
+                        console.log(data['error']['message']);
+                        alert("Error importing transaction file"+"\n"+"Please check your xlsx file");
+                        clearAllForException();
                      }
-                     else
-                     {
-                              var uploadResult = data['error']['message'];
-                              console.log('uploadResult=',uploadResult);
-                              if(uploadResult =="Incorrect login credentials")
-                              {
-                                  window.alert("Incorrect Login Credentials");
-                                  xhr.abort();
-                                  toggleAlert(elAlertError, 'There was an error attempting to upload the file.');
-                              }
-                      }                   
+   
                   }
                }
   
@@ -2120,6 +2123,7 @@
       unitVolumeLiters = extractedProviderTemplate[0]["unitVolumeLiters"];
       unitOdoKm = extractedProviderTemplate[0]["unitOdoKm"];
       dateFormat = extractedProviderTemplate[0]["dateFormat"];
+      hourFormat = extractedProviderTemplate[0]["timeFormat"];
       
   
       results = addBlanckColumn(resultsParser(e));
@@ -2167,7 +2171,9 @@
       initialize: function (geotabApi, freshState, initializeCallback) {
   
         api = geotabApi;
+        
   
+
         elContainer = document.getElementById('importFuelTransactions');
         elFiles = document.getElementById('files');
         elParseButton = document.getElementById('parseButton');
@@ -2206,6 +2212,8 @@
         elParseButtonProvider = document.getElementById('parseButtonProvider');
         elTableTransactions = document.getElementById('tableTransactions');
   
+
+        console.log(moment.utc("01-10-2020 08:07","DD-MM-YYYY HH:mm", true).format());
         
 
       // Loading translations if available

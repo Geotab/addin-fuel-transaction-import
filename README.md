@@ -7,7 +7,7 @@ Add the configuration below to the to the system setting -> add-ins section of t
 {
   "name": "Fuel Transaction Import (by Fabio)",
   "supportEmail": "support@geotab.com",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "items": [
     {
       "icon": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@master/dist/images/icon.png",
@@ -19,6 +19,7 @@ Add the configuration below to the to the system setting -> add-ins section of t
     }
   ]
 }
+
 ```
 
 ### Contributing
