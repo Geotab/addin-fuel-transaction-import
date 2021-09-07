@@ -1691,119 +1691,106 @@
           "id0": "YYYY-MM-DD",
           "id1": "YYYY-MM-DDTHH:mm:ss",
           "id2": "YYYY-MM-DDTh:m:s",
-          "id3":"YYYY-MM-DD HH:mm",
+          "id3": "YYYY-MM-DD HH:mm",
           "id4": "YYYY-MM-DD HH:mm:ss",
           "id5": "YYYY-MM-DD h:m:s",
           "id6": "YYYY-MM-DDTHH:mm:ssZ",          
           "id7": "YYYY-MM-DDTh:m:sZ",
-          "id8":"YYYY-MM-DD HHmm",
-          "id9":"YYYY-MM-DD HHmmss",
-         
+          "id8": "YYYY-MM-DD HHmm",
+          "id9": "YYYY-MM-DD HHmmss",  
 
           "id20": "YYYY/MM/DD",          
           "id21": "YYYY/MM/DDTHH:mm:ss",
           "id22": "YYYY/MM/DDTh:m:s",
-          "id23":"YYYY/MM/DD HH:mm",
+          "id23": "YYYY/MM/DD HH:mm",
           "id24": "YYYY/MM/DD HH:mm:ss",
           "id25": "YYYY/MM/DD h:m:s",
           "id26": "YYYY/MM/DDTHH:mm:ssZ",
           "id27": "YYYY/MM/DDTh:m:sZ",
-          "id28":"YYYY/MM/DD HHmm",
-          "id29":"YYYY/MM/DD HHmmss",
-          
+          "id28": "YYYY/MM/DD HHmm",
+          "id29": "YYYY/MM/DD HHmmss",          
 
-          "id40":"YYYYMMDD",
-          "id41":"YYYYMMDDTHH:mm:ss",
+          "id40": "YYYYMMDD",
+          "id41": "YYYYMMDDTHH:mm:ss",
           "id42": "YYYYMMDDTh:m:s",
-          "id43":"YYYYMMDD HH:mm",
-          "id44":"YYYYMMDD HH:mm:ss",
+          "id43": "YYYYMMDD HH:mm",
+          "id44": "YYYYMMDD HH:mm:ss",
           "id45": "YYYYMMDD h:m:s",
           "id46": "YYYYMMDDTHH:mm:ssZ",          
           "id47": "YYYYMMDDTh:m:sZ",
-          "id48":"YYYYMMDD HHmm",
-          "id49":"YYYYMMDD HHmmss",
+          "id48": "YYYYMMDD HHmm",
+          "id49": "YYYYMMDD HHmmss",
           
-          
-
           //MM
-         
+
           "id60": "MM-DD-YYYY",
           "id61": "MM-DD-YYYYTHH:mm:ss",
           "id62": "MM-DD-YYYYTh:m:s",
-          "id63":"MM-DD-YYYY HH:mm",
+          "id63": "MM-DD-YYYY HH:mm",
           "id64": "MM-DD-YYYY HH:mm:ss",
           "id65": "MM-DD-YYYY h:m:s",
           "id66": "MM-DD-YYYYTHH:mm:ssZ",          
           "id67": "MM-DD-YYYYTh:m:sZ",
-          "id68":"MM-DD-YYYY HHmm",
-          "id69":"MM-DD-YYYY HHmmss",
+          "id68": "MM-DD-YYYY HHmm",
+          "id69": "MM-DD-YYYY HHmmss",
          
-
           "id80": "MM/DD/YYYY",          
           "id81": "MM/DD/YYYYTHH:mm:ss",
           "id82": "MM/DD/YYYYTh:m:s",
-          "id83":"MM/DD/YYYY HH:mm",
+          "id83": "MM/DD/YYYY HH:mm",
           "id84": "MM/DD/YYYY HH:mm:ss",
           "id85": "MM/DD/YYYY h:m:s",
           "id86": "MM/DD/YYYYTHH:mm:ssZ",
           "id87": "MM/DD/YYYYTh:m:sZ",
-          "id88":"MM/DD/YYYY HHmm",
-          "id89":"MM/DD/YYYY HHmmss",
-          
+          "id88": "MM/DD/YYYY HHmm",
+          "id89": "MM/DD/YYYY HHmmss",          
 
-          "id100":"MMDDYYYY",
-          "id101":"MMDDYYYYTHH:mm:ss",
+          "id100": "MMDDYYYY",
+          "id101": "MMDDYYYYTHH:mm:ss",
           "id102": "MMDDYYYYTh:m:s",
-          "id103":"MMDDYYYY HH:mm",
-          "id104":"MMDDYYYY HH:mm:ss",
+          "id103": "MMDDYYYY HH:mm",
+          "id104": "MMDDYYYY HH:mm:ss",
           "id105": "MMDDYYYY h:m:s",
           "id106": "MMDDYYYYTHH:mm:ssZ",          
           "id107": "MMDDYYYYTh:m:sZ",
-          "id108":"MMDDYYYY HHmm",
-          "id109":"MMDDYYYY HHmmss",
+          "id108": "MMDDYYYY HHmm",
+          "id109": "MMDDYYYY HHmmss",
 
-          //DD
-          
+          //DD        
         
           "id120": "DD-MM-YYYY",
           "id121": "DD-MM-YYYYTHH:mm:ss",
           "id122": "DD-MM-YYYYTh:m:s",
-          "id123":"DD-MM-YYYY HH:mm",
+          "id123": "DD-MM-YYYY HH:mm",
           "id124": "DD-MM-YYYY HH:mm:ss",
           "id125": "DD-MM-YYYY h:m:s",
           "id126": "DD-MM-YYYYTHH:mm:ssZ",          
           "id127": "DD-MM-YYYYTh:m:sZ",
-          "id2128":"DD-MM-YYYY HHmm",
-          "id129":"DD-MM-YYYY HHmmss",
-         
+          "id128": "DD-MM-YYYY HHmm",
+          "id129": "DD-MM-YYYY HHmmss",         
 
           "id140": "DD/MM/YYYY",          
           "id141": "DD/MM/YYYYTHH:mm:ss",
           "id142": "DD/MM/YYYYTh:m:s",
-          "id143":"DD/MM/YYYY HH:mm",
+          "id143": "DD/MM/YYYY HH:mm",
           "id144": "DD/MM/YYYY HH:mm:ss",
           "id145": "DD/MM/YYYY h:m:s",
           "id146": "DD/MM/YYYYTHH:mm:ssZ",
           "id147": "DD/MM/YYYYTh:m:sZ",
-          "id148":"DD/MM/YYYY HHmm",
-          "id149":"DD/MM/YYYY HHmmss",
-          
+          "id148": "DD/MM/YYYY HHmm",
+          "id149": "DD/MM/YYYY HHmmss",          
 
-          "id160":"DDMMYYY",
-          "id161":"DDMMYYYYTHH:mm:ss",
+          "id160": "DDMMYYY",
+          "id161": "DDMMYYYYTHH:mm:ss",
           "id162": "DDMMYYYYTh:m:s",
-          "id163":"DDMMYYYY HH:mm",
-          "id164":"DDMMYYYY HH:mm:ss",
+          "id163": "DDMMYYYY HH:mm",
+          "id164": "DDMMYYYY HH:mm:ss",
           "id165": "DDMMYYYY h:m:s",
           "id166": "DDMMYYYYTHH:mm:ssZ",          
           "id167": "DDMMYYYYTh:m:sZ",
-          "id168":"DDMMYYYY HHmm",
-          "id169":"DDMMYYYY HHmmss",
-
-
-
-
-           //define other well known formats if you want
+          "id168": "DDMMYYYY HHmm",
+          "id169": "DDMMYYYY HHmmss",
+       
         }
         
         function getFormat(dateInput){
