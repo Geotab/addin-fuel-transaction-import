@@ -4,7 +4,7 @@
 	"version": "3.0.0",
 	"items": [{
 			
-			"icon": "images/icon.png",
+			"icon": "images/icon.svg",
 			"path": "EngineMaintenanceLink/",
 			"menuName": {
 				"en": "Fuel Transaction Import (by Fabio)"
