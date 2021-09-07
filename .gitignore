@@ -3,3 +3,10 @@ node_modules
 .sass-cache
 test\functional
 webpack.*
+utils
+.gitattributes
+gulpfile.babel.js
+package-lock.json
+webpack.common.js
+webpack.development.js
+webpack.production.js
