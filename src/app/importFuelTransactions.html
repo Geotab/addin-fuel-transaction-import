@@ -35,13 +35,13 @@
 
         </header>
 
-        <div class="container-fluid">
+        <div >
 
       
        
 
-          <section class="row">
-              <div class="col-sm-12">
+          <section >
+              <div >
                   <h1>Import Fuel Transactions</h1>
                 
 
@@ -53,7 +53,7 @@
                       
                           <li>
                               Generic Format
-                          <label class="btn btn-default btn-xs" style="color: blue;" title="Shows example of generic fuel card csv format">
+                          <label style="color: blue;" title="Shows example of generic fuel card csv format">
                         
                           <input style="display: none" type="checkbox" id="exampleButton"><u><small>Example</small></u>
                       </li>
@@ -76,31 +76,31 @@
 
 
           <!-- alert info -->
-          <section class="row">
-              <div class="col-sm-12">
-                  <div id="alertInfo" style="display: none" class="alert alert-info">
-                      <div class="spinner">
-                          <div class="rect1"></div>
-                          <div class="rect2"></div>
-                          <div class="rect3"></div>
-                          <div class="rect4"></div>
-                          <div class="rect5"></div>
+          <section >
+              <div >
+                  <div id="alertInfo" style="display: none" >
+                      <div>
+                          <div ></div>
+                          <div ></div>
+                          <div ></div>
+                          <div ></div>
+                          <div ></div>
                       </div>
                       <span></span>
                   </div>
-                  <div id="alertSuccess" style="display: none" class="alert alert-success">Successfully added
+                  <div id="alertSuccess" style="display: none" >Successfully added
                       <span></span> fuel transactions
                   </div>
-                  <div id="alertError" style="display: none" class="alert alert-danger">Error: <span></span></div>
+                  <div id="alertError" style="display: none">Error: <span></span></div>
               </div>
           </section>
 
           <!-- sample -->
-          <section class="row" id="sample" style="display: none">
-              <div class="col-sm-12">
-                  <div class="panel panel-default">
-                      <div class="panel-heading">Generic Fuel Card csv file sample</div>
-                      <div class="panel-body">
+          <section  id="sample" style="display: none">
+              <div >
+                  <div>
+                      <div >Generic Fuel Card csv file sample</div>
+                      <div>
                           <p>If your file does not conform to one of the know fuel card csv files types you can convert your
                               csv file to the generic fuel card csv file type. This file type conforms to the FuelTransaction
                               API object specification. See the
@@ -111,9 +111,9 @@
                               File should include column headings row and data rows.
                           </p>
 
-                          <div class="table-responsive">
+                          <div >
 
-                              <table class="table table-condensed table-striped table-bordered">
+                              <table>
                                   <tr>
                                       <th>VIN</th>
                                       <th>Description</th>
@@ -148,7 +148,7 @@
                                       <td>DIESEL</td>
                                       <td>*</td>
                                   </tr>
-                                  <tr class="info">
+                                  <tr>
                                       <td><em>string</em> - vehicle VIN</td>
                                       <td><em>string</em> - device description</td>
                                       <td><em>string</em> - device serial number</td>
@@ -163,7 +163,7 @@
                                       <td><em>number</em> - latitude</td>
                                       <td><em>string</em> - driver name</td>
                                       <td><em>string</em> - product type, options:
-                                          <ul class="list-unstyled">
+                                          <ul>
                                               <li>Unknown</li>
                                               <li>NonFuel</li>
                                               <li>Regular</li>
@@ -183,7 +183,7 @@
                                   </tr>
                               </table>
                           </div>
-                          <a class="btn btn-default" href="https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@master/dist/generic_fuel_card_csv_file_sample.csv">Download sample csv file</a>
+                          <a  href="https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@master/dist/generic_fuel_card_csv_file_sample.csv">Download sample csv file</a>
                       </div>
                   </div
               </div>
@@ -192,24 +192,24 @@
         
 
             <!-- file select JSON-->
-            <section class="row" id="jsonfileSelectContainer" style="display: none">
-                <div class="col-sm-12">
-                    <form class="form-horizontal" role="form" id="formJson">
+            <section  id="jsonfileSelectContainer" style="display: none">
+                <div >
+                    <form  role="form" id="formJson">
                         <fieldset>
                             <legend>Select Provider File</legend>
 
                             <table >                                
                                 <tr>
                                   <td>
-                                      <div class="form-group">
-                                        <label class="col-sm-2 col-lg-1 control-label" for="jsonFiles"></label>
+                                      <div >
+                                        <label  for="jsonFiles"></label>
         
-                                        <div class="col-sm-6 col-md-4 col-lg-3">
-                                        <div class="input-group">
-                                            <span class="input-group-btn">                                        
+                                        <div>
+                                        <div>
+                                            <span >                                        
                                             <input id="filesJson" type="file" style="display:none;" />
                                             <input class="geotabButton" type="button" value="Select Provider File" onclick="document.getElementById('filesJson').click();" />
-                                            <label class="help-block">(.json)</label>                                     
+                                            <label>(.json)</label>                                     
                                         </span>         
                                         </div>                                    
                                         </div>   
@@ -224,11 +224,11 @@
                                 
 
                                 <tr>
-                                  <td><div class="col-sm-2 col-lg-1">
+                                  <td><div>
                                     <button disabled="disabled" class="geotabButton" id="importJsonFile" title="Import Mapping File">Import Json File</button>
                                    
                                 </div></td>
-                                  <td><select id="providerDropMenu"  class="form-control" name="providerDropMenu" style="display: none" >              
+                                  <td><select id="providerDropMenu" name="providerDropMenu" style="display: none" >              
                                 </select></td>
                                   
                                 </tr>
@@ -251,35 +251,35 @@
             </section>
 
           <!-- file select -->
-          <section class="row" id="fileSelectContainer" >
+          <section  id="fileSelectContainer" >
 
-              <div class="col-sm-12">
-                  <form class="form-horizontal" role="form" id="form">
+              <div >
+                  <form  role="form" id="form">
                       <fieldset>
                           <legend>Select Transaction File</legend>
 
                           <table>
                               <tr>
                                   <td>
-                                    <div class="form-group">
-                                        <div class="col-sm-6 col-md-4 col-lg-3">
-                                            <div class="input-group">
-                                                <span class="input-group-btn">                                  
+                                    <div >
+                                        <div>
+                                            <div>
+                                                <span >                                  
           
                                                     <input id="files" type="file" style="display:none;" />
                                                     <input class="geotabButton" type="button" value="Browse" onclick="document.getElementById('files').click();" />
-                                                    <label class="help-block">(.xlsx, .xlsm, .csv)</label>           
+                                                    <label>(.xlsx, .xlsm, .csv)</label>           
                                                 </span>    
                                             </div>                                
                                         </div>    
                                     </div>
                                   </td>
                                   <td rowspan="2" width="30px"></td>
-                                  <td><input type="text" class="form-control" id="fileName" readonly></td>
+                                  <td><input type="text" id="fileName" readonly></td>
                               </tr>
                           <tr>
                               <td>
-                                <div class="col-sm-2 col-lg-1">
+                                <div>
                                     <button disabled="disabled" class="geotabButton" id="parseButton" title="Load fuel card transactions from selected file">Open File</button>
                                 </div>
                               </td>
@@ -301,35 +301,35 @@
                                       
 
  <!-- transaction file select for Provider Selector -->
- <section class="row" id="fileSelectContainerProvider" style="display: none">
+ <section  id="fileSelectContainerProvider" style="display: none">
 
-    <div class="col-sm-12">
-        <form class="form-horizontal" role="form" id="form">
+    <div >
+        <form  role="form" id="form">
             <fieldset>
                 <legend>Select Transaction File for Provider Selected</legend>
 
                 <table>
                     <tr>
                         <td>
-                          <div class="form-group">
-                              <div class="col-sm-6 col-md-4 col-lg-3">
-                                  <div class="input-group">
-                                      <span class="input-group-btn">                                  
+                          <div >
+                              <div>
+                                  <div>
+                                      <span >                                  
 
                                           <input id="filesProvider" type="file" style="display:none;" />
                                           <input class="geotabButton" type="button" value="Browse" onclick="document.getElementById('filesProvider').click();" />
-                                          <label class="help-block">(.xlsx)</label>           
+                                          <label>(.xlsx)</label>           
                                       </span>    
                                   </div>                                
                               </div>    
                           </div>
                         </td>
                         <td rowspan="2" width="30px"></td>
-                        <td><input type="text" size="30" class="form-control" id="fileNameProvider" readonly></td>
+                        <td><input type="text" size="30" id="fileNameProvider" readonly></td>
                     </tr>
                 <tr>
                     <td>
-                      <div class="col-sm-2 col-lg-1">
+                      <div>
                           <button disabled="disabled" class="geotabButton" id="parseButtonProvider" title="Load fuel card transactions from selected file">Open File</button>
                       </div>
                     </td>
@@ -351,20 +351,20 @@
 
           <!-- import -->
           <div   id="transactionContainer" style="display: none">
-              <section class="row">
-                  <div class="col-sm-12">
+              <section >
+                  <div >
 
                  
-                      <div class="btn-toolbar" role="toolbar">
+                      <div  role="toolbar">
                         <table>
                             <tr>
-                                <td> <div  class="btn-toolbar" role="group" aria-label="...">
+                                <td> <div   role="group" aria-label="...">
                                     <button class="geotabButton" id="cancelButton" title="Cancel">Cancel</button>
                                     
                                   </div></td>
-                                <td><div class="input-group-btn" role="group" aria-label="...">
-                                    <div class="input-group-btn">
-                                        <div class="input-group-btn">
+                                <td><div  role="group" aria-label="...">
+                                    <div >
+                                        <div >
                                             <button disabled="disabled" class="geotabButton"  id="importButton" title="Import fuel card transactions">Import</button>
                                             </div>
                                          </div>
@@ -374,8 +374,8 @@
                           
                         </table>
 
-                        <label class="sr-only" for="fleet">Fleet</label>
-                        <select disabled class="form-control" id="fleet" title="When a file has more than one fleet, select the fleet from this list."></select>
+                        <label for="fleet">Fleet</label>
+                        <select disabled id="fleet" title="When a file has more than one fleet, select the fleet from this list."></select>
                   
 
                       </div>
@@ -386,12 +386,12 @@
                   </div>
               </section>
                              
-              <section class="row">
-                  <div class="col-sm-12">
+              <section >
+                  <div >
                       <h3>Found fuel transactions!</h3>
                       <p>Showing first <span id="listCount"></span> fuel transactions. Verify the columns have the correct values then click import.</p>
-                      <div class="table-responsive">
-                          <table id="transactionList" class="table table-condensed table-striped"></table>
+                      <div >
+                          <table id="transactionList" ></table>
                       </div>
                   </div>
               </section>
@@ -400,18 +400,18 @@
 
           <!-- import provider transactions -->
           <div   id="transactionContainerProvider" style="display: none">
-            <section class="row">
-                <div class="col-sm-12">               
-                    <div class="btn-toolbar" role="toolbar">
+            <section >
+                <div >               
+                    <div  role="toolbar">
                         <table>
                             <tr>
-                                <td> <div  class="btn-toolbar" role="group" aria-label="...">
+                                <td> <div   role="group" aria-label="...">
                                     <button class="geotabButton" id="cancelButtonProvider" title="Cancel">Cancel</button>
                                     
                                   </div></td>
-                                <td><div class="input-group-btn" role="group" aria-label="...">
-                                    <div class="input-group-btn">
-                                        <div class="input-group-btn">
+                                <td><div  role="group" aria-label="...">
+                                    <div >
+                                        <div >
                                             <button disabled="disabled" class="geotabButton"  id="importButtonProvider" title="Import fuel card transactions">Import</button>
                                             </div>
                                          </div>
@@ -419,12 +419,12 @@
                                 
                             </tr>  
                         </table>
-                        <section class="row">
-                            <div class="col-sm-12">
+                        <section >
+                            <div >
                                 <h3>Found fuel transactions!</h3>
                                 <p>Showing first <span id="listCountProvider"></span> fuel transactions. Verify the columns have the correct values then click import.</p>
-                                <div class="table-responsive">
-                                    <table id="transactionListProvider" border="1" class="table table-condensed table-striped"></table>
+                                <div >
+                                    <table id="transactionListProvider" border="1" ></table>
                                 </div>
                             </div>
                         </section>
