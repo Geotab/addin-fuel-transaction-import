@@ -10,7 +10,7 @@ Add the configuration below to the to the system setting -> add-ins section of t
   "version": "3.0.0",
   "items": [
     {
-      "icon": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@master/dist/images/icon.png",
+      "icon": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@master/dist/images/icon.svg",
       "path": "EngineMaintenanceLink/",
       "menuName": {
         "en": "Fuel Transaction Import (by Fabio)"
