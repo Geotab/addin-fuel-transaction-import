@@ -2358,7 +2358,7 @@
        */
       blur: function () {
         // hide main content
-        elContainer.className += ' hidden';
+        elContainer.className += 'hidden';
   
         // events
         elFiles.removeEventListener('change', fileSelected, false);

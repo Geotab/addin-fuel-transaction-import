@@ -9,8 +9,13 @@
 			"menuName": {
 				"en": "Fuel Transaction Import (by Fabio)"
 			},
+
+			
 			"url": "importFuelTransactions.html"
 			}
+
+
+			
 	],
   "dev": {
     "root": "importFuelTransactions",
