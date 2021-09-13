@@ -127,7 +127,7 @@ module.exports = merge(common, {
                 from: './src/app/config.json',
                 transform: transform
             },
-            //{ from: './src/app/translations/', to: 'translations/' },
+            { from: './src/app/translations/', to: 'translations/' },
             { from: './src/app/scripts/', to: 'scripts/'},
             { from: './src/app/styles/', to: 'styles/'},
             { from: './src/app/generic_fuel_card_csv_file_sample.csv', to: 'generic_fuel_card_csv_file_sample.csv'}

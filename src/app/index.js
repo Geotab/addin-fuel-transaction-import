@@ -14,6 +14,7 @@ if(!geotab.addin.importFuelTransactions){
     require('moment');
     //require('bootstrap');
     require('moment-timezone');
+    require('jquery');
 
     
 }

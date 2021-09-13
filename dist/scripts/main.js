@@ -2,7 +2,7 @@
  * @returns {{initialize: Function, focus: Function, blur: Function}}
  */
 
-// THIS IS A TEST 12 AUG. 11:03
+
 
  geotab.addin.addinFuelTransactionImport300 = function () {
     'use strict';
