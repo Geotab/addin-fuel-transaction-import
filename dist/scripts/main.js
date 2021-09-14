@@ -2372,7 +2372,7 @@
         elCancelButtonProvider.removeEventListener('click', clearTransactionsProvider, false);
   
   
-        elFilesJson.removeListener('change', fileSelectedJson, false);
+        elFilesJson.removeEventListener('change', fileSelectedJson, false);
         elParseButtonJson.removeEventListener('click', parseJsonMapping, false);
         elJsonDropDownMenu.removeEventListener('change', toggleJsonDropDownMenu, false);
   
