@@ -2246,7 +2246,7 @@
         
   
 
-        elContainer = document.getElementById('importFuelTransactions300');
+        elContainer = document.getElementById('importFuelTransactions');
         elFiles = document.getElementById('files');
         elParseButton = document.getElementById('parseButton');
         elImportButton = document.getElementById('importButton');
@@ -2316,7 +2316,7 @@
         
             // getting the current user to display in the UI
             geotabApi.getSession(session => {
-              elContainer.querySelector('#importFuelTransactions300-user').textContent = session.userName;
+              elContainer.querySelector('#importFuelTransactions-user').textContent = session.userName;
             });
                       
             elContainer.className = '';
