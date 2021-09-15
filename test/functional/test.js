@@ -67,7 +67,7 @@ describe('User visits addin', function () {
 
 	describe('Show addin content after initialized and focus is called', function () {
 		it('should display date select control', function () {
-			browser.assert.style('#importFuelTransactions', 'display', 'block');
+			browser.assert.style('#importFuelTransactions300', 'display', 'block');
 		});
 	});
 
