@@ -2246,7 +2246,7 @@
         
   
 
-        elContainer = document.getElementById('importFuelTransactions');
+        elContainer = document.getElementById('importFuelTransactions300');
         elFiles = document.getElementById('files');
         elParseButton = document.getElementById('parseButton');
         elImportButton = document.getElementById('importButton');
