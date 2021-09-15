@@ -4,7 +4,7 @@
 
 
 
- geotab.addin.addinFuelTransactionImport300 = function () {
+ geotab.addin.addinFuelTransactionImport_fp = function () {
     'use strict';
   
     // Geotab Addin variables
@@ -2246,7 +2246,7 @@
         
   
 
-        elContainer = document.getElementById('importFuelTransactions');
+        elContainer = document.getElementById('importFuelTransactions_fp');
         elFiles = document.getElementById('files');
         elParseButton = document.getElementById('parseButton');
         elImportButton = document.getElementById('importButton');
@@ -2316,7 +2316,7 @@
         
             // getting the current user to display in the UI
             geotabApi.getSession(session => {
-              elContainer.querySelector('#importFuelTransactions-user').textContent = session.userName;
+              elContainer.querySelector('#importFuelTransactions_fp-user').textContent = session.userName;
             });
                       
             elContainer.className = '';

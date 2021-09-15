@@ -7,7 +7,7 @@
 // Allowing babel to work with older versions of IE
 const regeneratorRuntime = require('regenerator-runtime');
 
-if(!geotab.addin.importFuelTransactions){
+if(!geotab.addin.importFuelTransactions_fp){
     
     require('./scripts/main');
     require('bluebird');
