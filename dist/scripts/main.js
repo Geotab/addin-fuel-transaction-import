@@ -57,6 +57,7 @@
     var unitOdoKm;
     var dateFormat;
     var hourFormat;
+    var dateHoursComposed;
     var fileJsonToParse;
     var objProviderTemplate;
     
@@ -1595,12 +1596,13 @@
               case "dateTime":
 
                 var temp="";
+                dateHoursComposed ="";
                
                   if(provider[prop]!="")
                     {
                         if(typeof(provider[prop])=="object")
                         {
-                            dateFormat = dateFormat + " "+hourFormat;
+                            dateHoursComposed = dateFormat + " "+hourFormat;
                             for(var inner in provider[prop])
                             {
                                                    
@@ -1795,19 +1797,17 @@
         
         function getFormat(dateInput){
 
-            for (var prop in dateFormats) {
-
-               
-                if(dateFormats[prop]==dateFormat)
-                {
-                   
-                    if(moment(dateInput, dateFormat,true).isValid())
+            for (var prop in dateFormats) {               
+                if(dateFormats[prop]==dateHoursComposed)
+                {                  
+                    if(moment(dateInput, dateHoursComposed,true).isValid())
                     {
                         return dateFormats[prop];
                     }
                     else
                     {
                         console.log("Mapping allowed but date in file transaction not correspoding");
+                        console.log(dateFormats[prop]);
                         window.alert("Mapping allowed but date in file transaction not correspoding");
                         clearAllForException();
                     }
@@ -1818,13 +1818,17 @@
 
         //var dateInput = date.replace(/\//g,"-");        
         var formatFound = getFormat(date); 
-        if(formatFound !==null){  
-            console.log("date",date);
+        
+        if(formatFound !==null)
+        {  
+           
            dateFormatted= moment.utc(date,formatFound,true).format();
+       
         }
         else
         {
             console.log("Date Format in mapping file not allowed or missing");
+            console.log("Date: ",date);      
             window.alert("Date Format in mapping file not allowed or missing");
             clearAllForException(); 
         }
@@ -2244,7 +2248,7 @@
   
         api = geotabApi;
         
-  
+        console.log(moment.utc("20201101 0544", "YYYYMMDD HHmm", true).format());
 
         elContainer = document.getElementById('importFuelTransactions_fp');
         elFiles = document.getElementById('files');
@@ -2314,6 +2318,9 @@
        */
       focus: function (geotabApi, freshState) {
         
+        
+        
+
             // getting the current user to display in the UI
             geotabApi.getSession(session => {
               elContainer.querySelector('#importFuelTransactions_fp-user').textContent = session.userName;
