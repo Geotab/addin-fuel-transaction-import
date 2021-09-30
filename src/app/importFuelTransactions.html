@@ -9,9 +9,20 @@
     <!--<link rel="stylesheet" src="styles/main.css">-->
     <!-- endbuild -->
     <!-- build:js scripts/main.js -->
-    <script src="scripts/main.js"></script>
-    <!-- endbuild -->
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.js"></script>
+   
+    <script src="scripts/main.js"></script>
+    
+
+    
+    <!-- endbuild -->
+
+    
+    
+
 </head>
 <body>
 
@@ -49,8 +60,8 @@
                       </li>
                       <li>Import Fuel Provider <b style="color: red;">[NEW]</b> <a href="https://docs.google.com/document/d/1nYSE4cSPlz2gSpjkyu3Aj1IXcHkoPAse5Cy5b1ppF-Q/edit#heading=h.ymsdtzsurgp4"  target=”_blank”>User Manual</a></li>
                      
-                  </ul>
-                  
+                 
+
                   <input type="radio" name="selector" id="wexSelector" class="geotabSwitchButton" checked>
 <label class="geotabButton" for="wexSelector" value="WEX">WEX</label>
 <input type="radio" name="selector" id="genericFormatSelector" class="geotabSwitchButton">
@@ -62,7 +73,65 @@
               </div>
           </section>
 
-          
+ <!-- Start of the test -->
+ <select name='timezone' id='timezone' style='width:350px'>
+	<option value='-12:00,0'>(-12:00) International Date Line West</option>
+	<option value='-11:00,0'>(-11:00) Midway Island, Samoa</option>
+	<option value='-10:00,0'>(-10:00) Hawaii</option>
+	<option value='-09:00,1'>(-09:00) Alaska</option>
+	<option value='-08:00,1'>(-08:00) Pacific Time (US & Canada)</option>
+	<option value='-07:00,0'>(-07:00) Arizona</option>
+	<option value='-07:00,1'>(-07:00) Mountain Time (US & Canada)</option>
+	<option value='-06:00,0'>(-06:00) Central America, Saskatchewan</option>
+	<option value='-06:00,1'>(-06:00) Central Time (US & Canada), Guadalajara, Mexico city</option>
+	<option value='-05:00,0'>(-05:00) Indiana, Bogota, Lima, Quito, Rio Branco</option>
+	<option value='-05:00,1'>(-05:00) Eastern time (US & Canada)</option>
+	<option value='-04:00,1'>(-04:00) Atlantic time (Canada), Manaus, Santiago</option>
+	<option value='-04:00,0'>(-04:00) Caracas, La Paz</option>
+	<option value='-03:30,1'>(-03:30) Newfoundland</option>
+	<option value='-03:00,1'>(-03:00) Greenland, Brasilia, Montevideo</option>
+	<option value='-03:00,0'>(-03:00) Buenos Aires, Georgetown</option>
+	<option value='-02:00,1'>(-02:00) Mid-Atlantic</option>
+	<option value='-01:00,1'>(-01:00) Azores</option>
+	<option value='-01:00,0'>(-01:00) Cape Verde Is.</option>
+	<option value='00:00,0'>(00:00) Casablanca, Monrovia, Reykjavik</option>
+	<option value='00:00,1'>(00:00) GMT: Dublin, Edinburgh, Lisbon, London</option>
+	<option value='+01:00,1'>(+01:00) Amsterdam, Berlin, Rome, Vienna, Prague, Brussels</option>
+	<option value='+01:00,0'>(+01:00) West Central Africa</option>
+	<option value='+02:00,1'>(+02:00) Amman, Athens, Istanbul, Beirut, Cairo, Jerusalem</option>
+	<option value='+02:00,0'>(+02:00) Harare, Pretoria</option>
+	<option value='+03:00,1'>(+03:00) Baghdad, Moscow, St. Petersburg, Volgograd</option>
+	<option value='+03:00,0'>(+03:00) Kuwait, Riyadh, Nairobi, Tbilisi</option>
+	<option value='+03:30,0'>(+03:30) Tehran</option>
+	<option value='+04:00,0'>(+04:00) Abu Dhadi, Muscat</option>
+	<option value='+04:00,1'>(+04:00) Baku, Yerevan</option>
+	<option value='+04:30,0'>(+04:30) Kabul</option>
+	<option value='+05:00,1'>(+05:00) Ekaterinburg</option>
+	<option value='+05:00,0'>(+05:00) Islamabad, Karachi, Tashkent</option>
+	<option value='+05:30,0'>(+05:30) Chennai, Kolkata, Mumbai, New Delhi, Sri Jayawardenepura</option>
+	<option value='+05:45,0'>(+05:45) Kathmandu</option>
+	<option value='+06:00,0'>(+06:00) Astana, Dhaka</option>
+	<option value='+06:00,1'>(+06:00) Almaty, Nonosibirsk</option>
+	<option value='+06:30,0'>(+06:30) Yangon (Rangoon)</option>
+	<option value='+07:00,1'>(+07:00) Krasnoyarsk</option>
+	<option value='+07:00,0'>(+07:00) Bangkok, Hanoi, Jakarta</option>
+	<option value='+08:00,0'>(+08:00) Beijing, Hong Kong, Singapore, Taipei</option>
+	<option value='+08:00,1'>(+08:00) Irkutsk, Ulaan Bataar, Perth</option>
+	<option value='+09:00,1'>(+09:00) Yakutsk</option>
+	<option value='+09:00,0'>(+09:00) Seoul, Osaka, Sapporo, Tokyo</option>
+	<option value='+09:30,0'>(+09:30) Darwin</option>
+	<option value='+09:30,1'>(+09:30) Adelaide</option>
+	<option value='+10:00,0'>(+10:00) Brisbane, Guam, Port Moresby</option>
+	<option value='+10:00,1'>(+10:00) Canberra, Melbourne, Sydney, Hobart, Vladivostok</option>
+	<option value='+11:00,0'>(+11:00) Magadan, Solomon Is., New Caledonia</option>
+	<option value='+12:00,1'>(+12:00) Auckland, Wellington</option>
+	<option value='+12:00,0'>(+12:00) Fiji, Kamchatka, Marshall Is.</option>
+	<option value='+13:00,0'>(+13:00) Nuku'alofa</option>
+</select>
+
+ <!-- End of the test -->
+
+
 
           <!-- alert info -->
           <section >
@@ -298,10 +367,43 @@
                 <legend>Select Transaction File for Provider Selected</legend>
 
                 <table>
+
                     <tr>
                         <td>
-                          <div >
-                              <div>
+                            <div>
+                                <span>
+                                    Select the TimeZone of the transactions
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div id="localTimezone">
+                            <script>
+                                //document.getElementById("localTimezone").innerHTML = moment.tz.guess();
+                                //console.log(moment.tz.guess());
+                                //console.log(moment.tz.names());
+                                </script> 
+                                </div>
+                        </td>
+                        <td>
+                            <div>
+                                <span>
+                                
+                                   
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+<!-- partial -->
+<script src='https://momentjs.com/downloads/moment.js'></script>
+<script src='https://momentjs.com/downloads/moment-timezone-with-data.js'></script>
+<script  src="src/app/scripts/timezone.js"></script>
+
+
+                    <tr>
+                        <td>
+                         
+                              
                                   <div>
                                       <span >                                  
 
@@ -310,8 +412,8 @@
                                           <label>(.xlsx)</label>           
                                       </span>    
                                   </div>                                
-                              </div>    
-                          </div>
+                                
+                         
                         </td>
                         <td rowspan="2" width="30px"></td>
                         <td><input type="text" size="30" id="fileNameProvider" readonly></td>
