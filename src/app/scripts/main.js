@@ -46,7 +46,8 @@
     var elFileNameProvider;
     var elParseButtonProvider;
     var elTableTransactions;
-  
+    var elTimezonePicker;
+
   
     // scoped vars
     var transactions;
@@ -60,6 +61,7 @@
     var dateHoursComposed;
     var fileJsonToParse;
     var objProviderTemplate;
+    var browserTimezone;
     
     
     const moment= require('moment');
@@ -1591,6 +1593,10 @@
                           newTranscationObj[prop]= currency;  
                       }
                   }
+                  else
+                  {
+                      if(singleTransaction[provider[prop]]!="")newTranscationObj[prop]=null;
+                  }
               break;
   
               case "dateTime":
@@ -1822,7 +1828,10 @@
         if(formatFound !==null)
         {  
            
-           dateFormatted= moment.utc(date,formatFound,true).format();
+            //browserTimezone = elTimezonePicker.selct.substring(0,elTimezonePicker.value.length-2);
+            console.log(moment.utc(date,formatFound,true).format());
+           console.log(moment.utc(date,formatFound,true).utcOffset(browserTimezone).format());
+           dateFormatted= moment.utc(date,formatFound,true).utcOffset(browserTimezone).format();
        
         }
         else
@@ -2072,6 +2081,9 @@
   
   var uploadFileProvider = function(e)
   {
+      //get browser timezone and set the global variale
+      getTimezonePicker();
+    
       e.preventDefault();
       if(elFileProvider.files[0].name.split('.').pop()!="xlsx")
       {
@@ -2233,6 +2245,17 @@
       renderTransactionsProvider(transactions);
       toggleAlert();;
     };
+
+
+    var getTimezonePicker = function getTimezonePicker()
+    {
+        console.log(elTimezonePicker.value);
+        var tmp= elTimezonePicker.value;
+        tmp = tmp.substring(0,tmp.length - 2);
+        browserTimezone = tmp;
+        
+
+    };
     return {
       /**
        * initialize() is called only once when the Add-In is first loaded. Use this function to initialize the
@@ -2248,7 +2271,11 @@
   
         api = geotabApi;
         
-        console.log(moment.utc("20201101 0544", "YYYYMMDD HHmm", true).format());
+        //console.log(moment.utc("20201101 0544", "YYYYMMDD HHmm", true).format());
+
+        console.log(moment().utcOffset("+08:00"));
+        console.log(moment.utc().format());
+        console.log(moment.utc().utcOffset("+08:00").format());
 
         elContainer = document.getElementById('importFuelTransactions_fp');
         elFiles = document.getElementById('files');
@@ -2287,6 +2314,10 @@
         elFileNameProvider = document.getElementById('fileNameProvider');
         elParseButtonProvider = document.getElementById('parseButtonProvider');
         elTableTransactions = document.getElementById('tableTransactions');
+
+        elTimezonePicker = document.getElementById('timezone');
+
+        //browserTimezone = elTimezonePicker.selct.substring(0,elTimezonePicker.value.length-2);
   
 
         
@@ -2350,6 +2381,9 @@
   
                elFileProvider.addEventListener('change',fileProviderSelected,false);
                elParseButtonProvider.addEventListener('click',uploadFileProvider,false);
+
+               elTimezonePicker.addEventListener('change',getTimezonePicker,false);
+              
             
   
         
@@ -2388,6 +2422,8 @@
        }
        elFileProvider.removeEventListener('change',fileProviderSelected,false);
        elParseButtonProvider.removeEventListener('click',uploadFileProvider,false);
+
+       elTimezonePicker.removeEventListener('change',getTimezonePicker,false);
     
   
       }

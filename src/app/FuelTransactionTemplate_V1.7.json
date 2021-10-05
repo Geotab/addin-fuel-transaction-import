@@ -21,7 +21,7 @@
             "sourceData": "",	
             "vehicleIdentificationNumber":"",	
             "cost":"ColumnAO",	
-            "currencyCode":"ColumnAJ",	
+            "currencyCode":"",	
             "dateTime":["ColumnL","ColumnM"],	
             "location":"",	
             "odometer":"ColumnP",	
