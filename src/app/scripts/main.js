@@ -61,7 +61,7 @@
     var dateHoursComposed;
     var fileJsonToParse;
     var objProviderTemplate;
-    var browserTimezone;
+    var timezoneFromPicker;
     
     
     const moment= require('moment');
@@ -1409,10 +1409,12 @@
       caller.then(function (results) {
           updateTotal(results);
           
-          var temp = JSON.stringify(results);
-          console.log("Transaction Imported with ID: ",temp.replace(/[^a-zA-Z ]/g, ""));
          
-          window.alert("Transaction ID: "+temp.replace(/[^a-zA-Z ]/g, ""));
+          var temp = JSON.stringify(results);
+         
+          console.log("Transaction Imported with ID: ",temp.replace(/[\[\]"]+/g, ""));
+         
+          window.alert("Transaction ID: "+temp.replace(/[\[\]"]+/g, ""));
           clearTransactionsProvider();
           toggleAlert(elAlertSuccess, totalAdded);
           //toggleBrowse(true);
@@ -1821,17 +1823,42 @@
             }
             return null;
           }  
-
-        //var dateInput = date.replace(/\//g,"-");        
+       
         var formatFound = getFormat(date); 
         
         if(formatFound !==null)
         {  
            
-            //browserTimezone = elTimezonePicker.selct.substring(0,elTimezonePicker.value.length-2);
-            console.log(moment.utc(date,formatFound,true).format());
-           console.log(moment.utc(date,formatFound,true).utcOffset(browserTimezone).format());
-           dateFormatted= moment.utc(date,formatFound,true).utcOffset(browserTimezone).format();
+           //timezoneFromPicker = elTimezonePicker.selct.substring(0,elTimezonePicker.value.length-2);
+           console.log("Browser timezone: ",timezoneFromPicker);
+           console.log("date: ",date);
+           //console.log(moment.utc(date,formatFound,true).utcOffset(timezoneFromPicker).format());
+           //var temp1=moment(date,formatFound,true).utcOffset(timezoneFromPicker).format();
+           //console.log(temp1);
+           //dateFormatted= moment.utc(date,formatFound,true).utcOffset(timezoneFromPicker).format();
+           //dateFormatted= moment.utc(date,formatFound,true).utcOffset(timezoneFromPicker).format();
+           //console.log("dateFormatted; ",dateFormatted);
+           //console.log(moment.utc(date,formatFound,true).utcOffset(timezoneFromPicker).format());
+           //console.log(moment(moment(date,formatFound,true).utcOffset(timezoneFromPicker,true)).utc(true).format());
+           
+           console.log(moment().utcOffset());
+
+           //dateFormatted= moment.utc(date,formatFound,true).utcOffset(timezoneFromPicker+moment().utcOffset(),true).format();
+           
+
+           console.log(moment(date,formatFound,true).format());
+           console.log(moment.utc(date,formatFound,true).format());
+           console.log(moment.utc(date,formatFound,true).utcOffset(timezoneFromPicker,true).format());
+           
+        
+
+           dateFormatted= moment.utc(date,formatFound,true).utcOffset(timezoneFromPicker,true).format();
+           let [hours, minutes] = timezoneFromPicker.split(':');
+           timezoneFromPicker= (+hours * 60) + (+minutes);
+           console.log(timezoneFromPicker); //-06:00
+           console.log(moment().utcOffset()); //120
+        
+           console.log(timezoneFromPicker+(moment().utcOffset()));
        
         }
         else
@@ -1978,19 +2005,13 @@
                   elJsonDropDownMenu.appendChild(option);
                   }
                 }      
-            })   
-  
-  
+            })  
       }
-  }
-      
-      
+  }         
   }
   
   var validateIfJsonFIle = function(fileJsonToCheck)
-  {
-      
-   
+  {  
     try 
       { 
           JSON.parse(fileJsonToCheck); 
@@ -2001,19 +2022,16 @@
           return false; 
           
       }  
-      return true;
-  
-  
+      return true; 
   }
   
   var showSelectorSection = function()
   {
       
-      for(var i = 0; i < elSelector.length; i++) {
-                  
+      for(var i = 0; i < elSelector.length; i++) 
+      {                  
           if(elSelector[i].checked)
-          {
-             
+          {             
              switch(elSelector[i].id)
              {
                  case "providerSelector": 
@@ -2026,11 +2044,9 @@
                   elFileJsonSelectContainer.style.display = 'block';
                   elFileSelectContainer.style.display = 'none';
                   elFileSelectContainerProvider.style.display = 'none';
-                  elJsonDropDownMenu.style.display = "none";
-                  
+                  elJsonDropDownMenu.style.display = "none";                
   
-                  break;
-                 
+                  break;                
   
                  default: 
                  clearFiles();
@@ -2040,16 +2056,10 @@
                  elFileJsonSelectContainer.style.display = 'none';
                  elFileSelectContainer.style.display = 'block';
                  elFileSelectContainerProvider.style.display = 'none';
-                 elTransactionContainerProvider.style.display = 'none';
-              
-             }
-             
-              
-          }
-          
-  
-      }
-  
+                 elTransactionContainerProvider.style.display = 'none';              
+             }           
+          }        
+      } 
   }
   
   var addBlanckColumn = function(transactionsToBeChecked)
@@ -2122,7 +2132,7 @@
               
               if(getUrl()=='http://localhost/apiv1')
               {
-                  xhr.open('POST','https://my501.geotab.com/apiv1')
+                  xhr.open('POST','https://my483.geotab.com/apiv1')
               }
               else
               {
@@ -2249,11 +2259,12 @@
 
     var getTimezonePicker = function getTimezonePicker()
     {
-        console.log(elTimezonePicker.value);
+        
         var tmp= elTimezonePicker.value;
         tmp = tmp.substring(0,tmp.length - 2);
-        browserTimezone = tmp;
-        
+        timezoneFromPicker = tmp;
+       
+
 
     };
     return {
@@ -2273,9 +2284,9 @@
         
         //console.log(moment.utc("20201101 0544", "YYYYMMDD HHmm", true).format());
 
-        console.log(moment().utcOffset("+08:00"));
-        console.log(moment.utc().format());
-        console.log(moment.utc().utcOffset("+08:00").format());
+        //console.log(moment().utcOffset("+08:00"));
+        //console.log(moment.utc().format());
+        //console.log(moment.utc().utcOffset("+08:00").format());
 
         elContainer = document.getElementById('importFuelTransactions_fp');
         elFiles = document.getElementById('files');
@@ -2317,7 +2328,7 @@
 
         elTimezonePicker = document.getElementById('timezone');
 
-        //browserTimezone = elTimezonePicker.selct.substring(0,elTimezonePicker.value.length-2);
+        //timezoneFromPicker = elTimezonePicker.selct.substring(0,elTimezonePicker.value.length-2);
   
 
         
