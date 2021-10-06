@@ -1829,36 +1829,21 @@
         if(formatFound !==null)
         {  
            
-           //timezoneFromPicker = elTimezonePicker.selct.substring(0,elTimezonePicker.value.length-2);
+           var newOffsetBetweenLocalAndTransactions;
            console.log("Browser timezone: ",timezoneFromPicker);
            console.log("date: ",date);
-           //console.log(moment.utc(date,formatFound,true).utcOffset(timezoneFromPicker).format());
-           //var temp1=moment(date,formatFound,true).utcOffset(timezoneFromPicker).format();
-           //console.log(temp1);
-           //dateFormatted= moment.utc(date,formatFound,true).utcOffset(timezoneFromPicker).format();
-           //dateFormatted= moment.utc(date,formatFound,true).utcOffset(timezoneFromPicker).format();
-           //console.log("dateFormatted; ",dateFormatted);
-           //console.log(moment.utc(date,formatFound,true).utcOffset(timezoneFromPicker).format());
-           //console.log(moment(moment(date,formatFound,true).utcOffset(timezoneFromPicker,true)).utc(true).format());
+           console.log("Local Offset: ",moment().utcOffset());          
+           //console.log(moment(date,formatFound,true).format());
+           //console.log(moment.utc(date,formatFound,true).format());
+           //console.log(moment.utc(date,formatFound,true).utcOffset(timezoneFromPicker,true).format());
            
-           console.log(moment().utcOffset());
-
-           //dateFormatted= moment.utc(date,formatFound,true).utcOffset(timezoneFromPicker+moment().utcOffset(),true).format();
-           
-
-           console.log(moment(date,formatFound,true).format());
-           console.log(moment.utc(date,formatFound,true).format());
-           console.log(moment.utc(date,formatFound,true).utcOffset(timezoneFromPicker,true).format());
-           
-        
-
-           dateFormatted= moment.utc(date,formatFound,true).utcOffset(timezoneFromPicker,true).format();
            let [hours, minutes] = timezoneFromPicker.split(':');
            timezoneFromPicker= (+hours * 60) + (+minutes);
-           console.log(timezoneFromPicker); //-06:00
-           console.log(moment().utcOffset()); //120
-        
-           console.log(timezoneFromPicker+(moment().utcOffset()));
+           
+           console.log("Offset Diff. between Local and Transaction: ",timezoneFromPicker+(moment().utcOffset()));
+           newOffsetBetweenLocalAndTransactions = timezoneFromPicker+(moment().utcOffset());
+           dateFormatted= moment.utc(date,formatFound,true).utcOffset(newOffsetBetweenLocalAndTransactions,true).format();
+
        
         }
         else
