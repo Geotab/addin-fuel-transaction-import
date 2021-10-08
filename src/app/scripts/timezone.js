@@ -1,15 +1,17 @@
 function calculate_time_zone() {
 	var rightNow = new Date();
-	
-	var jan1 = new Date(rightNow.getFullYear(), 0, 1, 0, 0, 0, 0);  // jan 1st
-	
+	console.log(rightNow);
+	console.log("rightnow: ",rightNow);
+	var jan1 = new Date(rightNow.getFullYear(), 0, 1, 0, 0, 0, 0);  // jan 1st	
 	var june1 = new Date(rightNow.getFullYear(), 6, 1, 0, 0, 0, 0); // june 1st
 	
 	var temp = jan1.toGMTString();
+	console.log("temp" ,temp);
 	
 	var jan2 = new Date(temp.substring(0, temp.lastIndexOf(" ")-1));
 
 	temp = june1.toGMTString();
+	console.log("temp" ,temp);
 
 	var june2 = new Date(temp.substring(0, temp.lastIndexOf(" ")-1));
 
@@ -32,12 +34,15 @@ function calculate_time_zone() {
 	// check just to avoid error messages
 	if (document.getElementById('timezone')) {
 		for (i = 0; i < document.getElementById('timezone').options.length; i++) {
+			console.log("std_time_offset:" ,std_time_offset);
+			console.log("dst:" ,dst);
 			if (document.getElementById('timezone').options[i].value == convert(std_time_offset)+","+dst) {
 				document.getElementById('timezone').selectedIndex = i;
 				break;
 			}
 		}
 	}
+
 }
 
 function convert(value) {
@@ -61,6 +66,8 @@ function convert(value) {
 	}
 	
 	mins = (mins < 10) ? "0"+mins : mins;
+
+	console.log("display_hours and mins:",display_hours+":"+mins)
 	return display_hours+":"+mins;
 }
 
