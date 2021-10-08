@@ -71,5 +71,5 @@ function convert(value) {
 	return display_hours+":"+mins;
 }
 
-onload = calculate_time_zone;
+//onload = calculate_time_zone;
 

@@ -2252,6 +2252,82 @@
 
 
     };
+
+
+    function calculate_time_zone() {
+        var rightNow = new Date();
+        console.log(rightNow);
+        console.log("rightnow: ",rightNow);
+        var jan1 = new Date(rightNow.getFullYear(), 0, 1, 0, 0, 0, 0);  // jan 1st	
+        var june1 = new Date(rightNow.getFullYear(), 6, 1, 0, 0, 0, 0); // june 1st
+        
+        var temp = jan1.toGMTString();
+        console.log("temp" ,temp);
+        
+        var jan2 = new Date(temp.substring(0, temp.lastIndexOf(" ")-1));
+    
+        temp = june1.toGMTString();
+        console.log("temp" ,temp);
+    
+        var june2 = new Date(temp.substring(0, temp.lastIndexOf(" ")-1));
+    
+        var std_time_offset = (jan1 - jan2) / (1000 * 60 * 60);
+        
+        var daylight_time_offset = (june1 - june2) / (1000 * 60 * 60);
+        
+        var dst;
+        if (std_time_offset == daylight_time_offset) {
+            dst = "0"; // daylight savings time is NOT observed
+        } else {
+            // positive is southern, negative is northern hemisphere
+            var hemisphere = std_time_offset - daylight_time_offset;
+            if (hemisphere >= 0)
+                std_time_offset = daylight_time_offset;
+            dst = "1"; // daylight savings time is observed
+        }
+        
+        var i;
+        // check just to avoid error messages
+        if (document.getElementById('timezone')) {
+            for (i = 0; i < document.getElementById('timezone').options.length; i++) {
+                console.log("std_time_offset:" ,std_time_offset);
+                console.log("dst:" ,dst);
+                if (document.getElementById('timezone').options[i].value == convert(std_time_offset)+","+dst) {
+                    document.getElementById('timezone').selectedIndex = i;
+                    break;
+                }
+            }
+        }
+    
+    }
+    
+    function convert(value) {
+        var hours = parseInt(value);
+           value -= parseInt(value);
+        value *= 60;
+        var mins = parseInt(value);
+           value -= parseInt(value);
+        value *= 60;
+        var secs = parseInt(value);
+        var display_hours = hours;
+        // handle GMT case (00:00)
+        if (hours == 0) {
+            display_hours = "00";
+        } else if (hours > 0) {
+            // add a plus sign and perhaps an extra 0
+            display_hours = (hours < 10) ? "+0"+hours : "+"+hours;
+        } else {
+            // add an extra 0 if needed 
+            display_hours = (hours > -10) ? "-0"+Math.abs(hours) : hours;
+        }
+        
+        mins = (mins < 10) ? "0"+mins : mins;
+    
+        console.log("display_hours and mins:",display_hours+":"+mins)
+        return display_hours+":"+mins;
+    }
+    
+
     return {
       /**
        * initialize() is called only once when the Add-In is first loaded. Use this function to initialize the
@@ -2265,13 +2341,9 @@
        */
       initialize: function (geotabApi, freshState, initializeCallback) {
   
-        api = geotabApi;
-        
-        //console.log(moment.utc("20201101 0544", "YYYYMMDD HHmm", true).format());
 
-        //console.log(moment().utcOffset("+08:00"));
-        //console.log(moment.utc().format());
-        //console.log(moment.utc().utcOffset("+08:00").format());
+        
+        api = geotabApi;
 
         elContainer = document.getElementById('importFuelTransactions_fp');
         elFiles = document.getElementById('files');
@@ -2311,10 +2383,9 @@
         elParseButtonProvider = document.getElementById('parseButtonProvider');
         elTableTransactions = document.getElementById('tableTransactions');
 
+        calculate_time_zone();
+        
         elTimezonePicker = document.getElementById('timezone');
-
-        //timezoneFromPicker = elTimezonePicker.selct.substring(0,elTimezonePicker.value.length-2);
-  
 
         
 

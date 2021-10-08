@@ -11,9 +11,12 @@ if(!geotab.addin.importFuelTransactions_fp){
     
     require('./scripts/main');
     require('bluebird');
-    require('moment');
-    //require('bootstrap');
+    require('moment');    
     require('moment-timezone');
+
+
+
+
     require('./scripts/timezone');
     
 }
