@@ -66,6 +66,11 @@
     
     const moment= require('moment');
     const cc = require('currency-codes');
+
+    //const xlsx = require("xlsx");
+    //const fs = require ('fs');
+
+    
     
     // functions
   
@@ -1604,11 +1609,12 @@
               case "dateTime":
 
                 var temp="";
-                dateHoursComposed ="";
+                dateHoursComposed =dateFormat;
                
                   if(provider[prop]!="")
                     {
-                        if(typeof(provider[prop])=="object")
+                        
+                        if(typeof(provider[prop])=="object"&&provider[prop].length>1)
                         {
                             dateHoursComposed = dateFormat + " "+hourFormat;
                             for(var inner in provider[prop])
@@ -1616,15 +1622,43 @@
                                                    
                                     if(singleTransaction[provider[prop][inner]]!=""&&singleTransaction[provider[prop][inner]]!=undefined)
                                     {                                             
-                                        temp = newTranscationObj[prop] += singleTransaction[provider[prop][inner]]+" ";                                    
-                                    }
+                                         
+                                        if(singleTransaction[provider[prop][0]].length==19)
+                                        {
+                                            //if you are here is because the Date cell in excel has Date format
+                                           
+                                            //I change the date format into US
+                                            dateFormat="MM/DD/YYYY";
+                                            dateHoursComposed = dateFormat + " "+hourFormat;
+                                            singleTransaction[provider[prop][0]]= (moment(singleTransaction[provider[prop][0]].slice(0,10)).format(dateFormat));
+                                            console.log(singleTransaction[provider[prop][0]]);
+                                        }
+                                        if(singleTransaction[provider[prop][1]].length==16)
+                                        {
+                                            singleTransaction[provider[prop][1]]= singleTransaction[provider[prop][1]].slice(0,8);
+                                            console.log(singleTransaction[provider[prop][1]]);
+                                           
+                                        }
                                         
+
+                                        temp = newTranscationObj[prop] += singleTransaction[provider[prop][inner]]+" ";
+                                    }                                        
                             }
-                            temp = temp.slice(0,-1);                                                     
-                            newTranscationObj[prop] = getDateValue(temp);                          
-                            
+                            temp = temp.slice(0,-1);    
+                                                                            
+                            newTranscationObj[prop] = getDateValueProvider(temp);
                         }
-                        else newTranscationObj[prop] = getDateValue(singleTransaction[provider[prop]]);
+                        else
+                        {
+                            
+                            if(singleTransaction[provider[prop]].length==19)
+                            {
+                                dateFormat="MM/DD/YYYY";
+                                dateHoursComposed =dateFormat;
+                                newTranscationObj[prop] = getDateValueProvider(singleTransaction[provider[prop]].slice(0,10));
+                            }
+                            else newTranscationObj[prop] = getDateValueProvider(singleTransaction[provider[prop]]);
+                        } 
 
                     }
                 break;
@@ -1691,7 +1725,7 @@
   
   
   
-  var getDateValue = function (date) {
+  var getDateValueProvider = function (date) {
   
       var dateFormatted;
       
@@ -1808,6 +1842,7 @@
             for (var prop in dateFormats) {               
                 if(dateFormats[prop]==dateHoursComposed)
                 {                  
+                    console.log("Date Input: ",dateInput, "dateHours Composed: ",dateHoursComposed);
                     if(moment(dateInput, dateHoursComposed,true).isValid())
                     {
                         return dateFormats[prop];
@@ -1830,18 +1865,19 @@
         {  
            
            var newOffsetBetweenLocalAndTransactions;
-           console.log("Browser timezone: ",timezoneFromPicker);
-           console.log("date: ",date);
-           console.log("Local Offset: ",moment().utcOffset());          
+           var tmp;
+         
            //console.log(moment(date,formatFound,true).format());
            //console.log(moment.utc(date,formatFound,true).format());
            //console.log(moment.utc(date,formatFound,true).utcOffset(timezoneFromPicker,true).format());
            
            let [hours, minutes] = timezoneFromPicker.split(':');
-           timezoneFromPicker= (+hours * 60) + (+minutes);
-           
-           console.log("Offset Diff. between Local and Transaction: ",timezoneFromPicker+(moment().utcOffset()));
-           newOffsetBetweenLocalAndTransactions = timezoneFromPicker+(moment().utcOffset());
+           //timezoneFromPicker= (+hours * 60) + (+minutes);
+           tmp= (+hours * 60) + (+minutes);
+           //console.log("Offset Diff. between Local and Transaction: ",timezoneFromPicker+(moment().utcOffset()));
+           console.log("Offset Diff. between Local and Transaction: ",tmp+(moment().utcOffset()));
+           //newOffsetBetweenLocalAndTransactions = timezoneFromPicker+(moment().utcOffset());
+           newOffsetBetweenLocalAndTransactions = tmp+(moment().utcOffset());
            dateFormatted= moment.utc(date,formatFound,true).utcOffset(newOffsetBetweenLocalAndTransactions,true).format();
 
        
@@ -2087,6 +2123,17 @@
       }
       
 
+      //// New part Excel to Json
+      /*
+      console.log(elFileProvider.files[0]);
+      console.log(elFileProvider.files[0].name);
+      //const wb = xlsx.readFile("/src/app/scripts/Repostaje Mes Junio 21.xlsx");
+      const wb = xlsx.readFile(elFileProvider.files[0]);      
+      console.log(wb.SheetNames);
+      */
+      ///// End of the test
+
+
 
 
       toggleAlert(elAlertInfo, 'Parsing... transferring file');
@@ -2117,7 +2164,7 @@
               
               if(getUrl()=='http://localhost/apiv1')
               {
-                  xhr.open('POST','https://my483.geotab.com/apiv1')
+                  xhr.open('POST','https://my501.geotab.com/apiv1')
               }
               else
               {
@@ -2256,18 +2303,14 @@
 
     function calculate_time_zone() {
         var rightNow = new Date();
-        console.log(rightNow);
-        console.log("rightnow: ",rightNow);
+        
         var jan1 = new Date(rightNow.getFullYear(), 0, 1, 0, 0, 0, 0);  // jan 1st	
-        var june1 = new Date(rightNow.getFullYear(), 6, 1, 0, 0, 0, 0); // june 1st
-        
-        var temp = jan1.toGMTString();
-        console.log("temp" ,temp);
-        
+        var june1 = new Date(rightNow.getFullYear(), 6, 1, 0, 0, 0, 0); // june 1st        
+        var temp = jan1.toGMTString();      
         var jan2 = new Date(temp.substring(0, temp.lastIndexOf(" ")-1));
     
         temp = june1.toGMTString();
-        console.log("temp" ,temp);
+       
     
         var june2 = new Date(temp.substring(0, temp.lastIndexOf(" ")-1));
     
@@ -2289,9 +2332,9 @@
         var i;
         // check just to avoid error messages
         if (document.getElementById('timezone')) {
-            for (i = 0; i < document.getElementById('timezone').options.length; i++) {
-                console.log("std_time_offset:" ,std_time_offset);
-                console.log("dst:" ,dst);
+            for (i = 0; i < document.getElementById('timezone').options.length; i++)
+            {
+       
                 if (document.getElementById('timezone').options[i].value == convert(std_time_offset)+","+dst) {
                     document.getElementById('timezone').selectedIndex = i;
                     break;
@@ -2323,7 +2366,6 @@
         
         mins = (mins < 10) ? "0"+mins : mins;
     
-        console.log("display_hours and mins:",display_hours+":"+mins)
         return display_hours+":"+mins;
     }
     

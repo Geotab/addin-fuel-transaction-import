@@ -70,9 +70,9 @@
   "dependencies": {
     "bluebird": "^3.3.5",
     "convert-excel-to-json": "^1.7.0",
-    "currency-codes": "^2.1.0",   
+    "currency-codes": "^2.1.0",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.4",
-    "xlsx": "^0.17.0"
+    "xlsx": "^0.17.3"
   }
 }
