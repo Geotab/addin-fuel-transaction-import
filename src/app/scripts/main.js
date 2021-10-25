@@ -1511,24 +1511,28 @@
                   if(singleTransaction[provider[prop]]!=undefined && singleTransaction[provider[prop]]!="")
                   {
                       if(singleTransaction[provider[prop]].length>1024)newTranscationObj[prop]=singleTransaction[provider[prop]].substring(0,1024);
+                      newTranscationObj[prop]=singleTransaction[provider[prop]];
                   }
                   break;
               case "description":
                   if(singleTransaction[provider[prop]]!=undefined && singleTransaction[provider[prop]]!="")
                   {
                       if(singleTransaction[provider[prop]].length>255)newTranscationObj[prop]=singleTransaction[provider[prop]].substring(0,255);
+                      newTranscationObj[prop]=singleTransaction[provider[prop]];
                   }
                   break;   
               case "driverName":                
                   if(singleTransaction[provider[prop]]!=undefined && singleTransaction[provider[prop]]!="")
                   {
                       if(singleTransaction[provider[prop]].length>255)newTranscationObj[prop]=singleTransaction[provider[prop]].substring(0,255);
+                      newTranscationObj[prop]=singleTransaction[provider[prop]];
                   }
               break;
               case "externalReference":                
                   if(singleTransaction[provider[prop]]!=undefined && singleTransaction[provider[prop]]!="")
                   {
                       if(singleTransaction[provider[prop]].length>255)newTranscationObj[prop]=singleTransaction[provider[prop]].substring(0,255);
+                      newTranscationObj[prop]=singleTransaction[provider[prop]];
                   }
               break;
               case "licencePlate":
@@ -1545,7 +1549,8 @@
                  
                   if(singleTransaction[provider[prop]]!=undefined && singleTransaction[provider[prop]]!="")
                   {
-                      newTranscationObj[prop]= singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, '');  
+                      newTranscationObj[prop]= singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, ''); 
+                      
                   }                   
                  
               break;   
