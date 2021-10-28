@@ -1751,7 +1751,8 @@
           "id6": "YYYY-MM-DDTHH:mm:ssZ",          
           "id7": "YYYY-MM-DDTh:m:sZ",
           "id8": "YYYY-MM-DD HHmm",
-          "id9": "YYYY-MM-DD HHmmss",  
+          "id9": "YYYY-MM-DD HHmmss", 
+          "id10": "YYYY-MM-DDTHH:mm:ss.SSSZ",
 
           "id20": "YYYY/MM/DD",          
           "id21": "YYYY/MM/DDTHH:mm:ss",
@@ -1762,7 +1763,8 @@
           "id26": "YYYY/MM/DDTHH:mm:ssZ",
           "id27": "YYYY/MM/DDTh:m:sZ",
           "id28": "YYYY/MM/DD HHmm",
-          "id29": "YYYY/MM/DD HHmmss",          
+          "id29": "YYYY/MM/DD HHmmss",
+          "id30": "YYYY/MM/DDTHH:mm:ss.SSSZ",         
 
           "id40": "YYYYMMDD",
           "id41": "YYYYMMDDTHH:mm:ss",
@@ -1774,6 +1776,7 @@
           "id47": "YYYYMMDDTh:m:sZ",
           "id48": "YYYYMMDD HHmm",
           "id49": "YYYYMMDD HHmmss",
+          "id50": "YYYYMMDDTHH:mm:ss.SSSZ",
           
           //MM
 
@@ -1787,6 +1790,7 @@
           "id67": "MM-DD-YYYYTh:m:sZ",
           "id68": "MM-DD-YYYY HHmm",
           "id69": "MM-DD-YYYY HHmmss",
+          "id70": "MM-DD-YYYYTHH:mm:ss.SSSZ",
          
           "id80": "MM/DD/YYYY",          
           "id81": "MM/DD/YYYYTHH:mm:ss",
@@ -1797,7 +1801,8 @@
           "id86": "MM/DD/YYYYTHH:mm:ssZ",
           "id87": "MM/DD/YYYYTh:m:sZ",
           "id88": "MM/DD/YYYY HHmm",
-          "id89": "MM/DD/YYYY HHmmss",          
+          "id89": "MM/DD/YYYY HHmmss",
+          "id90": "MM/DD/YYYYTHH:mm:ss.SSSZ",          
 
           "id100": "MMDDYYYY",
           "id101": "MMDDYYYYTHH:mm:ss",
@@ -1809,6 +1814,7 @@
           "id107": "MMDDYYYYTh:m:sZ",
           "id108": "MMDDYYYY HHmm",
           "id109": "MMDDYYYY HHmmss",
+          "id110": "MMDDYYYYTHH:mm:ss.SSSZ", 
 
           //DD        
         
@@ -1821,7 +1827,8 @@
           "id126": "DD-MM-YYYYTHH:mm:ssZ",          
           "id127": "DD-MM-YYYYTh:m:sZ",
           "id128": "DD-MM-YYYY HHmm",
-          "id129": "DD-MM-YYYY HHmmss",         
+          "id129": "DD-MM-YYYY HHmmss",
+          "id130": "DD-MM-YYYYTHH:mm:ss.SSSZ",          
 
           "id140": "DD/MM/YYYY",          
           "id141": "DD/MM/YYYYTHH:mm:ss",
@@ -1832,7 +1839,8 @@
           "id146": "DD/MM/YYYYTHH:mm:ssZ",
           "id147": "DD/MM/YYYYTh:m:sZ",
           "id148": "DD/MM/YYYY HHmm",
-          "id149": "DD/MM/YYYY HHmmss",          
+          "id149": "DD/MM/YYYY HHmmss",
+          "id150": "DD/MM/YYYYTHH:mm:ss.SSSZ",          
 
           "id160": "DDMMYYY",
           "id161": "DDMMYYYYTHH:mm:ss",
@@ -1844,6 +1852,7 @@
           "id167": "DDMMYYYYTh:m:sZ",
           "id168": "DDMMYYYY HHmm",
           "id169": "DDMMYYYY HHmmss",
+          "id170": "DDMMYYYYTHH:mm:ss.SSSZ", 
        
         }
         
@@ -2195,7 +2204,7 @@
               
               if(getUrl()=='http://localhost/apiv1')
               {
-                  xhr.open('POST','https://my64.geotab.com/apiv1')
+                  xhr.open('POST','https://my501.geotab.com/apiv1')
               }
               else
               {
