@@ -20,7 +20,7 @@
   "dev": {
     "root": "importFuelTransactions",
     "dist": {
-      "host": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@UAT_3.0.21/dist/"
+      "host": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@UAT_3.0.22/dist/"
       
     }
   }
