@@ -1883,9 +1883,13 @@
         if(formatFound !==null)
         {  
            
-            var temp2;
-            var finalTemp;
+           // var temp2;
+            //var finalTemp;
             var rightNow = new Date();
+
+            rightNow = moment(rightNow).utcOffset();
+            /*
+
             temp2=rightNow.toString().split('+');
             console.log("this is rightNow date: ",temp2[1]);
             temp2= temp2[1].slice(0, 4);
@@ -1901,9 +1905,11 @@
 
            var newOffsetBetweenLocalAndTransactions;
            newOffsetBetweenLocalAndTransactions = temp2;
-           console.log("newOffsetBetweenLocalAndTransactions: ",newOffsetBetweenLocalAndTransactions);
+*/
+
+           console.log("newOffsetBetweenLocalAndTransactions: ",rightNow);
            console.log("date: ",date);
-           dateFormatted= moment.utc(date,formatFound,true).utcOffset(newOffsetBetweenLocalAndTransactions,true).format();
+           dateFormatted= moment.utc(date,formatFound,true).utcOffset(rightNow,true).format();
            console.log("dateFormatted: ",dateFormatted);
 
            /*
