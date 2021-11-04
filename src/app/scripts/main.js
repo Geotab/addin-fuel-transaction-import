@@ -1268,7 +1268,7 @@
              
               if(getUrl()=='http://localhost/apiv1')
               {
-                  xhr.open('POST','https://my1612.geotab.com/apiv1')
+                  xhr.open('POST','https://my501.geotab.com/apiv1')
               }
               else
               {
@@ -1906,7 +1906,7 @@
            console.log("Offest Browser: ",rightNow);
            console.log("date: ",date);
            
-           dateFormatted= moment.utc(date,formatFound,true).utcOffset(offsetInNumber,false).format();
+           dateFormatted= moment.utc(date,formatFound,true).utcOffset(offsetInNumber,true).format();
            //dateFormatted= moment.utc(date,formatFound,false).format();
            
            console.log("dateFormatted: ",dateFormatted);
@@ -2213,7 +2213,7 @@
               
               if(getUrl()=='http://localhost/apiv1')
               {
-                  xhr.open('POST','https://my1612.geotab.com/apiv1')
+                  xhr.open('POST','https://my501.geotab.com/apiv1')
               }
               else
               {
