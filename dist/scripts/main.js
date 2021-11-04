@@ -46,7 +46,7 @@
     var elFileNameProvider;
     var elParseButtonProvider;
     var elTableTransactions;
-    //var elTimezonePicker;
+    var elTimezonePicker;
     //var elDaylightPicker;
 
   
@@ -69,11 +69,6 @@
     const moment= require('moment');
     const cc = require('currency-codes');
 
-    //const xlsx = require("xlsx");
-    //const fs = require ('fs');
-
-    
-    
     // functions
   
     var toggleParse = function (toggle) {
@@ -1273,7 +1268,7 @@
              
               if(getUrl()=='http://localhost/apiv1')
               {
-                  xhr.open('POST','https://my501.geotab.com/apiv1')
+                  xhr.open('POST','https://my1612.geotab.com/apiv1')
               }
               else
               {
@@ -1886,8 +1881,11 @@
            // var temp2;
             //var finalTemp;
             var rightNow = new Date();
-
             rightNow = moment(rightNow).utcOffset();
+
+            console.log("offest calcolato da picker: ",timezoneFromPicker);
+
+            var offsetInNumber = moment().tz(timezoneFromPicker).utcOffset();
             /*
 
             temp2=rightNow.toString().split('+');
@@ -1899,18 +1897,23 @@
             console.log("finalTemp: ",finalTemp);
             let [hours2, minutes2]=finalTemp.split(':');
             temp2= (+hours2 * 60) + (+minutes2);
-            console.log("temp2: ",temp2);
-
-           
+            console.log("temp2: ",temp2);          
 
            var newOffsetBetweenLocalAndTransactions;
            newOffsetBetweenLocalAndTransactions = temp2;
 */
 
-           console.log("newOffsetBetweenLocalAndTransactions: ",rightNow);
+           console.log("Offest Browser: ",rightNow);
            console.log("date: ",date);
-           dateFormatted= moment.utc(date,formatFound,true).utcOffset(rightNow,true).format();
+           
+           dateFormatted= moment.utc(date,formatFound,true).utcOffset(offsetInNumber,false).format();
+           //dateFormatted= moment.utc(date,formatFound,false).format();
+           
            console.log("dateFormatted: ",dateFormatted);
+           console.log("offsetInNumber: ",offsetInNumber);
+
+
+
 
            /*
            var tmp;    
@@ -2159,7 +2162,7 @@
   var uploadFileProvider = function(e)
   {
       //get browser timezone and set the global variale
-      //getTimezonePicker();
+      getTimezonePicker();
     
       e.preventDefault();
       if(elFileProvider.files[0].name.split('.').pop()!="xlsx")
@@ -2210,7 +2213,7 @@
               
               if(getUrl()=='http://localhost/apiv1')
               {
-                  xhr.open('POST','https://my501.geotab.com/apiv1')
+                  xhr.open('POST','https://my1612.geotab.com/apiv1')
               }
               else
               {
@@ -2371,18 +2374,19 @@
 
     }
 */
-/*
+
     var getTimezonePicker = function getTimezonePicker()
     {
         
-        var tmp= elTimezonePicker.value;
-        tmp = tmp.substring(0,tmp.length - 2);
-        timezoneFromPicker = tmp;
-        console.log("Chiamata funz getTimezonePicker: ",timezoneFromPicker);
+        
+        //tmp = tmp.substring(0,tmp.length - 2);
+        timezoneFromPicker = elTimezonePicker.value;
+        
+        console.log("Offset of value selected ",timezoneFromPicker," ",moment().tz(timezoneFromPicker).utcOffset());
 
     };
 
-*/
+
 /*
     function calculate_time_zone() {
         var rightNow = new Date();
@@ -2491,6 +2495,8 @@
       initialize: function (geotabApi, freshState, initializeCallback) {
   
 
+        console.log("rightNow = moment(rightNow).utcOffset()",moment(new Date()).utcOffset());
+
         
         api = geotabApi;
 
@@ -2534,7 +2540,7 @@
 
         //calculate_time_zone();
         
-        //elTimezonePicker = document.getElementById('timezone');
+        elTimezonePicker = document.getElementById('timezone');
         //elDaylightPicker = document.getElementById('dayLightPicker');
         
 
@@ -2567,8 +2573,6 @@
        */
       focus: function (geotabApi, freshState) {
         
-        
-        
 
             // getting the current user to display in the UI
             geotabApi.getSession(session => {
@@ -2600,7 +2604,7 @@
                elFileProvider.addEventListener('change',fileProviderSelected,false);
                elParseButtonProvider.addEventListener('click',uploadFileProvider,false);
 
-               //elTimezonePicker.addEventListener('change',getTimezonePicker,false);
+               elTimezonePicker.addEventListener('change',getTimezonePicker,false);
                //elDaylightPicker.addEventListener('change',setDaylightPicker,false);
               
             
@@ -2642,7 +2646,7 @@
        elFileProvider.removeEventListener('change',fileProviderSelected,false);
        elParseButtonProvider.removeEventListener('click',uploadFileProvider,false);
 
-       //elTimezonePicker.removeEventListener('change',getTimezonePicker,false);
+       elTimezonePicker.removeEventListener('change',getTimezonePicker,false);
        //elDaylightPicker.removeEventListener('change',setDaylightPicker,false);
     
   
