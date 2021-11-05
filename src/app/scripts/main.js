@@ -45,9 +45,9 @@
     var elFileProvider;
     var elFileNameProvider;
     var elParseButtonProvider;
-    var elTableTransactions;
+   
     var elTimezonePicker;
-    //var elDaylightPicker;
+    
 
   
     // scoped vars
@@ -1636,12 +1636,12 @@
                                             dateFormat="MM/DD/YYYY";
                                             dateHoursComposed = dateFormat + " "+hourFormat;
                                             singleTransaction[provider[prop][0]]= (moment(singleTransaction[provider[prop][0]].slice(0,10)).format(dateFormat));
-                                            console.log(singleTransaction[provider[prop][0]]);
+                                            //console.log(singleTransaction[provider[prop][0]]);
                                         }
                                         if(singleTransaction[provider[prop][1]].length==16)
                                         {
                                             singleTransaction[provider[prop][1]]= singleTransaction[provider[prop][1]].slice(0,8);
-                                            console.log(singleTransaction[provider[prop][1]]);
+                                            //console.log(singleTransaction[provider[prop][1]]);
                                            
                                         }
                                         
@@ -1856,7 +1856,9 @@
             for (var prop in dateFormats) {               
                 if(dateFormats[prop]==dateHoursComposed)
                 {                  
-                    console.log("Date Input: ",dateInput, "dateHours Composed: ",dateHoursComposed);
+                    console.log("Date Input: ",dateInput);
+                    console.log("dateHours Composed: ",dateHoursComposed);
+
                     if(moment(dateInput, dateHoursComposed,true).isValid())
                     {
                         return dateFormats[prop];
@@ -1882,10 +1884,12 @@
             //var finalTemp;
             var rightNow = new Date();
             rightNow = moment(rightNow).utcOffset();
+            console.log("Offest from OS: ",rightNow);
 
-            console.log("offest calcolato da picker: ",timezoneFromPicker);
+            console.log("offest calc from picker: ",timezoneFromPicker);
 
             var offsetInNumber = moment().tz(timezoneFromPicker).utcOffset();
+            console.log("offset In Number taken from picker: ",offsetInNumber);
             /*
 
             temp2=rightNow.toString().split('+');
@@ -1903,14 +1907,13 @@
            newOffsetBetweenLocalAndTransactions = temp2;
 */
 
-           console.log("Offest Browser: ",rightNow);
-           console.log("date: ",date);
            
-           dateFormatted= moment.utc(date,formatFound,true).utcOffset(offsetInNumber,true).format();
-           //dateFormatted= moment.utc(date,formatFound,false).format();
+           console.log("Date not formatted: ",date);
+           
+           dateFormatted= moment.utc(date,formatFound,true).utcOffset(offsetInNumber,true).format();           
            
            console.log("dateFormatted: ",dateFormatted);
-           console.log("offsetInNumber: ",offsetInNumber);
+           
 
 
 
@@ -2073,6 +2076,10 @@
                   option = document.createElement('option');
                   option.text = result.providers[i].Name;
                   elJsonDropDownMenu.appendChild(option);
+
+                  setSelectedIndexTimezonePicker();
+
+
                   }
                 }      
             })  
@@ -2377,14 +2384,25 @@
 
     var getTimezonePicker = function getTimezonePicker()
     {
-        
-        
-        //tmp = tmp.substring(0,tmp.length - 2);
-        timezoneFromPicker = elTimezonePicker.value;
-        
+        timezoneFromPicker = elTimezonePicker.value;        
         console.log("Offset of value selected ",timezoneFromPicker," ",moment().tz(timezoneFromPicker).utcOffset());
 
     };
+
+    var setSelectedIndexTimezonePicker = function setSelectedIndexTimezonePicker()
+    {
+           
+        var DetectedTimeZoneCountry = moment.tz.guess();
+        console.log("Detected Time Zone Country: ",DetectedTimeZoneCountry);
+        
+        for (var x = 0; x < elTimezonePicker.length; x++) { 
+            if (elTimezonePicker.options[x].value == DetectedTimeZoneCountry) { 
+                elTimezonePicker.options[x].selected = true; 
+            } 
+          } 
+
+
+    }
 
 
 /*
@@ -2495,7 +2513,7 @@
       initialize: function (geotabApi, freshState, initializeCallback) {
   
 
-        console.log("rightNow = moment(rightNow).utcOffset()",moment(new Date()).utcOffset());
+      
 
         
         api = geotabApi;
@@ -2536,12 +2554,10 @@
         elFileProvider = document.getElementById('filesProvider');
         elFileNameProvider = document.getElementById('fileNameProvider');
         elParseButtonProvider = document.getElementById('parseButtonProvider');
-        elTableTransactions = document.getElementById('tableTransactions');
-
-        //calculate_time_zone();
+        //elTableTransactions = document.getElementById('tableTransactions');       
         
         elTimezonePicker = document.getElementById('timezone');
-        //elDaylightPicker = document.getElementById('dayLightPicker');
+      
         
 
         
@@ -2605,7 +2621,7 @@
                elParseButtonProvider.addEventListener('click',uploadFileProvider,false);
 
                elTimezonePicker.addEventListener('change',getTimezonePicker,false);
-               //elDaylightPicker.addEventListener('change',setDaylightPicker,false);
+               
               
             
   
@@ -2647,7 +2663,7 @@
        elParseButtonProvider.removeEventListener('click',uploadFileProvider,false);
 
        elTimezonePicker.removeEventListener('change',getTimezonePicker,false);
-       //elDaylightPicker.removeEventListener('change',setDaylightPicker,false);
+
     
   
       }
