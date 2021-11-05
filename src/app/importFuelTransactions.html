@@ -37,8 +37,8 @@
               <div >
                   <h1>Import Fuel Transactions</h1>
 
-                  last build 04 Nov 16:41
-                  UAT_3.0.26
+                  last build 05 Nov 17:20
+                  UAT_3.0.27
                 
 
                   <p>To import fuel transactions to your account, select the file, open the file, verify that the columns are in the correct format, then import the file.</p>
@@ -307,7 +307,28 @@
             <fieldset>
                 <legend>Select Transaction File for Provider Selected</legend>
 
-                <table>
+                <table >
+                    <tr>
+                        <td>
+                            <div>
+                                <span>
+                                    <label>Are the transactions in different Timezone?</label>
+                                    
+                                
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <span>
+                                    
+                                    <input type="checkbox"  id="checkboxDifferentTimezone" name="checkboxDifferentTimezone" value="yes">
+                                
+                                </span>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
                     <tr>
                         <td>
                             <div>
@@ -915,12 +936,7 @@
                                 </div>
                         </td>
                         <td>
-                            <div>
-                                <span>
-                                
-                                   
-                                </span>
-                            </div>
+                            
                         </td>
                     </tr>
 <!-- partial -->

@@ -47,6 +47,7 @@
     var elParseButtonProvider;
    
     var elTimezonePicker;
+    var elTimezoneCheckbox;
     
 
   
@@ -1879,59 +1880,25 @@
         
         if(formatFound !==null)
         {  
-           
-           // var temp2;
-            //var finalTemp;
-            var rightNow = new Date();
-            rightNow = moment(rightNow).utcOffset();
-            console.log("Offest from OS: ",rightNow);
-
+            
+            var offsetInNumber;
+            var guessed;
+       
+            console.log("Offest from OS: ",moment(new Date()).utcOffset());
             console.log("offest calc from picker: ",timezoneFromPicker);
 
-            var offsetInNumber = moment().tz(timezoneFromPicker).utcOffset();
+            guessed= moment.tz.guess();
+            
+
+            if(elTimezoneCheckbox.checked)offsetInNumber = moment().tz(timezoneFromPicker).utcOffset();
+            else offsetInNumber = moment().tz(guessed).utcOffset();
+
             console.log("offset In Number taken from picker: ",offsetInNumber);
-            /*
-
-            temp2=rightNow.toString().split('+');
-            console.log("this is rightNow date: ",temp2[1]);
-            temp2= temp2[1].slice(0, 4);
-            finalTemp= temp2.slice(0, 2) + ":" + temp2.slice(2);
-            console.log(finalTemp);
-            finalTemp = "+"+finalTemp;
-            console.log("finalTemp: ",finalTemp);
-            let [hours2, minutes2]=finalTemp.split(':');
-            temp2= (+hours2 * 60) + (+minutes2);
-            console.log("temp2: ",temp2);          
-
-           var newOffsetBetweenLocalAndTransactions;
-           newOffsetBetweenLocalAndTransactions = temp2;
-*/
-
+            console.log("Date not formatted: ",date);
+            dateFormatted= moment.utc(date,formatFound,true).utcOffset(offsetInNumber,true).format();           
+            
+            console.log("dateFormatted: ",dateFormatted);
            
-           console.log("Date not formatted: ",date);
-           
-           dateFormatted= moment.utc(date,formatFound,true).utcOffset(offsetInNumber,true).format();           
-           
-           console.log("dateFormatted: ",dateFormatted);
-           
-
-
-
-
-           /*
-           var tmp;    
-           let [hours, minutes] = timezoneFromPicker.split(':');
-           console.log("Timezone picker: ",timezoneFromPicker);        
-           tmp= (+hours * 60) + (+minutes);
-      
-           console.log("Picker selected: ",tmp);
-           console.log("Offest from UTC: ",moment().utcOffset());
-           console.log("Offset Diff. between Local and Transaction: ",tmp+(moment().utcOffset()));
-           console.log("data NON UTC con offest applicato da picker: ", moment(date).utcOffset(tmp,true).format());
-           console.log("data  UTC con offest applicato da picker: ", moment.utc(date).utcOffset(tmp,true).format());
-           */
-           
-          
        
         }
         else
@@ -2004,6 +1971,10 @@
           //container that show the File selection
       clearFilesProvider();
       elFileSelectContainerProvider.style.display = 'block';
+
+      setSelectedIndexTimezonePicker();
+
+      toggleTimeZonePicker(false);
   
   
       }
@@ -2077,7 +2048,6 @@
                   option.text = result.providers[i].Name;
                   elJsonDropDownMenu.appendChild(option);
 
-                  setSelectedIndexTimezonePicker();
 
 
                   }
@@ -2344,43 +2314,7 @@
       toggleAlert();;
     };
 
-    /*
-    var setDaylightPicker = function setDaylightPicker()
-    {
-        
-        var selection = elDaylightPicker.value;
-        var optionValues;
-        var optionCaption;
-        
-        if(selection=="Yes")
-        {
-            
-            optionValues=["-11:00,0","-10:00,0","-09:00,0","-08:00,1","-07:00,1","-06:00,0","-06:00,1","-05:00,0","-05:00,1","-04:00,0","-04:00,1","-03:00,1","-03:00,0","-02:30,1","-02:00,1","-02:00,0","-01:00,1","00:00,1","00:00,0","+01:00,0","+01:00,1","+02:00,1","+02:00,0","+03:00,1","+03:00,0","+04:00,1","+04:00,0","+04:30,0","+05:00,0","+05:00,1","+05:30,0","+06:00,1","+06:00,0","+06:30,0","+06:45,0","+07:00,0","+07:00,1","+07:30,0","+08:00,1","+08:00,0","+09:00,0","+09:00,1","+10:00,1","+10:00,0","+10:30,0","+10:30,1","+11:00,0","+11:00,1","+12:00,0","+13:00,1","+13:00,0","+14:00,0"];
-            optionCaption=["-11:00 International Date Line West","-10:00 Midway Island, Samoa","-09:00 Hawaii","-08:00 Alaska","-07:00 Pacific Time (US & Canada)","-06:00 Arizona","-06:00 Mountain Time (US & Canada)","-05:00 Central America, Saskatchewan","-05:00 Central Time (US & Canada), Guadalajara, Mexico city","-04:00 Indiana, Bogota, Lima, Quito, Rio Branco  ","-04:00 Eastern time (US & Canada)","-03:00 Atlantic time (Canada), Manaus, Santiago","-03:00 Caracas, La Paz","-02:30 Newfoundland","-02:00 Greenland, Brasilia, Montevideo","-02:00 Buenos Aires, Georgetown","-01:00 Mid-Atlantic","00:00 Azores","00:00 Cape Verde Is.","+01:00 Casablanca, Monrovia, Reykjavik","+01:00 GMT: Dublin, Edinburgh, Lisbon, London","+02:00 Amsterdam, Berlin, Rome, Vienna, Prague, Brussels","+02:00 West Central Africa","+03:00 Amman, Athens, Istanbul, Beirut, Cairo, Jerusalem","+04:00 Harare, Pretoria","+04:00 Baghdad, Moscow, St. Petersburg, Volgograd","+04:00 Kuwait, Riyadh, Nairobi, Tbilisi","+04:30 Tehran","+05:00 Abu Dhadi, Muscat","+05:00 Baku, Yerevan","+05:30 Kabul","+06:00 Ekaterinburg","+06:00 Islamabad, Karachi, Tashkent","+06:30 Chennai, Kolkata, Mumbai, New Delhi, Sri Jayawardenepura","+06:45 Kathmandu","+07:00 Astana, Dhaka","+07:00 Almaty, Nonosibirsk","+07:30 Yangon (Rangoon)","+08:00 Krasnoyarsk","+08:00 Bangkok, Hanoi, Jakarta","+09:00 Beijing, Hong Kong, Singapore, Taipei","+09:00 Irkutsk, Ulaan Bataar, Perth","+10:00 Yakutsk","+10:00 Seoul, Osaka, Sapporo, Tokyo","+10:30 Darwin","+10:30 Adelaide","+11:00 Brisbane, Guam, Port Moresby","+11:00 Canberra, Melbourne, Sydney, Hobart, Vladivostok","+12:00 Magadan, Solomon Is., New Caledonia","+13:00 Auckland, Wellington","+13:00 Fiji, Kamchatka, Marshall Is.","+14:00 Nuku'alofa"];
-        
-        }
-        else
-        {
-            optionValues=["-12:00,0","-11:00,0","-10:00,0","-09:00,1","-08:00,1","-07:00,0","-07:00,1","-06:00,0","-06:00,1","-05:00,0","-05:00,1","-04:00,1","-04:00,0","-03:30,1","-03:00,1","-03:00,0","-02:00,1","-01:00,1","-01:00,0","00:00,0","00:00,1","+01:00,1","+01:00,0","+02:00,1","+02:00,0","+03:00,1","+03:00,0","+03:30,0","+04:00,0","+04:00,1","+04:30,0","+05:00,1","+05:00,0","+05:30,0","+05:45,0","+06:00,0","+06:00,1","+06:30,0","+07:00,1","+07:00,0","+08:00,0","+08:00,1","+09:00,1","+09:00,0","+09:30,0","+09:30,1","+10:00,0","+10:00,1","+11:00,0","+12:00,1","+12:00,0","+13:00,0"];
-            optionCaption=["-12:00 International Date Line West","-11:00 Midway Island, Samoa","-10:00 Hawaii","-09:00 Alaska","-08:00 Pacific Time (US & Canada)","-07:00 Arizona","-07:00 Mountain Time (US & Canada)","-06:00 Central America, Saskatchewan","-06:00 Central Time (US & Canada), Guadalajara, Mexico city","-05:00 Indiana, Bogota, Lima, Quito, Rio Branco  ","-05:00 Eastern time (US & Canada)","-04:00 Atlantic time (Canada), Manaus, Santiago","-04:00 Caracas, La Paz","-03:30 Newfoundland","-03:00 Greenland, Brasilia, Montevideo","-03:00 Buenos Aires, Georgetown","-02:00 Mid-Atlantic","-01:00 Azores","-01:00 Cape Verde Is.","00:00 Casablanca, Monrovia, Reykjavik","00:00 GMT: Dublin, Edinburgh, Lisbon, London","+01:00 Amsterdam, Berlin, Rome, Vienna, Prague, Brussels","+01:00 West Central Africa","+02:00 Amman, Athens, Istanbul, Beirut, Cairo, Jerusalem","+02:00 Harare, Pretoria","+03:00 Baghdad, Moscow, St. Petersburg, Volgograd","+03:00 Kuwait, Riyadh, Nairobi, Tbilisi","+03:30 Tehran","+04:00 Abu Dhadi, Muscat","+04:00 Baku, Yerevan","+04:30 Kabul","+05:00 Ekaterinburg","+05:00 Islamabad, Karachi, Tashkent","+05:30 Chennai, Kolkata, Mumbai, New Delhi, Sri Jayawardenepura","+05:45 Kathmandu","+06:00 Astana, Dhaka","+06:00 Almaty, Nonosibirsk","+06:30 Yangon (Rangoon)","+07:00 Krasnoyarsk","+07:00 Bangkok, Hanoi, Jakarta","+08:00 Beijing, Hong Kong, Singapore, Taipei","+08:00 Irkutsk, Ulaan Bataar, Perth","+09:00 Yakutsk","+09:00 Seoul, Osaka, Sapporo, Tokyo","+09:30 Darwin","+09:30 Adelaide","+10:00 Brisbane, Guam, Port Moresby","+10:00 Canberra, Melbourne, Sydney, Hobart, Vladivostok","+11:00 Magadan, Solomon Is., New Caledonia","+12:00 Auckland, Wellington","+12:00 Fiji, Kamchatka, Marshall Is.","+13:00 Nuku'alofa"];
-        }
-
-        var strValue = "";
-        
-        for (var i=0;i<optionValues.length;i++) {
-
-            strValue += "<option value="+optionValues[i]+">" + optionCaption[i] + "</option>";
-           
-          }
-          elTimezonePicker.innerHTML=strValue;
-          //elTimezonePicker.value=strValue;
-          calculate_time_zone();
-          getTimezonePicker();
-          
-
-
-    }
-*/
+    
 
     var getTimezonePicker = function getTimezonePicker()
     {
@@ -2401,103 +2335,32 @@
             } 
           } 
 
-
     }
 
+    var toggleTimeZonePicker = function (toggle) {
+        if (toggle) {
 
-/*
-    function calculate_time_zone() {
-        var rightNow = new Date();
-        
-        console.log("rightNow :",rightNow);
-        var jan1 = new Date(rightNow.getFullYear(), 0, 1, 0, 0, 0, 0);  // jan 1st
-        console.log("jan1 :",jan1);	
-        var june1 = new Date(rightNow.getFullYear(), 6, 1, 0, 0, 0, 0); // june 1st 
-        console.log("june1 :",june1);      
-        var temp = jan1.toGMTString();      
-        console.log("temp :",temp);
-        var jan2 = new Date(temp.substring(0, temp.lastIndexOf(" ")-1));
-        console.log("jan2 :",jan2);    
-        temp = june1.toGMTString();
-        console.log("temp :",temp);     
-    
-        var june2 = new Date(temp.substring(0, temp.lastIndexOf(" ")-1));
-        console.log("june2 :",june2);
-    
-        var std_time_offset = (jan1 - jan2) / (1000 * 60 * 60);
-        console.log("std_time_offset :",std_time_offset);
-        
-        var daylight_time_offset = (june1 - june2) / (1000 * 60 * 60);
-        console.log("daylight_time_offset :",daylight_time_offset);
-       
-        var dst;
-        if (std_time_offset == daylight_time_offset) {
-            dst = "0"; // daylight savings time is NOT observed
+
+            //make visible the timezone dropdown
+            elTimezonePicker.removeAttribute('disabled');
+            
         } else {
-            // positive is southern, negative is northern hemisphere
-            var hemisphere = std_time_offset - daylight_time_offset;
-            if (hemisphere >= 0)
-                std_time_offset = daylight_time_offset;
-            dst = "1"; // daylight savings time is observed
+             //hide the button of the provider xls section 
+
+             elTimezonePicker.setAttribute('disabled', 'disabled');
         }
-        console.log("dst: ",dst);
-        
-        /////
-        var temp2;
-        var finalTemp;
-        temp2=rightNow.toString().split('+');
-        console.log(temp2[1]);
-        temp2= temp2[1].slice(0, 4);
-        finalTemp= temp2.slice(0, 2) + ":" + temp2.slice(2);
-        console.log(finalTemp);
-        finalTemp = "+"+finalTemp;
-        console.log("finalTemp: ",finalTemp);
-        /////
+    };
 
 
-        var i;
-        // check just to avoid error messages
-        if (document.getElementById('timezone')) {
-            for (i = 0; i < document.getElementById('timezone').options.length; i++)
-            {
-                console.log("comparazione ora con lista html: ",convert(std_time_offset)+","+dst);
-                console.log(document.getElementById('timezone').options[i].value);
-                
-                if (document.getElementById('timezone').options[i].value == finalTemp+","+dst) {
-                    document.getElementById('timezone').selectedIndex = i;
-                    break;
-                }
-                
-            }
-        }
-    
-    }
-    
-    function convert(value) {
-        var hours = parseInt(value);
-           value -= parseInt(value);
-        value *= 60;
-        var mins = parseInt(value);
-           value -= parseInt(value);
-        value *= 60;
-        var secs = parseInt(value);
-        var display_hours = hours;
-        // handle GMT case (00:00)
-        if (hours == 0) {
-            display_hours = "00";
-        } else if (hours > 0) {
-            // add a plus sign and perhaps an extra 0
-            display_hours = (hours < 10) ? "+0"+hours : "+"+hours;
-        } else {
-            // add an extra 0 if needed 
-            display_hours = (hours > -10) ? "-0"+Math.abs(hours) : hours;
-        }
-        
-        mins = (mins < 10) ? "0"+mins : mins;
+    var timezoneCheckbox = function () {
        
-        return display_hours+":"+mins;
-    }
-   */ 
+        if(elTimezoneCheckbox.checked)toggleTimeZonePicker(true);
+        else toggleTimeZonePicker(false);
+    };
+   
+
+
+
 
     return {
       /**
@@ -2557,6 +2420,7 @@
         //elTableTransactions = document.getElementById('tableTransactions');       
         
         elTimezonePicker = document.getElementById('timezone');
+        elTimezoneCheckbox = document.getElementById('checkboxDifferentTimezone');
       
         
 
@@ -2621,6 +2485,7 @@
                elParseButtonProvider.addEventListener('click',uploadFileProvider,false);
 
                elTimezonePicker.addEventListener('change',getTimezonePicker,false);
+               elTimezoneCheckbox.addEventListener('change',timezoneCheckbox,false);
                
               
             
@@ -2663,6 +2528,7 @@
        elParseButtonProvider.removeEventListener('click',uploadFileProvider,false);
 
        elTimezonePicker.removeEventListener('change',getTimezonePicker,false);
+       elTimezoneCheckbox.removeEventListener('change',timezoneCheckbox,false);
 
     
   
