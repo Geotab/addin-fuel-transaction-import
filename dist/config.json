@@ -4,12 +4,12 @@
   "version": "3.0.0",
   "items": [
     {
-      "icon": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@UAT_3.0.27/dist/images/icon.svg",
+      "icon": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@UAT_3.0.28/dist/images/icon.svg",
       "path": "EngineMaintenanceLink/",
       "menuName": {
         "en": "Fuel Transaction Import (by Fabio)"
       },
-      "url": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@UAT_3.0.27/dist/importFuelTransactions.html"
+      "url": "https://cdn.jsdelivr.net/gh/genobean11m/addin-fuel-transaction-import@UAT_3.0.28/dist/importFuelTransactions.html"
     }
   ]
 }

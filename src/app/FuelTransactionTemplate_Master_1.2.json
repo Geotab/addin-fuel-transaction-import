@@ -6,6 +6,7 @@
             "unitOdoKm" : "Y",
             "dateFormat" :"YYYYMMDD",
             "timeFormat" :"HHmm",
+            "currencyCodeMapped":"",
             "data" : {
             "cardNumber" : "",
             "comments" : "",

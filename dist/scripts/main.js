@@ -64,6 +64,7 @@
     var fileJsonToParse;
     var objProviderTemplate;
     var timezoneFromPicker;
+    var currencyCodeMapped
     
     
     
@@ -1589,27 +1590,50 @@
   
               break;
               case "currencyCode":
-                  var currency;            
-  
-                  if(singleTransaction[provider[prop]]!=undefined&&singleTransaction[provider[prop]]!="")
+                    
+                  // check if currency is defined in the template, if not check in column mapping
+                  if(currencyCodeMapped!=""&&currencyCodeMapped!=undefined)
                   {
-                      currency= singleTransaction[provider[prop]].trim().toUpperCase();
-                      currency = currency.replace(/[^a-zA-Z]/g, '');                    
-  
-                      if (!cc.codes().includes(currency.toUpperCase())) 
-                      {
-                          window.alert("Invalid format for currency: " + currency + "\n"+" Please follow ISO 4217 3-letter standard for representing currency. Eg: USD");
-                          clearAllForException(); 
-                      }    
-                      else
-                      {
-                          newTranscationObj[prop]= currency;  
-                      }
+                    currencyCodeMapped = currencyCodeMapped.trim().toUpperCase();
+                    currencyCodeMapped = currencyCodeMapped.replace(/[^a-zA-Z]/g, '');
+                    if (!cc.codes().includes(currencyCodeMapped.toUpperCase())) 
+                        {
+                            window.alert("Invalid format for currency: " + currencyCodeMapped + "\n"+" Please follow ISO 4217 3-letter standard for representing currency. Eg: USD");
+                            clearAllForException(); 
+                        }    
+                        else
+                        {
+                            newTranscationObj[prop]= currencyCodeMapped;  
+                        }  
                   }
                   else
                   {
-                      if(singleTransaction[provider[prop]]!="")newTranscationObj[prop]=null;
+                    
+                    if(singleTransaction[provider[prop]]!=undefined&&singleTransaction[provider[prop]]!="")
+                    {       
+                        currencyCodeMapped= singleTransaction[provider[prop]].trim().toUpperCase();
+                        currencyCodeMapped = currencyCodeMapped.replace(/[^a-zA-Z]/g, '');                                 
+    
+                        if (!cc.codes().includes(currencyCodeMapped.toUpperCase())) 
+                        {
+                            window.alert("Invalid format for currency: " + currencyCodeMapped + "\n"+" Please follow ISO 4217 3-letter standard for representing currency. Eg: USD");
+                            clearAllForException(); 
+                        }    
+                        else
+                        {
+                            newTranscationObj[prop]= currencyCodeMapped;  
+                        }
+                    }
+                    else
+                    {
+                        if(singleTransaction[provider[prop]]!="")newTranscationObj[prop]=null;
+                    }
+
                   }
+                    
+                  
+  
+                  
               break;
   
               case "dateTime":
@@ -2280,6 +2304,7 @@
       unitOdoKm = extractedProviderTemplate[0]["unitOdoKm"];
       dateFormat = extractedProviderTemplate[0]["dateFormat"];
       hourFormat = extractedProviderTemplate[0]["timeFormat"];
+      currencyCode = extractedProviderTemplate[0]["currencyCode"];
       
   
       results = addBlanckColumn(resultsParser(e));
