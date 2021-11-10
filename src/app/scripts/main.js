@@ -2313,7 +2313,7 @@
       unitOdoKm = extractedProviderTemplate[0]["unitOdoKm"];
       dateFormat = extractedProviderTemplate[0]["dateFormat"];
       hourFormat = extractedProviderTemplate[0]["timeFormat"];
-      currencyCode = extractedProviderTemplate[0]["currencyCodeMapped"];
+      currencyCodeMapped = extractedProviderTemplate[0]["currencyCodeMapped"];
       
   
       results = addBlanckColumn(resultsParser(e));
