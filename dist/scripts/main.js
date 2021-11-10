@@ -64,7 +64,8 @@
     var fileJsonToParse;
     var objProviderTemplate;
     var timezoneFromPicker;
-    var currencyCodeMapped
+    var currencyCodeMapped;
+    var locationCoordinatesProvider;
     
     
     
@@ -1559,11 +1560,19 @@
                    {                    
                       if(typeof(provider[prop])=="object")
                       {
-                          for(var inner in provider[prop])
-                          {
-                              if(singleTransaction[provider[prop][inner]]!=""&&singleTransaction[provider[prop][inner]]!=undefined)newTranscationObj[prop] += singleTransaction[provider[prop][inner]]+" "; 
-                          }
-                          newTranscationObj[prop]=newTranscationObj[prop].slice(0,-1);
+                        for(var inner in provider[prop])
+                        {
+                            if(singleTransaction[provider[prop][inner]]!=""&&singleTransaction[provider[prop][inner]]!=undefined)newTranscationObj[prop] += singleTransaction[provider[prop][inner]]+" "; 
+                        }
+                        newTranscationObj[prop]=newTranscationObj[prop].slice(0,-1);
+                        /*
+                        //call the function to get the coordinates
+                        getCoordFromAddressProvider(newTranscationObj[prop]);
+                        console.log("3");  
+                        console.log(locationCoordinatesProvider);
+                        //put locationCoordinatesProvider into location
+                        */
+
                       }
                       else newTranscationObj[prop]= singleTransaction[provider[prop]];
                    }
@@ -1661,12 +1670,12 @@
                                             dateFormat="MM/DD/YYYY";
                                             dateHoursComposed = dateFormat + " "+hourFormat;
                                             singleTransaction[provider[prop][0]]= (moment(singleTransaction[provider[prop][0]].slice(0,10)).format(dateFormat));
-                                            //console.log(singleTransaction[provider[prop][0]]);
+                                            
                                         }
                                         if(singleTransaction[provider[prop][1]].length==16)
                                         {
                                             singleTransaction[provider[prop][1]]= singleTransaction[provider[prop][1]].slice(0,8);
-                                            //console.log(singleTransaction[provider[prop][1]]);
+                                            
                                            
                                         }
                                         
@@ -2304,7 +2313,7 @@
       unitOdoKm = extractedProviderTemplate[0]["unitOdoKm"];
       dateFormat = extractedProviderTemplate[0]["dateFormat"];
       hourFormat = extractedProviderTemplate[0]["timeFormat"];
-      currencyCode = extractedProviderTemplate[0]["currencyCode"];
+      currencyCode = extractedProviderTemplate[0]["currencyCodeMapped"];
       
   
       results = addBlanckColumn(resultsParser(e));
@@ -2382,7 +2391,22 @@
         if(elTimezoneCheckbox.checked)toggleTimeZonePicker(true);
         else toggleTimeZonePicker(false);
     };
-   
+    
+        var getCoordFromAddressProvider = function(location)
+    {
+        
+        api.call("GetCoordinates", {
+            addresses: [location]
+        }, (result) =>{        
+            locationCoordinatesProvider = result; 
+            console.log("1");     
+        }, (e) => {
+            console.error("Failed:", e);
+        });
+        console.log("2");  
+
+    };
+    
 
 
 
@@ -2442,7 +2466,6 @@
         elFileProvider = document.getElementById('filesProvider');
         elFileNameProvider = document.getElementById('fileNameProvider');
         elParseButtonProvider = document.getElementById('parseButtonProvider');
-        //elTableTransactions = document.getElementById('tableTransactions');       
         
         elTimezonePicker = document.getElementById('timezone');
         elTimezoneCheckbox = document.getElementById('checkboxDifferentTimezone');
