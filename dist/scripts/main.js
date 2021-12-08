@@ -1277,7 +1277,7 @@
               {
                   xhr.open('POST', getUrl());
               }
-              //xhr.open('POST', getUrl());
+              
               xhr.send(fd);
           } else {
               iframeUpload(elForm, getUrl(), parameters);
@@ -1391,7 +1391,7 @@
           };
       };
       toggleImportProvider(false);
-      //toggleBrowse(false);
+      
       toggleAlert(elAlertInfo, message);
       transactions.forEach(function (transaction, j) {
           
@@ -1417,14 +1417,14 @@
          
           var temp = JSON.stringify(results);
          
-          console.log("Transaction Imported with ID: ",temp.replace(/[\[\]"]+/g, ""));
+          //console.log("Transaction Imported with ID: ",temp.replace(/[\[\]"]+/g, ""));
          
           window.alert("Transaction ID: "+temp.replace(/[\[\]"]+/g, ""));
           clearTransactionsProvider();
           toggleAlert(elAlertSuccess, totalAdded);
-          //toggleBrowse(true);
+          
       }).catch(function (e) {
-          //toggleBrowse(true);
+          
           toggleAlert(elAlertError, e.toString());
           
       });
@@ -1565,11 +1565,14 @@
                             if(singleTransaction[provider[prop][inner]]!=""&&singleTransaction[provider[prop][inner]]!=undefined)newTranscationObj[prop] += singleTransaction[provider[prop][inner]]+" "; 
                         }
                         newTranscationObj[prop]=newTranscationObj[prop].slice(0,-1);
-                        /*
+                       /* 
                         //call the function to get the coordinates
                         getCoordFromAddressProvider(newTranscationObj[prop]);
                         console.log("3");  
                         console.log(locationCoordinatesProvider);
+                        newTranscationObj["location"]["x"]= locationCoordinatesProvider[0]["x"];
+                        newTranscationObj["location"]["y"]= locationCoordinatesProvider[0]["y"];
+                        console.log(newTranscationObj);
                         //put locationCoordinatesProvider into location
                         */
 
@@ -2392,18 +2395,18 @@
         else toggleTimeZonePicker(false);
     };
     
-        var getCoordFromAddressProvider = function(location)
+    var getCoordFromAddressProvider = function(location)
     {
         
         api.call("GetCoordinates", {
             addresses: [location]
         }, (result) =>{        
             locationCoordinatesProvider = result; 
-            console.log("1");     
+            //console.log(": 1",locationCoordinatesProvider);     
         }, (e) => {
             console.error("Failed:", e);
         });
-        console.log("2");  
+        
 
     };
     
@@ -2424,8 +2427,6 @@
        */
       initialize: function (geotabApi, freshState, initializeCallback) {
   
-
-      
 
         
         api = geotabApi;

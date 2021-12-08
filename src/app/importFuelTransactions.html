@@ -19,7 +19,11 @@
 </head>
 <body>
 
-  <div id="app" style="margin-top: 5px; margin-left: 15px; margin-bottom: 5px;margin-right: 10px;">
+
+
+
+
+  <div id="app" class="container" style="margin-top: 5px; margin-left: 15px; margin-bottom: 5px;margin-right: 10px;">
    
     
     
@@ -34,12 +38,8 @@
         <div >
 
           <section >
-              <div >
-                  <h1>Import Fuel Transactions</h1>
-
-                  last build 10 Nov 10:32
-                  UAT_3.0.29
-                
+              <div>
+                  <h1>Import Fuel Transactions</h1>               
 
                   <p>To import fuel transactions to your account, select the file, open the file, verify that the columns are in the correct format, then import the file.</p>
                   <p>To view fuel transactions, navigate to Fill-Ups from the Engine and Maintenance tab.</p>
@@ -54,15 +54,17 @@
                           <input style="display: none" type="checkbox" id="exampleButton"><u><small>Example</small></u>
                       </li>
                       <li>Import Fuel Provider <b style="color: red;">[NEW]</b> <a href="https://docs.google.com/document/d/1nYSE4cSPlz2gSpjkyu3Aj1IXcHkoPAse5Cy5b1ppF-Q/edit#heading=h.ymsdtzsurgp4"  target=”_blank”>User Manual</a></li>
-                     
-                 
-
-                  <input type="radio" name="selector" id="wexSelector" class="geotabSwitchButton" checked>
-<label class="geotabButton" for="wexSelector" value="WEX">WEX</label>
+                  </ul>
+               <div>
+                      
+<input type="radio" name="selector" id="wexSelector" class="geotabSwitchButton" checked>
+<label class="geo-button" for="wexSelector" value="WEX">WEX</label>
 <input type="radio" name="selector" id="genericFormatSelector" class="geotabSwitchButton">
-<label class="geotabButton" for="genericFormatSelector" value="Generic">Generic Format</label>
+<label class="geo-button" for="genericFormatSelector" value="Generic">Generic Format</label>
 <input type="radio" name="selector" id="providerSelector" class="geotabSwitchButton">
-<label class="geotabButton" for="providerSelector" value="Provider">Import Fuel Provider</label>
+<label class="geo-button" for="providerSelector" value="Provider">Import Fuel Provider</label>
+                      
+</div>
 
 
               </div>
@@ -207,7 +209,7 @@
                                         <div>
                                             <span >                                        
                                             <input id="filesJson" type="file" style="display:none;" />
-                                            <input class="geotabButton" type="button" value="Select Provider File" onclick="document.getElementById('filesJson').click();" />
+                                            <input class="geo-button" type="button" value="Select Provider File" onclick="document.getElementById('filesJson').click();" />
                                             <label>(.json)</label>                                     
                                         </span>         
                                         </div>                                    
@@ -224,7 +226,7 @@
 
                                 <tr>
                                   <td><div>
-                                    <button disabled="disabled" class="geotabButton" id="importJsonFile" title="Import Mapping File">Import Json File</button>
+                                    <button disabled="disabled" class="geo-button" id="importJsonFile" title="Import Mapping File">Import Json File</button>
                                    
                                 </div></td>
                                   <td><select id="providerDropMenu" name="providerDropMenu" style="display: none" >              
@@ -266,7 +268,7 @@
                                                 <span >                                  
           
                                                     <input id="files" type="file" style="display:none;" />
-                                                    <input class="geotabButton" type="button" value="Browse" onclick="document.getElementById('files').click();" />
+                                                    <input class="geo-button" type="button" value="Browse" onclick="document.getElementById('files').click();" />
                                                     <label>(.xlsx, .xlsm, .csv)</label>           
                                                 </span>    
                                             </div>                                
@@ -279,7 +281,7 @@
                           <tr>
                               <td>
                                 <div>
-                                    <button disabled="disabled" class="geotabButton" id="parseButton" title="Load fuel card transactions from selected file">Open File</button>
+                                    <button disabled="disabled" class="geo-button" id="parseButton" title="Load fuel card transactions from selected file">Open File</button>
                                 </div>
                               </td>
                               <td>
@@ -951,7 +953,7 @@
                                       <span >                                  
 
                                           <input id="filesProvider" type="file" style="display:none;" />
-                                          <input class="geotabButton" type="button" value="Browse" onclick="document.getElementById('filesProvider').click();" />
+                                          <input class="geo-button" type="button" value="Browse" onclick="document.getElementById('filesProvider').click();" />
                                           <label>(.xlsx)</label>           
                                       </span>    
                             </div>                                
@@ -965,7 +967,7 @@
                 <tr>
                     <td>
                       <div>
-                          <button disabled="disabled" class="geotabButton" id="parseButtonProvider" title="Load fuel card transactions from selected file">Open File</button>
+                          <button disabled="disabled" class="geo-button" id="parseButtonProvider" title="Load fuel card transactions from selected file">Open File</button>
                       </div>
                     </td>
                     <td>
@@ -994,13 +996,13 @@
                         <table>
                             <tr>
                                 <td> <div   role="group" aria-label="...">
-                                    <button class="geotabButton" id="cancelButton" title="Cancel">Cancel</button>
+                                    <button class="geo-button" id="cancelButton" title="Cancel">Cancel</button>
                                     
                                   </div></td>
                                 <td><div  role="group" aria-label="...">
                                     <div >
                                         <div >
-                                            <button disabled="disabled" class="geotabButton"  id="importButton" title="Import fuel card transactions">Import</button>
+                                            <button disabled="disabled" class="geo-button"  id="importButton" title="Import fuel card transactions">Import</button>
                                             </div>
                                          </div>
                                 </div></td>
@@ -1041,13 +1043,13 @@
                         <table>
                             <tr>
                                 <td> <div   role="group" aria-label="...">
-                                    <button class="geotabButton" id="cancelButtonProvider" title="Cancel">Cancel</button>
+                                    <button class="geo-button" id="cancelButtonProvider" title="Cancel">Cancel</button>
                                     
                                   </div></td>
                                 <td><div  role="group" aria-label="...">
                                     <div >
                                         <div >
-                                            <button disabled="disabled" class="geotabButton"  id="importButtonProvider" title="Import fuel card transactions">Import</button>
+                                            <button disabled="disabled" class="geo-button"  id="importButtonProvider" title="Import fuel card transactions">Import</button>
                                             </div>
                                          </div>
                                 </div></td>
