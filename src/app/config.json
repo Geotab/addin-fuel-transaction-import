@@ -1,5 +1,5 @@
 {
-	"name": "Fuel Transaction Import (by Fabio)",
+	"name": "Fuel Transaction Import",
 	"supportEmail": "fabiopolini@geotab.com",
 	"version": "3.0.0",
 	"items": [{
@@ -7,7 +7,7 @@
 			"icon": "images/icon.svg",
 			"path": "EngineMaintenanceLink/",
 			"menuName": {
-				"en": "Fuel Transaction Import (by Fabio)"
+				"en": "Fuel Transaction Import"
 			},
 
 			
