@@ -2505,7 +2505,7 @@
 
             // getting the current user to display in the UI
             geotabApi.getSession(session => {
-              elContainer.querySelector('#importFuelTransactions_fp-user').textContent = session.userName;
+              //elContainer.querySelector('#importFuelTransactions_fp-user').textContent = session.userName;
             });
                       
             elContainer.className = '';
