@@ -2118,7 +2118,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             "id349": "DDMMYY H.m",
 
         }
-
         function getFormat(dateInput) {
 
             for (var prop in dateFormats) {
