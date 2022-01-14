@@ -1545,16 +1545,16 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                                 if (singleTransaction[provider[prop][inner]] != "" && singleTransaction[provider[prop][inner]] != undefined) newTranscationObj[prop] += singleTransaction[provider[prop][inner]] + " ";
                             }
                             newTranscationObj[prop] = newTranscationObj[prop].slice(0, -1);
-                            /* 
+                            /*
                              //call the function to get the coordinates
-                             getCoordFromAddressProvider(newTranscationObj[prop]);
-                             console.log("3");  
+                             locationCoordinatesProvider =await getCoordFromAddressProvider(newTranscationObj[prop]);
+                             console.log("3:locationCoordinatesProvider ",locationCoordinatesProvider);  
                              console.log(locationCoordinatesProvider);
-                             newTranscationObj["location"]["x"]= locationCoordinatesProvider[0]["x"];
-                             newTranscationObj["location"]["y"]= locationCoordinatesProvider[0]["y"];
+                             //newTranscationObj["location"]["x"]= locationCoordinatesProvider[0]["x"];
+                             //newTranscationObj["location"]["y"]= locationCoordinatesProvider[0]["y"];
                              console.log(newTranscationObj);
                              //put locationCoordinatesProvider into location
-                             */
+                            */
 
                         }
                         else newTranscationObj[prop] = singleTransaction[provider[prop]];
@@ -1674,93 +1674,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     }
 
 
-                    /*
-
-                    if (provider[prop] != "") {
-                        //Check if is object, means that date is composed by 2 cells
-                        if (typeof (provider[prop]) == "object" && provider[prop].length > 1) {
-                            dateHoursComposed = dateFormat + " " + hourFormat;
-
-                            for (var inner in provider[prop]) {
-
-                                if (singleTransaction[provider[prop][inner]] != "" && singleTransaction[provider[prop][inner]] != undefined) {
-
-                                    //remove the spaces before and after
-                                    singleTransaction[provider[prop][inner]] = singleTransaction[provider[prop][inner]].trim();
-
-                                    //check if is a full date 19 chars
-                                    if (singleTransaction[provider[prop][0]].length == 19 || singleTransaction[provider[prop][0]].length == 16) {
-                                        //if you are here is because the Date cell in excel has Date format
-                                        console.log("data e ora: ", singleTransaction[provider[prop][0]]);
-                                        console.log("date format: ", dateFormat);
-                                        console.log("dateHoursComposed: ", dateHoursComposed);
-
-                                        //I change the date format into US
-                                        dateFormat = "MM/DD/YYYY";
-                                        dateHoursComposed = dateFormat + " " + hourFormat;
-                                        singleTransaction[provider[prop][0]] = (moment(singleTransaction[provider[prop][0]].slice(0, 10)).format(dateFormat));
-
-                                    }
-                                    if (singleTransaction[provider[prop][1]].length == 16) {
-                                        singleTransaction[provider[prop][1]] = singleTransaction[provider[prop][1]].slice(0, 8);
-
-                                    }
-
-
-                                    temp = newTranscationObj[prop] += singleTransaction[provider[prop][inner]] + " ";
-                                }
-                            }
-                            temp = temp.slice(0, -1);
-
-                            newTranscationObj[prop] = getDateValueProvider(temp);
-                        }
-                        else {
-                            //remove the spaces before and after
-                            singleTransaction[provider[prop]] = singleTransaction[provider[prop]].trim();
-                            if (singleTransaction[provider[prop]].length == 19 || singleTransaction[provider[prop]].length == 16) {
-
-                                switch (singleTransaction[provider[prop]].charAt(2)) {
-                                    case "-":
-                                        {
-                                            dateFormat = dateFormat.replace("DD", "MM");
-                                            dateFormat = dateFormat.replace("MM-MM", "MM-DD");
-                                            // test
-                                            singleTransaction[provider[prop]] = (moment(singleTransaction[provider[prop]]).format(dateFormat));
-
-                                        }
-                                        break;
-                                    case "/":
-                                        {
-
-                                            dateFormat = dateFormat.replace("DD", "MM");
-                                            dateFormat = dateFormat.replace("MM/MM", "MM/DD");
-                                        }
-                                        break;
-                                    case " ":
-                                        {
-                                            dateFormat = dateFormat.replace("DD", "MM");
-                                            dateFormat = dateFormat.replace("MM MM", "MM DD");
-
-                                        }
-                                        break;
-                                    default:
-                                        {
-                                            console.log("Not handled case");
-                                            console.log("data and time: ", singleTransaction[provider[prop]]);
-                                            console.log("date format: ", dateFormat);
-                                        }
-                                        break;
-
-                                }
-
-
-                                dateHoursComposed = dateFormat;
-                                newTranscationObj[prop] = getDateValueProvider(singleTransaction[provider[prop]]);
-                            }
-                            else newTranscationObj[prop] = getDateValueProvider(singleTransaction[provider[prop]]);
-                        }
-
-                    }*/
+                    
 
                     break;
 
@@ -2385,19 +2299,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
 
 
-        //// New part Excel to Json
-        /*
-        console.log(elFileProvider.files[0]);
-        console.log(elFileProvider.files[0].name);
-        //const wb = xlsx.readFile("/src/app/scripts/Repostaje Mes Junio 21.xlsx");
-        const wb = xlsx.readFile(elFileProvider.files[0]);      
-        console.log(wb.SheetNames);
-        */
-        ///// End of the test
-
-
-
-
         toggleAlert(elAlertInfo, 'Parsing... transferring file');
         api.getSession(function (credentials) {
             var fd;
@@ -2527,8 +2428,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         transactions = await parsingTransactionWithProviderAsync(results.data, extractedProviderTemplate);
 
 
-        console.log("remove this after test:", transactions)
-
+        
         clearFilesJson();
         clearFilesProvider();
 
@@ -2588,73 +2488,23 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         if (elTimezoneCheckbox.checked) toggleTimeZonePicker(true);
         else toggleTimeZonePicker(false);
     };
-
-    var getCoordFromAddressProvider = function (location) {
+/*
+    async function  getCoordFromAddressProvider (location) {
 
         api.call("GetCoordinates", {
             addresses: [location]
         }, (result) => {
-            locationCoordinatesProvider = result;
-            //console.log(": 1",locationCoordinatesProvider);     
+            return result;  
+            console.log(": 1",locationCoordinatesProvider); 
+              
         }, (e) => {
             console.error("Failed:", e);
         });
 
-
+        //return result;  
     };
-
-    /*
-        var elExcelToJsonUploadTestFunc = function () {
-    
-            var test;
-    
-            var fr = new FileReader();
-    
-    
-            fr.readAsText(this.files[0]);
-            test = this.files[0];
-            console.log(test);
-    
-    
-            fr.addEventListener('loadend', function () {
-    
-    
-                //var url = "/Test.xlsx";
-                var oReq = new XMLHttpRequest();
-                oReq.open("GET", test, true);
-                oReq.responseType = "arraybuffer";
-    
-                oReq.onload = function (e) {
-                    var arraybuffer = oReq.response;
-    
-                    // convert data to binary string 
-                    var data = new Uint8Array(arraybuffer);
-                    var arr = new Array();
-                    for (var i = 0; i != data.length; ++i) arr[i] = String.fromCharCode(data[i]);
-                    var bstr = arr.join("");
-    
-                    // Call XLSX 
-                    var workbook = XLSX.read(bstr, {
-                        type: "binary"
-                    });
-    
-                    // DO SOMETHING WITH workbook HERE 
-                    var first_sheet_name = workbook.SheetNames[0];
-                    // Get worksheet 
-                    var worksheet = workbook.Sheets[first_sheet_name];
-                    console.log(XLSX.utils.sheet_to_json(worksheet, {
-                        raw: true
-                    }));
-                }
-    
-                oReq.send();
-            }
-            )
-        }
-    */
-
-        console.log(moment('16/12/21 8.17','DD/MM/YY H.mm', true).isValid()); // false
-        
+*/
+     
 
     return {
         /**
