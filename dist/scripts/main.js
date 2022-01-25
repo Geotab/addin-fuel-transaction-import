@@ -1647,9 +1647,24 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                                 singleTransaction[provider[prop][1]] = singleTransaction[provider[prop][1]].trim();
                                 singleTransaction[provider[prop][0]] = singleTransaction[provider[prop][0]].slice(0, 10);
 
-                                if (singleTransaction[provider[prop][1]].length == 19) {
-                                    singleTransaction[provider[prop][1]] = singleTransaction[provider[prop][1]].slice(11, 19);
+                                if(singleTransaction[provider[prop][1]].length >= hourFormat.length)
+                                {
+                                    console.log("Split", singleTransaction[provider[prop][1]].slice(0, hourFormat.length));
+                                    singleTransaction[provider[prop][1]] = singleTransaction[provider[prop][1]].slice(0,hourFormat.length);
+                                    console.log("Split", singleTransaction[provider[prop][1]].slice(0, hourFormat.length));
+
                                 }
+
+                                if (singleTransaction[provider[prop][1]].length == 19) {
+                                    singleTransaction[provider[prop][1]] = singleTransaction[provider[prop][1]].slice(0,hourFormat.length);
+                                }
+
+                                if (singleTransaction[provider[prop][1]].length == 16) {
+                                    
+                                    console.log("Split", singleTransaction[provider[prop][1]].slice(0, hourFormat.length));
+                                    singleTransaction[provider[prop][1]] = singleTransaction[provider[prop][1]].slice(0, hourFormat.length);
+                                }
+
                                 newTranscationObj[prop] = getDateValueProvider(singleTransaction[provider[prop][0]] + " " + singleTransaction[provider[prop][1]]);
                             }
                             else {
@@ -1674,7 +1689,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     }
 
 
-                    
+
 
                     break;
 
@@ -2428,7 +2443,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         transactions = await parsingTransactionWithProviderAsync(results.data, extractedProviderTemplate);
 
 
-        
+
         clearFilesJson();
         clearFilesProvider();
 
@@ -2488,23 +2503,23 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         if (elTimezoneCheckbox.checked) toggleTimeZonePicker(true);
         else toggleTimeZonePicker(false);
     };
-/*
-    async function  getCoordFromAddressProvider (location) {
+    /*
+        async function  getCoordFromAddressProvider (location) {
+    
+            api.call("GetCoordinates", {
+                addresses: [location]
+            }, (result) => {
+                return result;  
+                console.log(": 1",locationCoordinatesProvider); 
+                  
+            }, (e) => {
+                console.error("Failed:", e);
+            });
+    
+            //return result;  
+        };
+    */
 
-        api.call("GetCoordinates", {
-            addresses: [location]
-        }, (result) => {
-            return result;  
-            console.log(": 1",locationCoordinatesProvider); 
-              
-        }, (e) => {
-            console.error("Failed:", e);
-        });
-
-        //return result;  
-    };
-*/
-     
 
     return {
         /**
@@ -2517,11 +2532,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
          *        might be doing asynchronous operations, you must call this method when the Add-In is ready
          *        for display to the user.
          */
-         
+
         initialize: function (geotabApi, freshState, initializeCallback) {
 
 
-          
+
 
             api = geotabApi;
 
@@ -2580,7 +2595,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         },
 
 
-        
+
 
 
 
@@ -2597,8 +2612,8 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
          */
         focus: function (geotabApi, freshState) {
 
-           
-            
+
+
 
             // getting the current user to display in the UI
             geotabApi.getSession(session => {
