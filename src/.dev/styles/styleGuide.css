@@ -1,4 +1,4 @@
- .container {
+.container {
 	width: 90%;
     margin: auto;
 }
@@ -10,7 +10,7 @@ mark {
     color: #000;
 }
 
-header_selector {
+code {
 	display: block;
     padding: 0;
     background: 0 0;
@@ -53,7 +53,7 @@ pre {
     float: right;
 }
 
-.example, .header_selector {
+.example, .code {
 	overflow: hidden;
     position: relative;
     margin: 0;
@@ -73,12 +73,12 @@ pre {
 	line-height: normal;
 }
 
-.header_selector {
+.code {
 	border-top: 0;
 }
 
 .example:after,
-.header_selector:after {
+.code:after {
     position: absolute;
     top: -1px;
     left: -1px;
@@ -95,6 +95,6 @@ pre {
 	content: "Example";
 }
 
-.header_selector:after {
-	content: "Select ";
+.code:after {
+	content: "Code";
 }

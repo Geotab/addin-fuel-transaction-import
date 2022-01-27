@@ -152,7 +152,7 @@ let mockAddinHost = (sourceDir) => {
 
 			pos = htmlSource.indexOf(body);
 			if (pos > -1) {
-				htmlSource = htmlSource.substring(0, pos + body.length) + fs.readFileSync('_dev/login.html', 'utf8') + htmlSource.substring(pos + body.length);
+				htmlSource = htmlSource.substring(0, pos + body.length) + fs.readFileSync('.dev/login.html', 'utf8') + htmlSource.substring(pos + body.length);
 			}
 
 			res.end(htmlSource);
@@ -170,7 +170,7 @@ gulp.task('serve', ['styles', 'scripts', 'fonts'], () => {
 			baseDir: ['.tmp', 'app'],
 			routes: {
 				'/bower_components': 'bower_components',
-				'/_dev': '_dev'
+				'/.dev': '.dev'
 			},
 			middleware: mockAddinHost('app')
 		}
@@ -196,7 +196,7 @@ gulp.task('serve:dist', () => {
 		server: {
 			baseDir: ['dist'],
 			routes: {
-				'/_dev': '_dev'
+				'/.dev': '.dev'
 			},
 			middleware: mockAddinHost('dist')
 		}
@@ -212,7 +212,7 @@ gulp.task('test', ['styles', 'scripts', 'fonts'], () => {
 			baseDir: ['.tmp', 'app'],
 			routes: {
 				'/bower_components': 'bower_components',
-				'/_dev': '_dev'
+				'/.dev': '.dev'
 			},
 			middleware: mockAddinHost('app')
 		}

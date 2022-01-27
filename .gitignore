@@ -1,5 +1,12 @@
 node_modules
 .tmp
 .sass-cache
-bower_components
-test/bower_components
+test\functional
+webpack.*
+utils
+.gitattributes
+gulpfile.babel.js
+package-lock.json
+webpack.common.js
+webpack.development.js
+webpack.production.js
