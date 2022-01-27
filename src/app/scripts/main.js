@@ -1637,10 +1637,8 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
                             if (singleTransaction[provider[prop][0]] != "" && singleTransaction[provider[prop][0]] != undefined && singleTransaction[provider[prop][1]] != undefined && singleTransaction[provider[prop][1]] != undefined) {
 
-
                                 if (isCellDateType == "Y") dateHoursComposed = "MM/DD/YYYY" + " " + hourFormat;
                                 else dateHoursComposed = dateFormat + " " + hourFormat;
-
 
                                 //remove the spaces before and after
                                 singleTransaction[provider[prop][0]] = singleTransaction[provider[prop][0]].trim();
@@ -1648,11 +1646,8 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                                 singleTransaction[provider[prop][0]] = singleTransaction[provider[prop][0]].slice(0, 10);
 
                                 if(singleTransaction[provider[prop][1]].length >= hourFormat.length)
-                                {
-                                    console.log("Split", singleTransaction[provider[prop][1]].slice(0, hourFormat.length));
-                                    singleTransaction[provider[prop][1]] = singleTransaction[provider[prop][1]].slice(0,hourFormat.length);
-                                    console.log("Split", singleTransaction[provider[prop][1]].slice(0, hourFormat.length));
-
+                                {                                    
+                                    singleTransaction[provider[prop][1]] = singleTransaction[provider[prop][1]].slice(0,hourFormat.length);   
                                 }
                                 newTranscationObj[prop] = getDateValueProvider(singleTransaction[provider[prop][0]] + " " + singleTransaction[provider[prop][1]]);
                             }
@@ -1662,8 +1657,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                                 clearAllForException();
 
                             }
-
-
                         }
                         else {
 
@@ -1672,16 +1665,8 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
                             newTranscationObj[prop] = getDateValueProvider(singleTransaction[provider[prop]]);
                         }
-
-
-
                     }
-
-
-
-
                     break;
-
 
 
                 case "odometer":
