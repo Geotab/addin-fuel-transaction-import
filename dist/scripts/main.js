@@ -1654,17 +1654,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                                     console.log("Split", singleTransaction[provider[prop][1]].slice(0, hourFormat.length));
 
                                 }
-
-                                if (singleTransaction[provider[prop][1]].length == 19) {
-                                    singleTransaction[provider[prop][1]] = singleTransaction[provider[prop][1]].slice(0,hourFormat.length);
-                                }
-
-                                if (singleTransaction[provider[prop][1]].length == 16) {
-                                    
-                                    console.log("Split", singleTransaction[provider[prop][1]].slice(0, hourFormat.length));
-                                    singleTransaction[provider[prop][1]] = singleTransaction[provider[prop][1]].slice(0, hourFormat.length);
-                                }
-
                                 newTranscationObj[prop] = getDateValueProvider(singleTransaction[provider[prop][0]] + " " + singleTransaction[provider[prop][1]]);
                             }
                             else {
