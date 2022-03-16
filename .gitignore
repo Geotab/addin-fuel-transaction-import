@@ -10,3 +10,4 @@ package-lock.json
 webpack.common.js
 webpack.development.js
 webpack.production.js
+src\.dev
