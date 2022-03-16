@@ -6,7 +6,7 @@ Add the configuration below to the to the system setting -> add-ins section of t
 ```
 {
   "name": "Fuel Transaction Import",
-  "supportEmail": "fabiopolini@geotab.com",
+  "supportEmail": "support@geotab.com",
   "version": "3.0.0",
   "items": [
     {
