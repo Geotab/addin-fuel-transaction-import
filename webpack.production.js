@@ -11,7 +11,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const config = require('./src/app/config.json');
+const config = require('./src/config/production/config.json');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 /**
@@ -124,7 +124,7 @@ module.exports = merge(common, {
         new CopyWebpackPlugin([
             { from: './src/app/images/icon.svg', to: 'images/'},
             { 
-                from: './src/app/config.json',
+                from: './src/config/production/config.json',
                 transform: transform
             },
             { from: './src/app/translations/', to: 'translations/' },

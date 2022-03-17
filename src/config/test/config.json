@@ -1,0 +1,21 @@
+{
+	"name": "Fuel Transaction Import",
+	"supportEmail": "support@geotab.com",
+	"version": "3.1.0",
+	"items": [
+		{
+			"icon": "images/icon.svg",
+			"path": "EngineMaintenanceLink/",
+			"menuName": {
+				"en": "Fuel Transaction Import"
+			},
+			"url": "importFuelTransactions.html"
+		}
+	],
+	"dev": {
+		"root": "importFuelTransactions",
+		"dist": {
+			"host": "https://addintest.geotab.com/AddIns/Geotab/dist/"
+		}
+	}
+}

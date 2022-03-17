@@ -61,7 +61,6 @@ module.exports = merge(common, {
     plugins: [
         new CopyWebpackPlugin([
             { from: './src/app/images/icon.svg', to: 'images/'},
-            { from: './src/app/config.json'}
         ])
     ],
     devServer: {
