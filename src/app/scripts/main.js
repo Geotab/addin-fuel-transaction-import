@@ -1268,7 +1268,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                 xhr.addEventListener('abort', uploadFailed, false);
 
                 if (getUrl() == 'http://localhost/apiv1') {
-                    xhr.open('POST', 'https://my1250.geotab.com/apiv1')
+                    xhr.open('POST', 'https://proxy.geotab.com/apiv1')
                 }
                 else {
                     xhr.open('POST', getUrl());
@@ -2330,7 +2330,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                 xhr.addEventListener('abort', uploadFailed, false);
 
                 if (getUrl() == 'http://localhost/apiv1') {
-                    xhr.open('POST', 'https://my1250.geotab.com/apiv1')
+                    xhr.open('POST', 'https://proxy.geotab.com/apiv1')
                 }
                 else {
                     xhr.open('POST', getUrl());
