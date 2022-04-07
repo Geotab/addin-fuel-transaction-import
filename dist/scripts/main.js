@@ -1700,6 +1700,12 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                             newTranscationObj[prop] = parseFloat(tmp).toFixed(1);
                         }
                     }
+                    ///// https://jira.geotab.com/browse/EU-2625
+                    else {
+                        if (singleTransaction[provider[prop]] == "") newTranscationObj[prop] = null;                        
+                    }
+                    ///// https://jira.geotab.com/browse/EU-2625
+
                     break;
 
                 case "productType":
