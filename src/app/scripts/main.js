@@ -1576,6 +1576,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                         newTranscationObj[prop] = parseFloat(singleTransaction[provider[prop]].replace(/,/g, '.'));
 
                     }
+                    ///// same issue as https://jira.geotab.com/browse/EU-2625
+                    else {
+                        if (singleTransaction[provider[prop]] == "") newTranscationObj[prop] = null;
+                    }
+                    ///// same issue as https://jira.geotab.com/browse/EU-2625
 
 
                     break;
@@ -2081,6 +2086,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
             console.log("offset In Number taken from picker: ", offsetInNumber);
             console.log("Date not formatted: ", date);
+            console.log("Format Found ",formatFound);
             dateFormatted = moment.utc(date, formatFound, true).utcOffset(offsetInNumber, true).format();
 
             console.log("dateFormatted: ", dateFormatted);
