@@ -1578,7 +1578,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     }
                     ///// same issue as https://jira.geotab.com/browse/EU-2625
                     else {
-                        if (singleTransaction[provider[prop]] == "") newTranscationObj[prop] = null;
+                        newTranscationObj[prop] = null;
                     }
                     ///// same issue as https://jira.geotab.com/browse/EU-2625
 
