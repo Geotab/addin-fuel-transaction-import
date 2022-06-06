@@ -1707,7 +1707,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     }
                     ///// https://jira.geotab.com/browse/EU-2625
                     else {
-                        if (singleTransaction[provider[prop]] == "") newTranscationObj[prop] = null;                        
+                        if (singleTransaction[provider[prop]] == "" || singleTransaction[provider[prop]]== undefined) newTranscationObj[prop] = null;                        
                     }
                     ///// https://jira.geotab.com/browse/EU-2625
 
@@ -1737,7 +1737,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     }
                     ///// same as https://jira.geotab.com/browse/EU-2625
                     else {
-                        if (singleTransaction[provider[prop]] == "") newTranscationObj[prop] = null;
+                        if (singleTransaction[provider[prop]] == "" || singleTransaction[provider[prop]]== undefined) newTranscationObj[prop] = null;
                     }
                     ///// same as https://jira.geotab.com/browse/EU-2625
                     break;
