@@ -61,6 +61,10 @@
       "node": true,
       "browser": true
     },
+    "rules": {
+      "curly": "warn",
+      "semi": ["error", "always"]
+    },
     "globals": {
       "geotab": true,
       "dialogPolyfill": true,
