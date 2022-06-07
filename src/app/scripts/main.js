@@ -30,11 +30,13 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     var elFileName;
     /** The transaction list table in the UI */
     var elTransactionList;
+    /** The transaction list table in the UI for the Json Provider implementation */
     var elTransactionListProvider;
     /** The transaction list table container div */
     var elTransactionContainer;
     /** The transaction list table container div for the Json Provider implementation */
     var elTransactionContainerProvider;
+    /** the file selection container div */
     var elFileSelectContainer;
     // Successfully added fuel transactions alert div
     var elAlertSuccess;
@@ -42,9 +44,12 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     var elAlertError;
     var elSample;
     var elForm;
+    /** represents the count of transactions e.g. Showing first 3/3 transactions... displayed directly above the transactions table.*/
     var elListCount;
+    /** represents the count of transactions e.g. Showing first 3/3 transactions... for the json provider implementation*/
     var elListCountProvider;
 
+    /** the file selection container div for the json provider implementation */
     var elFileJsonSelectContainer;
     // hidden file type input element for the json files
     var elFilesJson;
@@ -53,6 +58,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     var elParseButtonJson;
     var elJsonDropDownMenu;
     var elSelector;
+    /** the file selection container div for the json provider implementation */
     var elFileSelectContainerProvider;
     var elFileProvider;
     var elFileNameProvider;
@@ -285,6 +291,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         var visibleCount = 0;
         var totalRowsCount = 0;
         var fleetName = elFleet.options[elFleet.selectedIndex].value;
+        // setup the table headings
         var getColumnHeading = function (column) {
             var columnHeadings = {
                 'vehicleIdentificationNumber': 'VIN',
@@ -304,6 +311,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             };
             return columnHeadings[column] || column;
         };
+        // creates each table row
         var createRow = function (row, isHeading) {
             var elRow = document.createElement('TR');
             var createColumn = function (columnName) {
@@ -323,23 +331,28 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             return elRow;
         };
 
+        // hides the transaction table container
         elTransactionContainer.style.display = 'none';
         elFileSelectContainer.style.display = 'block';
 
+        // removes any existing table rows in the UI.
         while (elTransactionList.firstChild) {
             elTransactionList.removeChild(elTransactionList.firstChild);
         }
 
+        // adds all the table rows.
         elBody = document.createElement('TBODY');
         transactions.forEach(function (transaction, i) {
             var elHead;
 
             if (i === 0) {
+                // creates the table head row.
                 elHead = document.createElement('THEAD');
                 elHead.appendChild(createRow(transaction, true));
                 elTransactionList.appendChild(elHead);
             }
             if (!fleetName || transaction.fleet === fleetName) {
+                // creates each table row if it belongs to the fleet selected.
                 totalRowsCount++;
                 if (visibleCount < ROW_LIMIT) {
                     visibleCount++;
@@ -353,6 +366,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         elFileSelectContainer.style.display = 'none';
     };
 
+    /**
+     * Renders (displays) the transactions contained in the global transactions variable 
+     * into the elTransactionList, which represents the transactions table (id=transactionList) in the UI
+     * for the json provider implementation.
+     */
     var renderTransactionsProvider = function (transactions) {
 
         var elBody;
@@ -431,16 +449,13 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         elTransactionContainerProvider.style.display = 'block';
         elFileSelectContainerProvider.style.display = 'none';
         elFileJsonSelectContainer.style.display = 'none';
-
-
-
     };
-
 
     var clearFiles = function () {
         elFiles.value = null;
         elFileName.value = '';
     };
+    
     var clearFilesJson = function () {
         elFilesJson.value = null;
         elFileNameJson.value = null;
