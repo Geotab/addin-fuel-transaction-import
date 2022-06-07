@@ -12,7 +12,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
     // DOM Elements
     var elContainer;
-    /** hidden input type=file */
+    /** input file type element id=files */
     var elFiles;
     /** Open File button */
     var elParseButton;
@@ -476,10 +476,19 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         elFileNameProvider.value = '';
         toggleParseProvider();
     };
+
+    /**
+     * @returns The correctly formed Geotab API URL
+     */
     var getUrl = function () {
         return window.location.protocol + '//' + window.location.hostname + '/apiv1';
     };
 
+    /**
+     * Selects the first file (if many) and enables the open file button, clears
+     * the transaction list and disables all alerts.
+     * @param {Event} e The event emitter
+     */
     var fileSelected = function (e) {
         var file;
         if (e.target.files) {
@@ -509,7 +518,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         if (file) {
             elFileNameProvider.value = file.name;
             toggleParseProvider(true);
-
         }
         toggleAlert();
     };
@@ -562,7 +570,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
     var FuelTransactionProvider = function (cardNumber, comments, description, driverName, externalReference, licencePlate, provider, serialNumber, siteName, vehicleIdentificationNumber, cost, currencyCode, dateTime, odometer, productType, volume) {
         var self = {
-
             cardNumber: cardNumber || '',
             comments: comments || '',
             description: description || '',
@@ -579,7 +586,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             odometer: odometer || '',
             productType: productType || '',
             volume: volume || '',
-
         };
         return self;
     };
