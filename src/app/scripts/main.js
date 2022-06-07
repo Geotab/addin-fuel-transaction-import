@@ -13,6 +13,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     // DOM Elements
     var elContainer;
     var elFiles;
+    // Open File button
     var elParseButton;
     var elImportButton;
     var elCancelButton;
@@ -37,6 +38,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     var elFileJsonSelectContainer;
     var elFilesJson;
     var elFileNameJson;
+    // Import Json File Button
     var elParseButtonJson;
     var elJsonDropDownMenu;
     var elSelector;
@@ -44,6 +46,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
     var elFileProvider;
     var elFileNameProvider;
+    // Provider Open File Button
     var elParseButtonProvider;
 
     var elTimezonePicker;
@@ -71,8 +74,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     const moment = require('moment');
     const cc = require('currency-codes');
 
-    // functions
-
+    /**
+     * Toggles enabled/disabled property of the Open File button
+     * @param  {boolean} toggle true or false
+     */
     var toggleParse = function (toggle) {
         if (toggle) {
             elParseButton.removeAttribute('disabled');
@@ -83,7 +88,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     };
 
 
-    // enable or disable (grayout) the button to import the Json file
+    /**
+     * Toggles enabled/disabled property of the Import Json File button
+     * @param  {boolean} toggle true or false
+     */
     var toggleParseJson = function (toggle) {
         if (toggle) {
             //make visible the button to import the Json file
@@ -95,7 +103,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
-    // enable or disable (grayout) the button of the provider xls section 
+    /**
+     * Toggles enabled/disabled property of the Provider Open File button
+     * @param  {boolean} toggle true or false
+     */
     var toggleParseProvider = function (toggle) {
         if (toggle) {
             //make visible the button of the provider xls section 
@@ -155,7 +166,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         elAlertInfo.style.display = 'none';
         elAlertError.style.display = 'none';
         if (el) {
-            el.querySelector('span').textContent = content; toggleParse
+            el.querySelector('span').textContent = content; toggleParse;
             el.style.display = 'block';
         }
     };
@@ -1268,7 +1279,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                 xhr.addEventListener('abort', uploadFailed, false);
 
                 if (getUrl() == 'http://localhost/apiv1') {
-                    xhr.open('POST', 'https://proxy.geotab.com/apiv1')
+                    xhr.open('POST', 'https://proxy.geotab.com/apiv1');
                 }
                 else {
                     xhr.open('POST', getUrl());
@@ -1313,7 +1324,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         var message = 'Importing fuel transactions...';
         var updateTotal = function (results) {
             totalAdded += typeof results === 'string' ? 1 : results.length;
-            console.log("results: ", results)
+            console.log("results: ", results);
         };
         var doCalls = function (calls) {
             return new Promise(function (resolve, reject) {
@@ -1465,7 +1476,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         var newTranscationObj = new FuelTransactionProvider();
 
         for (var prop in provider) {
-            if (provider[prop] == null) provider[prop] = "";//if json file has null field change in ""        
+            if (provider[prop] == null) {provider[prop] = "";}//if json file has null field change in ""        
         }
 
 
@@ -1498,25 +1509,25 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             switch (prop) {
                 case "comments":
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
-                        if (singleTransaction[provider[prop]].length > 1024) newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 1024);
+                        if (singleTransaction[provider[prop]].length > 1024) {newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 1024);}
                         newTranscationObj[prop] = singleTransaction[provider[prop]];
                     }
                     break;
                 case "description":
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
-                        if (singleTransaction[provider[prop]].length > 255) newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255);
+                        if (singleTransaction[provider[prop]].length > 255) {newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255);}
                         newTranscationObj[prop] = singleTransaction[provider[prop]];
                     }
                     break;
                 case "driverName":
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
-                        if (singleTransaction[provider[prop]].length > 255) newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255);
+                        if (singleTransaction[provider[prop]].length > 255) {newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255);}
                         newTranscationObj[prop] = singleTransaction[provider[prop]];
                     }
                     break;
                 case "externalReference":
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
-                        if (singleTransaction[provider[prop]].length > 255) newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255);
+                        if (singleTransaction[provider[prop]].length > 255) {newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255);}
                         newTranscationObj[prop] = singleTransaction[provider[prop]];
                     }
                     break;
@@ -1524,7 +1535,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
 
-                        if (singleTransaction[provider[prop]].length > 255) singleTransaction[provider[prop]].substring(0, 255);
+                        if (singleTransaction[provider[prop]].length > 255) {singleTransaction[provider[prop]].substring(0, 255);}
                         newTranscationObj[prop] = singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, '');
                     }
 
@@ -1540,9 +1551,9 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
                 case "siteName":
                     if (provider[prop] != "") {
-                        if (typeof (provider[prop]) == "object") {
+                        if (typeof (provider[prop]) === "object") {
                             for (var inner in provider[prop]) {
-                                if (singleTransaction[provider[prop][inner]] != "" && singleTransaction[provider[prop][inner]] != undefined) newTranscationObj[prop] += singleTransaction[provider[prop][inner]] + " ";
+                                if (singleTransaction[provider[prop][inner]] != "" && singleTransaction[provider[prop][inner]] != undefined) {newTranscationObj[prop] += singleTransaction[provider[prop][inner]] + " ";}
                             }
                             newTranscationObj[prop] = newTranscationObj[prop].slice(0, -1);
                             /*
@@ -1557,7 +1568,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                             */
 
                         }
-                        else newTranscationObj[prop] = singleTransaction[provider[prop]];
+                        else {newTranscationObj[prop] = singleTransaction[provider[prop]];}
                     }
 
                     break;
@@ -1608,7 +1619,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                             }
                         }
                         else {
-                            if (singleTransaction[provider[prop]] != "") newTranscationObj[prop] = null;
+                            if (singleTransaction[provider[prop]] != "") {newTranscationObj[prop] = null;}
                         }
 
                     }
@@ -1633,13 +1644,13 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
 
                         //check if is an obj, if so means that date is composed by 2 cells
-                        if (typeof (provider[prop]) == "object" && provider[prop].length > 1) {
+                        if (typeof (provider[prop]) === "object" && provider[prop].length > 1) {
 
                             if (singleTransaction[provider[prop][0]] != "" && singleTransaction[provider[prop][0]] != undefined && singleTransaction[provider[prop][1]] != undefined && singleTransaction[provider[prop][1]] != undefined) {
 
 
-                                if (isCellDateType == "Y") dateHoursComposed = "MM/DD/YYYY" + " " + hourFormat;
-                                else dateHoursComposed = dateFormat + " " + hourFormat;
+                                if (isCellDateType == "Y") {dateHoursComposed = "MM/DD/YYYY" + " " + hourFormat;}
+                                else {dateHoursComposed = dateFormat + " " + hourFormat;}
 
 
                                 //remove the spaces before and after
@@ -1667,8 +1678,8 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                         }
                         else {
 
-                            if (isCellDateType == "Y") dateHoursComposed = "MM/DD/YYYY HH:mm:ss";
-                            else dateHoursComposed = dateFormat;
+                            if (isCellDateType == "Y") {dateHoursComposed = "MM/DD/YYYY HH:mm:ss";}
+                            else {dateHoursComposed = dateFormat;}
 
                             newTranscationObj[prop] = getDateValueProvider(singleTransaction[provider[prop]]);
                         }
@@ -1727,7 +1738,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     break;
 
                 default:
-                    if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") newTranscationObj[prop] = singleTransaction[provider[prop]];
+                    if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {newTranscationObj[prop] = singleTransaction[provider[prop]];}
                     break;
             }
         }
@@ -2035,7 +2046,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             "id348": "DDMMYY H.mm",
             "id349": "DDMMYY H.m",
 
-        }
+        };
         function getFormat(dateInput) {
 
             for (var prop in dateFormats) {
@@ -2070,8 +2081,8 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             guessed = moment.tz.guess();
 
 
-            if (elTimezoneCheckbox.checked) offsetInNumber = moment().tz(timezoneFromPicker).utcOffset();
-            else offsetInNumber = moment().tz(guessed).utcOffset();
+            if (elTimezoneCheckbox.checked) {offsetInNumber = moment().tz(timezoneFromPicker).utcOffset();}
+            else {offsetInNumber = moment().tz(guessed).utcOffset();}
 
             console.log("offset In Number taken from picker: ", offsetInNumber);
             console.log("Date not formatted: ", date);
@@ -2103,7 +2114,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         elFileSelectContainerProvider.style.display = 'none';
         elJsonDropDownMenu.style.display = "none";
         throw new Error('Execution aborted');
-    }
+    };
 
     var gallonsToLitres = function (gallons) {
         return gallons * 3.785;
@@ -2219,10 +2230,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
                         }
                     }
-                })
+                });
             }
         }
-    }
+    };
 
     var validateIfJsonFIle = function (fileJsonToCheck) {
         try {
@@ -2234,7 +2245,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
         }
         return true;
-    }
+    };
 
     var showSelectorSection = function () {
 
@@ -2267,7 +2278,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                 }
             }
         }
-    }
+    };
 
     var addBlanckColumn = function (transactionsToBeChecked) {
         for (var i = 0; i < transactionsToBeChecked.data.length; i++) {
@@ -2286,11 +2297,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     transactionsToBeChecked.data[i][keysHeader[z]] = "";
                     keysTempTransaction = Object.keys(transactionsToBeChecked.data[i]);
                 }
-                else tempVar++;
+                else {tempVar++;}
             }
         }
         return transactionsToBeChecked;
-    }
+    };
 
     var uploadFileProvider = function (e) {
         //get browser timezone and set the global variale
@@ -2330,7 +2341,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                 xhr.addEventListener('abort', uploadFailed, false);
 
                 if (getUrl() == 'http://localhost/apiv1') {
-                    xhr.open('POST', 'https://proxy.geotab.com/apiv1')
+                    xhr.open('POST', 'https://proxy.geotab.com/apiv1');
                 }
                 else {
                     xhr.open('POST', getUrl());
@@ -2352,7 +2363,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                             clearAllForException();
                         }
 
-                        if (data['error']['message'] = "data['error']['message']");
+                        if (data['error']['message'] = "data['error']['message']"){;}
                         {
                             console.log(data['error']['message']);
                             alert("Error importing transaction file" + "\n" + "Please check your xlsx file");
@@ -2360,7 +2371,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                         }
 
                     }
-                }
+                };
 
 
 
@@ -2370,7 +2381,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             database = credentials.database;
             toggleParse(false);
         });
-    }
+    };
 
 
 
@@ -2380,10 +2391,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             return elJsonDropDownMenu.options[elJsonDropDownMenu.selectedIndex].value;
         }
         else {
-            console.log("json dropdown menu error, provider not selected")
+            console.log("json dropdown menu error, provider not selected");
         }
 
-    }
+    };
 
     var getHeadings = function getHeadings(data) {
         var headRow = data[0];
@@ -2470,7 +2481,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             }
         }
 
-    }
+    };
 
     var toggleTimeZonePicker = function (toggle) {
         if (toggle) {
@@ -2489,8 +2500,8 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
     var timezoneCheckbox = function () {
 
-        if (elTimezoneCheckbox.checked) toggleTimeZonePicker(true);
-        else toggleTimeZonePicker(false);
+        if (elTimezoneCheckbox.checked) {toggleTimeZonePicker(true);}
+        else {toggleTimeZonePicker(false);}
     };
     /*
         async function  getCoordFromAddressProvider (location) {
