@@ -31,7 +31,9 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     /** The transaction list table in the UI */
     var elTransactionList;
     var elTransactionListProvider;
+    /** The transaction list table container div */
     var elTransactionContainer;
+    /** The transaction list table container div for the Json Provider implementation */
     var elTransactionContainerProvider;
     var elFileSelectContainer;
     // Successfully added fuel transactions alert div
@@ -261,6 +263,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         toggleImport(false);
     };
 
+    /**
+     * Clears the transactions, clears the fleet dropdown, 
+     * disables the open file button, disables the WEX/Generic import button and
+     * disables all alerts for the Json Provider implementation.
+     */
     var clearTransactionsProvider = function () {
         clearTransactionsListProvider();
         clearFleets();
@@ -269,6 +276,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         toggleAlert();
     };
 
+    /**
+     * Renders (displays) the transactions contained in the global transactions variable 
+     * into the elTransactionList, which represents the transactions table (id=transactionList) in the UI.
+     */
     var renderTransactions = function () {
         var elBody;
         var visibleCount = 0;
