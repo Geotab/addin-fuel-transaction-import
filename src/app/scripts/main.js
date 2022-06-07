@@ -24,10 +24,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     var elImportButtonProvider;
     // Provider Cancel button
     var elCancelButtonProvider;
-    // WEX Fleet select element
+    // WEX Fleet select element - facilitates batch sorting of imports for WEX & Generic imports
     var elFleet;
     var elExampleButton;
     var elFileName;
+    /** The transaction list table in the UI */
     var elTransactionList;
     var elTransactionListProvider;
     var elTransactionContainer;
@@ -53,11 +54,12 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     var elFileSelectContainerProvider;
     var elFileProvider;
     var elFileNameProvider;
-    // Provider Open File Button
+    /** Provider Open File Button */
     var elParseButtonProvider;
     var elTimezonePicker;
     var elTimezoneCheckbox;
     // scoped vars
+    /** Transaction list */
     var transactions;
     var database;
     var version;
@@ -78,7 +80,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     const cc = require('currency-codes');
 
     /**
-     * Toggles enabled/disabled property of the Open File button
+     * Toggles the disabled property of the Open File button
      * @param  {boolean} toggle true or false
      */
     var toggleParse = function (toggle) {
@@ -92,7 +94,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
 
     /**
-     * Toggles enabled/disabled property of the Import Json File button
+     * Toggles the disabled property of the Import Json File button
      * @param  {boolean} toggle true or false
      */
     var toggleParseJson = function (toggle) {
@@ -107,7 +109,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     };
 
     /**
-     * Toggles enabled/disabled property of the Provider Open File button
+     * Toggles the disabled property of the Provider Open File button
      * @param  {boolean} toggle true or false
      */
     var toggleParseProvider = function (toggle) {
@@ -122,7 +124,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     };
 
     /**
-     * Toggles enabled/disabled property of the Generic/WEX Import button
+     * Toggles the disabled property of the Generic/WEX Import button
      * @param  {boolean} toggle true or false
      */
     var toggleImport = function (toggle) {
@@ -136,7 +138,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     };
 
     /**
-     * Toggles enabled/disabled property of the Provider Import button
+     * Toggles the disabled property of the Provider Import button
      * @param  {boolean} toggle true or false
      */
     var toggleImportProvider = function (toggle) {
@@ -148,7 +150,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     };
 
     /**
-     * Toggles enabled/disabled property of the Fleet Select element
+     * Toggles the disabled property of the Fleet Select element
      * @param  {boolean} toggle true or false
      */
      var toggleFleet = function (toggle) {
@@ -199,12 +201,19 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
-    var clearFleets = function () {
+    /**
+     * Clears all items from the fleet select element
+     */
+     var clearFleets = function () {
         while (elFleet.firstChild) {
             elFleet.removeChild(elFleet.firstChild);
         }
     };
 
+    /**
+     * Fills the fleets select element with items and enables it.
+     * @param  {Array} fleets An array of string values (fleets).
+     */
     var setFleetSelection = function (fleets) {
         clearFleets();
         fleets.sort();
@@ -219,6 +228,9 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
+    /**
+     * Clears the transaction lists
+     */
     var clearTransactionsList = function () {
         //container that hide the transaction
         elTransactionContainer.style.display = 'none';
@@ -234,13 +246,14 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     var clearTransactionsListProvider = function () {
         //container that hide the transaction
         elTransactionContainerProvider.style.display = 'none';
-
         elFileSelectContainerProvider.style.display = 'none';
         elFileJsonSelectContainer.style.display = 'block';
-
-
     };
 
+    /**
+     * Clears the transactions, clears the fleet dropdown, 
+     * disables the open file button and disables the WEX/Generic import button.
+     */
     var clearTransactions = function () {
         clearTransactionsList();
         clearFleets();
