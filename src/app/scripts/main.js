@@ -12,13 +12,19 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
     // DOM Elements
     var elContainer;
+    // hidden input type=file
     var elFiles;
     // Open File button
     var elParseButton;
+    // Generic/WEX Import button
     var elImportButton;
+    // Generic/WEX Cancel button
     var elCancelButton;
+    // Provider Import button
     var elImportButtonProvider;
+    // Provider Cancel button
     var elCancelButtonProvider;
+    // WEX Fleet select element
     var elFleet;
     var elExampleButton;
     var elFileName;
@@ -43,17 +49,12 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     var elJsonDropDownMenu;
     var elSelector;
     var elFileSelectContainerProvider;
-
     var elFileProvider;
     var elFileNameProvider;
     // Provider Open File Button
     var elParseButtonProvider;
-
     var elTimezonePicker;
     var elTimezoneCheckbox;
-
-
-
     // scoped vars
     var transactions;
     var database;
@@ -118,6 +119,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
+    /**
+     * Toggles enabled/disabled property of the Generic/WEX Import button
+     * @param  {boolean} toggle true or false
+     */
     var toggleImport = function (toggle) {
         if (toggle) {
             elImportButton.removeAttribute('disabled');
@@ -128,6 +133,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
+    /**
+     * Toggles enabled/disabled property of the Provider Import button
+     * @param  {boolean} toggle true or false
+     */
     var toggleImportProvider = function (toggle) {
         if (toggle) {
             elImportButtonProvider.removeAttribute('disabled');
@@ -136,7 +145,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
-    var toggleFleet = function (toggle) {
+    /**
+     * Toggles enabled/disabled property of the Fleet Select element
+     * @param  {boolean} toggle true or false
+     */
+     var toggleFleet = function (toggle) {
         if (toggle) {
             elFleet.removeAttribute('disabled');
         } else {
@@ -144,7 +157,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
-    var toggleBrowse = function (toggle) {
+    /**
+     * Toggles enabled/disabled property of the files input type element
+     * @param  {boolean} toggle true or false
+     */
+     var toggleBrowse = function (toggle) {
         if (toggle) {
             elFiles.removeAttribute('disabled');
         } else {
@@ -2534,12 +2551,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
          */
 
         initialize: function (geotabApi, freshState, initializeCallback) {
-
-
-
-
             api = geotabApi;
-
             elContainer = document.getElementById('importFuelTransactions_fp');
             elFiles = document.getElementById('files');
             elParseButton = document.getElementById('parseButton');
@@ -2611,10 +2623,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
          * @param {object} freshState - The page state object allows access to URL, page navigation and global group filter.
          */
         focus: function (geotabApi, freshState) {
-
-
-
-
             // getting the current user to display in the UI
             geotabApi.getSession(session => {
                 //elContainer.querySelector('#importFuelTransactions_fp-user').textContent = session.userName;
@@ -2663,8 +2671,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         blur: function () {
             // hide main content
             elContainer.className += 'hidden';
-
-
 
             // events
             elFiles.removeEventListener('change', fileSelected, false);
