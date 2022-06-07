@@ -12,21 +12,22 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
     // DOM Elements
     var elContainer;
-    // hidden input type=file
+    /** hidden input type=file */
     var elFiles;
-    // Open File button
+    /** Open File button */
     var elParseButton;
-    // Generic/WEX Import button
+    /** Generic/WEX Import button */
     var elImportButton;
-    // Generic/WEX Cancel button
+    /** Generic/WEX Cancel button */
     var elCancelButton;
-    // Provider Import button
+    /** Provider Import button */
     var elImportButtonProvider;
-    // Provider Cancel button
+    /** Provider Cancel button */
     var elCancelButtonProvider;
-    // WEX Fleet select element - facilitates batch sorting of imports for WEX & Generic imports
+    /** WEX Fleet select element - facilitates batch sorting of imports for WEX & Generic imports */
     var elFleet;
     var elExampleButton;
+    /** The filename input text type */
     var elFileName;
     /** The transaction list table in the UI */
     var elTransactionList;
@@ -370,6 +371,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
      * Renders (displays) the transactions contained in the global transactions variable 
      * into the elTransactionList, which represents the transactions table (id=transactionList) in the UI
      * for the json provider implementation.
+     * @param {Array} transactions An array of fuel transactions
      */
     var renderTransactionsProvider = function (transactions) {
 
@@ -451,11 +453,17 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         elFileJsonSelectContainer.style.display = 'none';
     };
 
+    /**
+     * Clears the file type input and filename text input
+     */
     var clearFiles = function () {
         elFiles.value = null;
         elFileName.value = '';
     };
-    
+
+    /**
+     * Clears the
+     */
     var clearFilesJson = function () {
         elFilesJson.value = null;
         elFileNameJson.value = null;
