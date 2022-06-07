@@ -33,6 +33,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     var elTransactionContainer;
     var elTransactionContainerProvider;
     var elFileSelectContainer;
+    // Successfully added fuel transactions alert div
     var elAlertSuccess;
     var elAlertInfo;
     var elAlertError;
@@ -42,6 +43,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     var elListCountProvider;
 
     var elFileJsonSelectContainer;
+    // hidden file type input element for the json files
     var elFilesJson;
     var elFileNameJson;
     // Import Json File Button
@@ -169,6 +171,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
+    /**
+     * Toggles enabled/disabled property of the json files input type element
+     * @param  {boolean} toggle true or false
+     */
+    // TODO not used it seems
     var toggleBrowseJson = function (toggle) {
         if (toggle) {
             elFilesJson.removeAttribute('disabled');
@@ -177,7 +184,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
-
+    /**
+     * Toggles alerts: hides all alerts and displays the alert passed in
+     * @param  {Element} el The alert element to show.
+     * @param  {string} content The content to display in the alert.
+     */
     var toggleAlert = function (el, content) {
         elAlertSuccess.style.display = 'none';
         elAlertInfo.style.display = 'none';
