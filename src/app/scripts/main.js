@@ -658,6 +658,12 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         };
     };
 
+    /**
+     * This function seems to serve as a transaction data parser and to finally set the transactions variable with the result. 
+     * It then sets the UI state ready to import the transactions.
+     * @param {XMLHttpRequest} e An XMLHttpRequest object containing the transactions
+     * @returns Nothing is returned
+     */
     var uploadComplete = function (e) {
         var results;
         var fuelTransactionParser = new FuelTransactionParser();
@@ -674,8 +680,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         // -------------
 
         clearFiles();
+        // parses the results from the object passed in
         results = resultsParser(e);
 
+        // alerts and exits on error
         if (results.error) {
             toggleAlert(elAlertError, results.error.message);
             return;
@@ -683,7 +691,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
         fuelTransactionParser.parse(results.data)
             .then(function (result) {
-
+                // setting the result to the global transactions variable
                 transactions = result;
                 if (transactions === null) {
                     toggleAlert(elAlertError, 'Can not determine file provider type, try converting to MyGeotab file type');
@@ -1379,6 +1387,12 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         form.submit();
     };
 
+    /**
+     * Sends the excel file to the ExcelToJson API call and returns the data in JSON format if successful.
+     * If successful the uploadComplete function is executed.
+     * The function is executed when the open file button is pushed. 
+     * @param {*} e 
+     */
     var uploadFile = function (e) {
         e.preventDefault();
         toggleAlert(elAlertInfo, 'Parsing... transferring file');
@@ -1394,6 +1408,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                 }
             });
 
+            // TODO understand why this is done???
             if (window.FormData) {
                 fd = new FormData();
                 xhr = new XMLHttpRequest();
