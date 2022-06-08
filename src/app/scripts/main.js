@@ -39,7 +39,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     var elTransactionContainerProvider;
     /** the file selection container div */
     var elFileSelectContainer;
-    // Successfully added fuel transactions alert div
+    /** Successfully added fuel transactions alert div */
     var elAlertSuccess;
     var elAlertInfo;
     var elAlertError;
@@ -52,8 +52,9 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
     /** the file selection container div for the json provider implementation */
     var elFileJsonSelectContainer;
-    // hidden file type input element for the json files
+    /** hidden file type input element for the json files */
     var elFilesJson;
+    /** the json filename for the json provider implementation */
     var elFileNameJson;
     // Import Json File Button
     var elParseButtonJson;
@@ -61,7 +62,9 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     var elSelector;
     /** the file selection container div for the json provider implementation */
     var elFileSelectContainerProvider;
+    /** input file type for the transaction file for the json provider implementation */
     var elFileProvider;
+    /** the transaction filename for the json provider implementation */
     var elFileNameProvider;
     /** Provider Open File Button */
     var elParseButtonProvider;
@@ -505,8 +508,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         toggleAlert();
     };
 
-
-    // section that select the xls transaction file related to the provider fileProviderSelected
+    /**
+     * Selects the zero index file (if many) and enables the provider open file button
+     * and disables all alerts for the json provider implementation.
+     * @param {Event} e The event emitter
+     */
     var fileProviderSelected = function (e) {
         var file;
         if (e.target.files) {
@@ -524,11 +530,13 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
 
     // Section for Json file selected
+    /**
+     * Selects the zero index file (if many) and enables the import JSON file button
+     * and disables all alerts for the json provider implementation.
+     * @param {Event} e The event emitter
+     */
     var fileSelectedJson = function (e) {
-
         clearTransactionsProvider();
-
-
         if (e.target.files) {
             fileJsonToParse = e.target.files[0];
         } else {
@@ -537,11 +545,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
         if (fileJsonToParse) {
             elFileNameJson.value = fileJsonToParse.name;
-
-            // enable or disable (grayout) the button to import the Json file
             toggleParseJson(true);
-
-
         }
         toggleAlert();
     };
