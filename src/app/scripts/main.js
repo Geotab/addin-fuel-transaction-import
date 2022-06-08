@@ -550,7 +550,25 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         toggleAlert();
     };
 
-
+    /**
+     * Information from a fuel card provider representing a fuel transaction. Fuel card information will be matched to a Device by one of these fields: vehicleIdentificationNumber, serialNumber, licencePlate or comments. The combination of all fields (excluding sourceData) are used to ensure no duplicate transactions can be added.
+     * @param {string} vin The vehicle identification number (VIN) of the vehicle. This is used to associate the transaction with a Device. Maximum length [255] Default [""].
+     * @param {string} description The vehicle description of the vehicle. This can be used to associate the transaction with a Device. Maximum length [255] Default [""].
+     * @param {string} serialNumber The serial number of the device. This can be used to associate the transaction with a Device. Maximum length [255] Default [""].
+     * @param {string} licencePlate The licence plate of the vehicle of the vehicle. This can be used to associate the transaction with a Device. Maximum length [255] Default [""].
+     * @param {string} comments The free text field where any user information can be stored and referenced for this entity. This can be used to associate the transaction with a Device. Maximum length [1024] Default [""].
+     * @param {string} dateTime The UTC date and time of the transaction.
+     * @param {number} volume The volume of fuel purchased in Liters. Default [0].
+     * @param {number} odometer The driver recorded odometer reading in km. Default [0].
+     * @param {number} cost The cost of the fuel transaction. Default [0].
+     * @param {string} currencyCode The three digit ISO 427 currency code (http://www.xe.com/iso4217.php). Default ["USD"].
+     * @param {object} location The Coordinate of the transaction retailer. Default [0,0].
+     * @param {string} provider The FuelTransactionProvider of this transaction. Default [Unknown].
+     * @param {string} driverName The fuel card holder name. This can be used to associate the transaction with a Driver. Maximum length [255] Default [""].
+     * @param {string} sourceData The JSON string representing the source data. Default [""].
+     * @param {string} productType The FuelTransactionProductType of this transaction. Default [Unknown].
+     * @returns A Fuel Transaction entity/record.
+     */
     var FuelTransaction = function (vin, description, serialNumber, licencePlate, comments, dateTime, volume, odometer, cost, currencyCode, location, provider, driverName, sourceData, productType) {
         var self = {
             vehicleIdentificationNumber: vin || '',
@@ -572,6 +590,26 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         return self;
     };
 
+    /**
+     * The FuelTransaction data for the Json provider implementation
+     * @param {string} cardNumber The masked or partial purchasing card number. <**>
+     * @param {string} comments The free text field where any user information can be stored and referenced for this entity. This can be used to associate the transaction with a Device. Maximum length [1024] Default [""].
+     * @param {string} description The vehicle description of the vehicle. This can be used to associate the transaction with a Device. Maximum length [255] Default [""].
+     * @param {string} driverName The fuel card holder name. This can be used to associate the transaction with a Driver. Maximum length [255] Default [""].
+     * @param {*} externalReference 
+     * @param {string} licencePlate The licence plate of the vehicle of the vehicle. This can be used to associate the transaction with a Device. Maximum length [255] Default [""].
+     * @param {string} provider The FuelTransactionProvider of this transaction. Default [Unknown].
+     * @param {string} serialNumber The serial number of the device. This can be used to associate the transaction with a Device. Maximum length [255] Default [""].
+     * @param {string} siteName The site/merchant name where the transaction took place. <**>
+     * @param {string} vehicleIdentificationNumber The vehicle identification number (VIN) of the vehicle. This is used to associate the transaction with a Device. Maximum length [255] Default [""].
+     * @param {number} cost The cost of the fuel transaction. Default [0].
+     * @param {string} currencyCode The three digit ISO 427 currency code (http://www.xe.com/iso4217.php). Default ["USD"].
+     * @param {string} dateTime The UTC date and time of the transaction.
+     * @param {number} odometer The driver recorded odometer reading in km. Default [0].
+     * @param {string} productType The FuelTransactionProductType of this transaction. Default [Unknown].
+     * @param {number} volume The volume of fuel purchased in Liters. Default [0].
+     * @returns A Fuel Transaction entity/record.
+     */
     var FuelTransactionProvider = function (cardNumber, comments, description, driverName, externalReference, licencePlate, provider, serialNumber, siteName, vehicleIdentificationNumber, cost, currencyCode, dateTime, odometer, productType, volume) {
         var self = {
             cardNumber: cardNumber || '',
