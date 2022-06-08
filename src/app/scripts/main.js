@@ -632,6 +632,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         return self;
     };
 
+    /**
+     * Parses the XMLHttpRequest responseText to JSON.
+     * @param {XMLHttpRequest} xhr The XMLHttpRequest object
+     * @returns The JSON data and/or any errors that might exist.
+     */
     var resultsParser = function (xhr) {
         var jsonResponse,
             data,
