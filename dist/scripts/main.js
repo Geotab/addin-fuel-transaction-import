@@ -1576,6 +1576,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                         newTranscationObj[prop] = parseFloat(singleTransaction[provider[prop]].replace(/,/g, '.'));
 
                     }
+               
+                    else {
+                        newTranscationObj[prop] = null;
+                    }
+                  
 
 
                     break;
@@ -1700,6 +1705,12 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                             newTranscationObj[prop] = parseFloat(tmp).toFixed(1);
                         }
                     }
+                  
+                    else {
+                        if (singleTransaction[provider[prop]] == "" || singleTransaction[provider[prop]]== undefined) newTranscationObj[prop] = null;                        
+                    }
+                   
+
                     break;
 
                 case "productType":
@@ -1724,6 +1735,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                             newTranscationObj[prop] = parseFloat(tmp).toFixed(1);
                         }
                     }
+                   
+                    else {
+                        if (singleTransaction[provider[prop]] == "" || singleTransaction[provider[prop]]== undefined) newTranscationObj[prop] = null;
+                    }
+                    
                     break;
 
                 default:
@@ -2075,6 +2091,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
             console.log("offset In Number taken from picker: ", offsetInNumber);
             console.log("Date not formatted: ", date);
+            console.log("Format Found ",formatFound);
             dateFormatted = moment.utc(date, formatFound, true).utcOffset(offsetInNumber, true).format();
 
             console.log("dateFormatted: ", dateFormatted);
