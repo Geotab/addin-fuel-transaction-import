@@ -1576,11 +1576,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                         newTranscationObj[prop] = parseFloat(singleTransaction[provider[prop]].replace(/,/g, '.'));
 
                     }
-                    ///// same issue as https://jira.geotab.com/browse/EU-2625
+               
                     else {
                         newTranscationObj[prop] = null;
                     }
-                    ///// same issue as https://jira.geotab.com/browse/EU-2625
+                  
 
 
                     break;
@@ -1705,11 +1705,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                             newTranscationObj[prop] = parseFloat(tmp).toFixed(1);
                         }
                     }
-                    ///// https://jira.geotab.com/browse/EU-2625
+                  
                     else {
                         if (singleTransaction[provider[prop]] == "" || singleTransaction[provider[prop]]== undefined) newTranscationObj[prop] = null;                        
                     }
-                    ///// https://jira.geotab.com/browse/EU-2625
+                   
 
                     break;
 
@@ -1735,11 +1735,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                             newTranscationObj[prop] = parseFloat(tmp).toFixed(1);
                         }
                     }
-                    ///// same as https://jira.geotab.com/browse/EU-2625
+                   
                     else {
                         if (singleTransaction[provider[prop]] == "" || singleTransaction[provider[prop]]== undefined) newTranscationObj[prop] = null;
                     }
-                    ///// same as https://jira.geotab.com/browse/EU-2625
+                    
                     break;
 
                 default:
