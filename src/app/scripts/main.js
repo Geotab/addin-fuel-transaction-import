@@ -1641,6 +1641,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         //fuelTransactionImport object in uploadCompleteProviderAsync function
         return jsonObjParsed;
     }
+
     async function loopParseTransactionInTemplateAsync(singleTransaction, provider) {
         var newTranscationObj = new FuelTransactionProvider();
 
@@ -1648,17 +1649,13 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             if (provider[prop] == null) {provider[prop] = "";}//if json file has null field change in ""        
         }
 
-
         //check of the mandatory fields
         //Stop the execution
-
         if (provider["licencePlate"] == "" && provider["vehicleIdentificationNumber"] == "" && provider["serialNumber"] == "") {
             console.log("Not mapped into Json file, Licence Plate or Vin or Serial Number is needed");
             window.alert("Licence Plate, VIN and Serial Number are not mapped into Json file at least one must be filled");
             clearAllForException();
-
-        }
-        else {
+        } else {
             if (singleTransaction[provider["licencePlate"]] == "" || singleTransaction[provider["licencePlate"]] == undefined) {
                 if (singleTransaction[provider["vehicleIdentificationNumber"]] == "" || singleTransaction[provider["vehicleIdentificationNumber"]] == undefined) {
                     if (singleTransaction[provider["serialNumber"]] == "" || singleTransaction[provider["serialNumber"]] == undefined) {
@@ -1668,13 +1665,9 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     }
                 }
             }
-
-
         }
 
-
         for (var prop in provider) {
-
             switch (prop) {
                 case "comments":
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
@@ -1701,23 +1694,16 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     }
                     break;
                 case "licencePlate":
-
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
-
                         if (singleTransaction[provider[prop]].length > 255) {singleTransaction[provider[prop]].substring(0, 255);}
                         newTranscationObj[prop] = singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, '');
                     }
-
                     break;
                 case "serialNumber":
-
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
                         newTranscationObj[prop] = singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, '');
-
                     }
-
                     break;
-
                 case "siteName":
                     if (provider[prop] != "") {
                         if (typeof (provider[prop]) === "object") {
@@ -1735,32 +1721,21 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                              console.log(newTranscationObj);
                              //put locationCoordinatesProvider into location
                             */
-
                         }
                         else {newTranscationObj[prop] = singleTransaction[provider[prop]];}
                     }
-
                     break;
-
-
                 case "vehicleIdentificationNumber":
-
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
                         newTranscationObj[prop] = singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, '');
                     }
                     break;
-
                 case "cost":
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
-
                         newTranscationObj[prop] = parseFloat(singleTransaction[provider[prop]].replace(/,/g, '.'));
-
                     }
-
-
                     break;
                 case "currencyCode":
-
                     // check if currency is defined in the template, if not check in column mapping
                     if (currencyCodeMapped != "" && currencyCodeMapped != undefined) {
                         currencyCodeMapped = currencyCodeMapped.trim().toUpperCase();
@@ -1792,15 +1767,8 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                         }
 
                     }
-
-
-
-
                     break;
-
                 case "dateTime":
-
-
                     dateHoursComposed = dateFormat;
                     if (provider[prop] != "") {
                         isCellDateType = isCellDateType.toUpperCase();
@@ -1809,18 +1777,17 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                             window.alert("isCellDateType is the cell type in the xlsx, can be Y or N, please check the JSON mapping file");
                             clearAllForException();
                         }
-
-
-
                         //check if is an obj, if so means that date is composed by 2 cells
                         if (typeof (provider[prop]) === "object" && provider[prop].length > 1) {
 
                             if (singleTransaction[provider[prop][0]] != "" && singleTransaction[provider[prop][0]] != undefined && singleTransaction[provider[prop][1]] != undefined && singleTransaction[provider[prop][1]] != undefined) {
 
-
-                                if (isCellDateType == "Y") {dateHoursComposed = "MM/DD/YYYY" + " " + hourFormat;}
-                                else {dateHoursComposed = dateFormat + " " + hourFormat;}
-
+                                if (isCellDateType == "Y") {
+                                    dateHoursComposed = "MM/DD/YYYY" + " " + hourFormat;
+                                }
+                                else {
+                                    dateHoursComposed = dateFormat + " " + hourFormat;
+                                }
 
                                 //remove the spaces before and after
                                 singleTransaction[provider[prop][0]] = singleTransaction[provider[prop][0]].trim();
@@ -1840,30 +1807,19 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                                 console.log("Date Fields are empty or invalid");
                                 window.alert("Date Fields are empty or invalid");
                                 clearAllForException();
-
                             }
-
-
                         }
                         else {
-
-                            if (isCellDateType == "Y") {dateHoursComposed = "MM/DD/YYYY HH:mm:ss";}
-                            else {dateHoursComposed = dateFormat;}
-
+                            if (isCellDateType == "Y") {
+                                dateHoursComposed = "MM/DD/YYYY HH:mm:ss";
+                            }
+                            else {
+                                dateHoursComposed = dateFormat;
+                            }
                             newTranscationObj[prop] = getDateValueProvider(singleTransaction[provider[prop]]);
                         }
-
-
-
                     }
-
-
-
-
                     break;
-
-
-
                 case "odometer":
                     var tmp;
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
@@ -1883,7 +1839,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     break;
 
                 case "productType":
-
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
                         newTranscationObj[prop] = getProductType(singleTransaction[provider[prop]]);
                     }
@@ -1911,18 +1866,12 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     break;
             }
         }
-
         return newTranscationObj;
     }
 
-
-
     var getDateValueProvider = function (date) {
-
         var dateFormatted;
-
         var dateFormats = {
-
             //YYYY 0 to 39
             "id0": "YYYY-MM-DD",
             "id1": "YYYY-MM-DDTHH:mm:ss",
@@ -2327,19 +2276,12 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             //container that show the File selection
             clearFilesProvider();
             elFileSelectContainerProvider.style.display = 'block';
-
             setSelectedIndexTimezonePicker();
-
             toggleTimeZonePicker(false);
-
-
         }
         else {
 
         }
-
-
-
     };
 
     // Function fired when user click Import,
