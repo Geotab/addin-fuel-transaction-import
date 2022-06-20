@@ -26,6 +26,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     var elCancelButtonProvider;
     /** WEX Fleet select element - facilitates batch sorting of imports for WEX & Generic imports */
     var elFleet;
+    /** The Generic import example button element */
     var elExampleButton;
     /** The filename input text type */
     var elFileName;
@@ -1471,6 +1472,9 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         console.log(e);
     };
 
+    /**
+     * Imports the fuel transactions of the selected file 
+     */
     var importFile = function () {
         var fleetName = elFleet.options[elFleet.selectedIndex].value;
         var callSets = [];
@@ -1530,6 +1534,9 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         });
     };
 
+    /**
+     * Imports the fuel transactions of the selected file for the config provider file implementation
+     */
     var importFileProvider = function () {
 
         var callSets = [];
@@ -1600,7 +1607,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         });
     };
 
-    // Generic format button
+    /**
+     * Toggles the generic format example element between visible and hidden.
+     * @param {*} e 
+     */
     var toggleExample = function (e) {
         var checked = e.target.checked;
         if (!checked) {
