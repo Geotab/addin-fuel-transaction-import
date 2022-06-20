@@ -41,7 +41,9 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     var elFileSelectContainer;
     /** Successfully added fuel transactions alert div */
     var elAlertSuccess;
+    /** The alertInfo element */
     var elAlertInfo;
+    /** The alertError element */
     var elAlertError;
     var elSample;
     var elForm;
@@ -199,7 +201,8 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     };
 
     /**
-     * Toggles alerts: hides all alerts and displays the alert passed in
+     * Toggles alerts: hides all alerts and displays the alert passed in and sets
+     * the value to the content argument.
      * @param  {Element} el The alert element to show.
      * @param  {string} content The content to display in the alert.
      */
@@ -208,7 +211,8 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         elAlertInfo.style.display = 'none';
         elAlertError.style.display = 'none';
         if (el) {
-            el.querySelector('span').textContent = content; toggleParse;
+            el.querySelector('span').textContent = content; 
+            toggleParse;
             el.style.display = 'block';
         }
     };
@@ -712,6 +716,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             });
     };
 
+
     var FuelTransactionParser = function () {
         var self = this;
         var regex = new RegExp(' ', 'g');
@@ -728,7 +733,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             return parseInt(parts[2], 10) >= 1606;
         };
 
-        // value parsers
+        // value parser - parses string values and returns a zero length string for null or double quotes.
         var getStringValue = function (s) {
             let length = s.length;
             if (length > 0 && s[0] === '"') {
@@ -742,6 +747,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             return (s === '(null)' ? '' : s.trim());
         };
 
+        // returns a float value for a valid float or 0.0 otherwise
         var getFloatValue = function (float) {
             var value = parseFloat(float);
             return isNaN(value) ? 0.0 : value;
@@ -1437,7 +1443,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         });
     };
 
-
+    /**
+     * Calculates the progress of a XMLHttpRequest file upload and reports it to the
+     * alertInfo element.
+     * @param {XMLHttpRequestUpload} e The XMLHttpRequestUpload object.
+     */
     var uploadProgress = function (e) {
         if (e.lengthComputable) {
             var percentComplete = Math.round(e.loaded * 100 / e.tota);
@@ -1450,6 +1460,12 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
+    /**
+     * Displays a file upload failed message in the alertError element when a 
+     * XMLHttpRequest error occurs.
+     * The event details are logged to the console.
+     * @param {XMLHttpRequest error} e An XMLHttpRequest error event
+     */
     var uploadFailed = function (e) {
         toggleAlert(elAlertError, 'There was an error attempting to upload the file.');
         console.log(e);
