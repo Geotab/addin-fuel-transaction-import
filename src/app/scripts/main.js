@@ -154,7 +154,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
     /**
      * Toggles the disabled property of the Provider Import button
-     * @param  {boolean} toggle true or false
+     * @param  {boolean} toggle true = enable, false = disable
      */
     var toggleImportProvider = function (toggle) {
         if (toggle) {
@@ -168,7 +168,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
      * Toggles the disabled property of the Fleet Select element
      * @param  {boolean} toggle true or false
      */
-     var toggleFleet = function (toggle) {
+    var toggleFleet = function (toggle) {
         if (toggle) {
             elFleet.removeAttribute('disabled');
         } else {
@@ -180,7 +180,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
      * Toggles enabled/disabled property of the files input type element
      * @param  {boolean} toggle true or false
      */
-     var toggleBrowse = function (toggle) {
+    var toggleBrowse = function (toggle) {
         if (toggle) {
             elFiles.removeAttribute('disabled');
         } else {
@@ -212,7 +212,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         elAlertInfo.style.display = 'none';
         elAlertError.style.display = 'none';
         if (el) {
-            el.querySelector('span').textContent = content; 
+            el.querySelector('span').textContent = content;
             toggleParse;
             el.style.display = 'block';
         }
@@ -221,7 +221,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     /**
      * Clears all items from the fleet select element
      */
-     var clearFleets = function () {
+    var clearFleets = function () {
         while (elFleet.firstChild) {
             elFleet.removeChild(elFleet.firstChild);
         }
@@ -1564,17 +1564,13 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             };
         };
 
-
-
-
         toggleImportProvider(false);
 
         toggleAlert(elAlertInfo, message);
-        transactions.forEach(function (transaction, j) {
 
+        transactions.forEach(function (transaction, j) {
             callSet.push(['Add', { typeName: 'FuelTransaction', entity: transaction }]);
             total++;
-
             if (callSet.length === callLimit || j === transactions.length - 1) {
                 callSets.push(callSet);
                 callSet = [];
@@ -1590,20 +1586,14 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
         caller.then(function (results) {
             updateTotal(results);
-
-
             var temp = JSON.stringify(results);
-
             console.log("Transaction Imported with ID: ", temp.replace(/[\[\]"]+/g, ""));
-
             //window.alert("Transaction ID: "+temp.replace(/[\[\]"]+/g, ""));
             clearTransactionsProvider();
             toggleAlert(elAlertSuccess, totalAdded);
 
         }).catch(function (e) {
-
             toggleAlert(elAlertError, e.toString());
-
         });
     };
 
@@ -1646,7 +1636,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         var newTranscationObj = new FuelTransactionProvider();
 
         for (var prop in provider) {
-            if (provider[prop] == null) {provider[prop] = "";}//if json file has null field change in ""        
+            if (provider[prop] == null) { provider[prop] = ""; }//if json file has null field change in ""        
         }
 
         //check of the mandatory fields
@@ -1671,31 +1661,31 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             switch (prop) {
                 case "comments":
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
-                        if (singleTransaction[provider[prop]].length > 1024) {newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 1024);}
+                        if (singleTransaction[provider[prop]].length > 1024) { newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 1024); }
                         newTranscationObj[prop] = singleTransaction[provider[prop]];
                     }
                     break;
                 case "description":
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
-                        if (singleTransaction[provider[prop]].length > 255) {newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255);}
+                        if (singleTransaction[provider[prop]].length > 255) { newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255); }
                         newTranscationObj[prop] = singleTransaction[provider[prop]];
                     }
                     break;
                 case "driverName":
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
-                        if (singleTransaction[provider[prop]].length > 255) {newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255);}
+                        if (singleTransaction[provider[prop]].length > 255) { newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255); }
                         newTranscationObj[prop] = singleTransaction[provider[prop]];
                     }
                     break;
                 case "externalReference":
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
-                        if (singleTransaction[provider[prop]].length > 255) {newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255);}
+                        if (singleTransaction[provider[prop]].length > 255) { newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255); }
                         newTranscationObj[prop] = singleTransaction[provider[prop]];
                     }
                     break;
                 case "licencePlate":
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
-                        if (singleTransaction[provider[prop]].length > 255) {singleTransaction[provider[prop]].substring(0, 255);}
+                        if (singleTransaction[provider[prop]].length > 255) { singleTransaction[provider[prop]].substring(0, 255); }
                         newTranscationObj[prop] = singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, '');
                     }
                     break;
@@ -1708,7 +1698,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     if (provider[prop] != "") {
                         if (typeof (provider[prop]) === "object") {
                             for (var inner in provider[prop]) {
-                                if (singleTransaction[provider[prop][inner]] != "" && singleTransaction[provider[prop][inner]] != undefined) {newTranscationObj[prop] += singleTransaction[provider[prop][inner]] + " ";}
+                                if (singleTransaction[provider[prop][inner]] != "" && singleTransaction[provider[prop][inner]] != undefined) { newTranscationObj[prop] += singleTransaction[provider[prop][inner]] + " "; }
                             }
                             newTranscationObj[prop] = newTranscationObj[prop].slice(0, -1);
                             /*
@@ -1722,7 +1712,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                              //put locationCoordinatesProvider into location
                             */
                         }
-                        else {newTranscationObj[prop] = singleTransaction[provider[prop]];}
+                        else { newTranscationObj[prop] = singleTransaction[provider[prop]]; }
                     }
                     break;
                 case "vehicleIdentificationNumber":
@@ -1763,7 +1753,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                             }
                         }
                         else {
-                            if (singleTransaction[provider[prop]] != "") {newTranscationObj[prop] = null;}
+                            if (singleTransaction[provider[prop]] != "") { newTranscationObj[prop] = null; }
                         }
 
                     }
@@ -1794,10 +1784,9 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                                 singleTransaction[provider[prop][1]] = singleTransaction[provider[prop][1]].trim();
                                 singleTransaction[provider[prop][0]] = singleTransaction[provider[prop][0]].slice(0, 10);
 
-                                if(singleTransaction[provider[prop][1]].length >= hourFormat.length)
-                                {
+                                if (singleTransaction[provider[prop][1]].length >= hourFormat.length) {
                                     console.log("Split", singleTransaction[provider[prop][1]].slice(0, hourFormat.length));
-                                    singleTransaction[provider[prop][1]] = singleTransaction[provider[prop][1]].slice(0,hourFormat.length);
+                                    singleTransaction[provider[prop][1]] = singleTransaction[provider[prop][1]].slice(0, hourFormat.length);
                                     console.log("Split", singleTransaction[provider[prop][1]].slice(0, hourFormat.length));
 
                                 }
@@ -1862,7 +1851,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     break;
 
                 default:
-                    if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {newTranscationObj[prop] = singleTransaction[provider[prop]];}
+                    if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") { newTranscationObj[prop] = singleTransaction[provider[prop]]; }
                     break;
             }
         }
@@ -2199,8 +2188,8 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             guessed = moment.tz.guess();
 
 
-            if (elTimezoneCheckbox.checked) {offsetInNumber = moment().tz(timezoneFromPicker).utcOffset();}
-            else {offsetInNumber = moment().tz(guessed).utcOffset();}
+            if (elTimezoneCheckbox.checked) { offsetInNumber = moment().tz(timezoneFromPicker).utcOffset(); }
+            else { offsetInNumber = moment().tz(guessed).utcOffset(); }
 
             console.log("offset In Number taken from picker: ", offsetInNumber);
             console.log("Date not formatted: ", date);
@@ -2408,7 +2397,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     transactionsToBeChecked.data[i][keysHeader[z]] = "";
                     keysTempTransaction = Object.keys(transactionsToBeChecked.data[i]);
                 }
-                else {tempVar++;}
+                else { tempVar++; }
             }
         }
         return transactionsToBeChecked;
@@ -2474,7 +2463,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                             clearAllForException();
                         }
 
-                        if (data['error']['message'] = "data['error']['message']"){;}
+                        if (data['error']['message'] = "data['error']['message']") { ; }
                         {
                             console.log(data['error']['message']);
                             alert("Error importing transaction file" + "\n" + "Please check your xlsx file");
@@ -2504,7 +2493,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         else {
             console.log("json dropdown menu error, provider not selected");
         }
-
     };
 
     var getHeadings = function getHeadings(data) {
@@ -2611,8 +2599,8 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
     var timezoneCheckbox = function () {
 
-        if (elTimezoneCheckbox.checked) {toggleTimeZonePicker(true);}
-        else {toggleTimeZonePicker(false);}
+        if (elTimezoneCheckbox.checked) { toggleTimeZonePicker(true); }
+        else { toggleTimeZonePicker(false); }
     };
     /*
         async function  getCoordFromAddressProvider (location) {
