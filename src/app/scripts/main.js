@@ -81,8 +81,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     var ROW_LIMIT = 10;
     var unitVolumeLiters;
     var unitOdoKm;
+    /** The date format defined in the dateFormat property of the selected provider.*/
     var dateFormat;
     var hourFormat;
+    /** The date format depending on the excel cell type setting. If a date type then "MM/DD/YYYY" + " " + hourFormat; otherwise use the dateFormat property.*/
     var dateHoursComposed;
     var fileJsonToParse;
     var objProviderTemplate;
@@ -1611,6 +1613,12 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         elSample.style.display = checked ? 'block' : 'none';
     };
 
+    /**
+     * Parsing provider transactions
+     * @param {*} transactions Transaction list
+     * @param {*} provider Provider template from the Json file
+     * @returns 
+     */
     async function parsingTransactionWithProviderAsync(transactions, provider) {
         var arrayOfParsedTransaction = [];
 
@@ -1632,6 +1640,9 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         return jsonObjParsed;
     }
 
+    /**
+     * Parse a single transaction asynchronously for the new provider implementation
+     */
     async function loopParseTransactionInTemplateAsync(singleTransaction, provider) {
         var newTranscationObj = new FuelTransactionProvider();
 
@@ -1858,6 +1869,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         return newTranscationObj;
     }
 
+    /**
+     * Checks the date submitted Parses and returns the date submitted.
+     * @param {*} date The date value to parse.
+     * @returns The allowed date value.
+     */
     var getDateValueProvider = function (date) {
         var dateFormatted;
         var dateFormats = {
@@ -2154,6 +2170,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             "id349": "DDMMYY H.m",
 
         };
+        /** Gets the dateFormats id if the input date is in the format expected otherwise throws and exception and returns null */
         function getFormat(dateInput) {
 
             for (var prop in dateFormats) {
@@ -2178,26 +2195,21 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         var formatFound = getFormat(date);
 
         if (formatFound !== null) {
-
             var offsetInNumber;
             var guessed;
-
             console.log("Offest from OS: ", moment(new Date()).utcOffset());
             console.log("offest calc from picker: ", timezoneFromPicker);
-
             guessed = moment.tz.guess();
-
-
-            if (elTimezoneCheckbox.checked) { offsetInNumber = moment().tz(timezoneFromPicker).utcOffset(); }
-            else { offsetInNumber = moment().tz(guessed).utcOffset(); }
-
+            if (elTimezoneCheckbox.checked) { 
+                offsetInNumber = moment().tz(timezoneFromPicker).utcOffset(); 
+            }
+            else { 
+                offsetInNumber = moment().tz(guessed).utcOffset(); 
+            }
             console.log("offset In Number taken from picker: ", offsetInNumber);
             console.log("Date not formatted: ", date);
             dateFormatted = moment.utc(date, formatFound, true).utcOffset(offsetInNumber, true).format();
-
             console.log("dateFormatted: ", dateFormatted);
-
-
         }
         else {
             console.log("Date Format in mapping file not allowed or missing");
@@ -2208,7 +2220,9 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         return dateFormatted;
     };
 
-
+    /**
+     * Resets all state items and throws an Execution aborted exception.
+     */
     var clearAllForException = function () {
         clearFiles();
         clearFilesJson();
@@ -2223,14 +2237,29 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         throw new Error('Execution aborted');
     };
 
+    /**
+     * Converts gallons to litres.
+     * @param {*} gallons The gallon value.
+     * @returns The litre value.
+     */
     var gallonsToLitres = function (gallons) {
         return gallons * 3.785;
     };
 
+    /**
+     * Converts miles to kilometres
+     * @param {*} miles The mile value.
+     * @returns The kilometre Value.
+     */
     var milesToKm = function (miles) {
         return miles / 0.62137;
     };
 
+    /**
+     * Gets the formatted product type value.
+     * @param {*} productType The product type.
+     * @returns The formatted product type.
+     */
     var getProductType = (productType) => {
         let pt = productType.toLowerCase().replace(' ', '');
         switch (pt) {
@@ -2517,7 +2546,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         var headingsExtracted;
         // retrieve the name of the provider selected
         var providerSelected = getTemplateProviderNameFromSelection();
-        // retrieve the keys of the provider selected from the full template ojbect
+        // retrieve the keys of the provider selected from the full template object
         var extractedProviderTemplate = objProviderTemplate.providers.filter((provider) => provider.Name === providerSelected);
 
         unitVolumeLiters = extractedProviderTemplate[0]["unitVolumeLiters"];
