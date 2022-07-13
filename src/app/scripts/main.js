@@ -2302,15 +2302,17 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
-    // Function fired when user click Import,
-    // function is parsing the json file with providers
+    /**
+     * Parses the json file with providers. If the file is a valid Json file it populates the providers dropdown.
+     * @param {*} event The click event object.
+     */
     var parseJsonMapping = function (event) {
 
         event.preventDefault();
         // get the file
         var upload = document.getElementById('filesJson');
         var result;
-        var ok;
+        var isJsonFile = false;
 
         // Make sure the DOM element exists
         if (upload) {
@@ -2322,41 +2324,32 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     if (validateIfJsonFIle(reader.result)) {
                         result = JSON.parse(reader.result); // Parse the result into an object
                         objProviderTemplate = result;
-
-                        ok = true;
-
+                        isJsonFile = true;
                     }
                     else {
                         alert('Please select JSON files only!');
-                        ok = false;
+                        //isJsonFile = false;
                         clearFilesJson();
                     }
 
                 });
 
-                reader.readAsText(upload.files[0]); // Read the uploaded file
-                //when the load is ended, I check if file uploaded was Json file and flagged as true
-                // I build the dropdown menu 
+                // Read the uploaded file
+                reader.readAsText(upload.files[0]); 
+                // when the load is completed, check if the file is Json file and build the dropdown menu 
                 reader.addEventListener('loadend', function () {
-                    if (ok) {
-
+                    if (isJsonFile) {
                         elJsonDropDownMenu.length = 0;
                         elJsonDropDownMenu.style.display = "block";
-
                         let defaultOption = document.createElement('option');
                         defaultOption.text = 'Choose Provider';
-
                         elJsonDropDownMenu.appendChild(defaultOption);
                         elJsonDropDownMenu.selectedIndex = 0;
-
                         let option;
                         for (let i = 0; i < result.providers.length; i++) {
                             option = document.createElement('option');
                             option.text = result.providers[i].Name;
                             elJsonDropDownMenu.appendChild(option);
-
-
-
                         }
                     }
                 });
@@ -2364,6 +2357,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
+    /**
+     * Checks if the file passed in is a Json file.
+     * @param {*} fileJsonToCheck The file to check.
+     * @returns True or False.
+     */
     var validateIfJsonFIle = function (fileJsonToCheck) {
         try {
             JSON.parse(fileJsonToCheck);
