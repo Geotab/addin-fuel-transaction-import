@@ -62,6 +62,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     // Import Json File Button
     var elParseButtonJson;
     var elJsonDropDownMenu;
+    /** NodeList reference to the selector radio buttons */
     var elSelector;
     /** the file selection container div for the json provider implementation */
     var elFileSelectContainerProvider;
@@ -640,16 +641,16 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     };
 
     /**
-     * Parses the XMLHttpRequest responseText to JSON.
-     * @param {XMLHttpRequest} xhr The XMLHttpRequest object
-     * @returns The JSON data and/or any errors that might exist.
+     * Parses the xhr response text to confirm it is valid Json format.
+     * @param {XMLHttpRequest} request The XMLHttpRequest object.
+     * @returns An object containing the JSON data and/or any errors that might have occurred.
      */
-    var resultsParser = function (xhr) {
+    var resultsParser = function (request) {
         var jsonResponse,
             data,
             error;
-        if (xhr.target && xhr.target.responseText.length > 0) {
-            jsonResponse = JSON.parse(xhr.target.responseText);
+        if (request.target && request.target.responseText.length > 0) {
+            jsonResponse = JSON.parse(request.target.responseText);
             if (!jsonResponse.error) {
                 data = jsonResponse.result;
             } else {
@@ -666,12 +667,13 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     };
 
     /**
+     * Executes when the excel transactions are converted to Json and the ExcelToJson call has completed.
      * This function seems to serve as a transaction data parser and to finally set the transactions variable with the result. 
      * It then sets the UI state ready to import the transactions.
-     * @param {XMLHttpRequest} e An XMLHttpRequest object containing the transactions
+     * @param {XMLHttpRequest} request An XMLHttpRequest object containing the transactions
      * @returns Nothing is returned
      */
-    var uploadComplete = function (e) {
+    var uploadComplete = function (request) {
         var results;
         var fuelTransactionParser = new FuelTransactionParser();
 
@@ -688,7 +690,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
         clearFiles();
         // parses the results from the object passed in
-        results = resultsParser(e);
+        results = resultsParser(request);
 
         // alerts and exits on error
         if (results.error) {
@@ -1449,11 +1451,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     /**
      * Calculates the progress of a XMLHttpRequest file upload and reports it to the
      * alertInfo element.
-     * @param {XMLHttpRequestUpload} e The XMLHttpRequestUpload object.
+     * @param {XMLHttpRequestUpload} requestUpload The XMLHttpRequestUpload object.
      */
-    var uploadProgress = function (e) {
-        if (e.lengthComputable) {
-            var percentComplete = Math.round(e.loaded * 100 / e.tota);
+    var uploadProgress = function (requestUpload) {
+        if (requestUpload.lengthComputable) {
+            var percentComplete = Math.round(requestUpload.loaded * 100 / requestUpload.tota);
             if (percentComplete < 100) {
                 toggleAlert(elAlertInfo, 'Parsing: transferring file ' + percentComplete.toString() + '%');
             } else {
@@ -1467,11 +1469,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
      * Displays a file upload failed message in the alertError element when a 
      * XMLHttpRequest error occurs.
      * The event details are logged to the console.
-     * @param {XMLHttpRequest error} e An XMLHttpRequest error event
+     * @param {XMLHttpRequest} request An XMLHttpRequest object
      */
-    var uploadFailed = function (e) {
+    var uploadFailed = function (request) {
         toggleAlert(elAlertError, 'There was an error attempting to upload the file.');
-        console.log(e);
+        console.log(request);
     };
 
     /**
@@ -2369,13 +2371,15 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         catch (err) {
             console.log(err);
             return false;
-
         }
         return true;
     };
 
+    /**
+     * The function that fires for the change events for each selector.
+     * It sets the environment state for each selection change.
+     */
     var showSelectorSection = function () {
-
         for (var i = 0; i < elSelector.length; i++) {
             if (elSelector[i].checked) {
                 switch (elSelector[i].id) {
@@ -2385,14 +2389,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                         clearTransactions();
                         clearTransactionsProvider();
                         elTransactionContainerProvider.style.display = 'none';
-
                         elFileJsonSelectContainer.style.display = 'block';
                         elFileSelectContainer.style.display = 'none';
                         elFileSelectContainerProvider.style.display = 'none';
                         elJsonDropDownMenu.style.display = "none";
-
                         break;
-
                     default:
                         clearFiles();
                         clearFilesJson();
@@ -2407,29 +2408,42 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
-    var addBlanckColumn = function (transactionsToBeChecked) {
-        for (var i = 0; i < transactionsToBeChecked.data.length; i++) {
+    /**
+     * 
+     * @param {*} transactions 
+     * @returns 
+     */
+    var addBlanckColumn = function (transactions) {
+        for (var i = 0; i < transactions.data.length; i++) {
             // get Headers object as master to compare, because header cannot 
             // be empty
-            var keysHeader = Object.keys(transactionsToBeChecked.data[0]);
-            var keysTempTransaction = Object.keys(transactionsToBeChecked.data[i]);
+            var keysHeader = Object.keys(transactions.data[0]);
+            var keysTempTransaction = Object.keys(transactions.data[i]);
 
             var z = 0;
             var tempVar = z;
             for (z; z < keysHeader.length; z++) {
-                //compare the column header with the transaction column
-                //if not match I add column with key equal to Header name
+                // Compare the column header with the transaction column
+                // if not match I add column with key equal to Header name
                 // and value=null
                 if (keysHeader[z] != keysTempTransaction[tempVar]) {
-                    transactionsToBeChecked.data[i][keysHeader[z]] = "";
-                    keysTempTransaction = Object.keys(transactionsToBeChecked.data[i]);
+                    transactions.data[i][keysHeader[z]] = "";
+                    keysTempTransaction = Object.keys(transactions.data[i]);
                 }
                 else { tempVar++; }
             }
         }
-        return transactionsToBeChecked;
+        return transactions;
     };
 
+    //todo understand how we combine this with uploadFile
+    /**
+     * Sends the excel file to the ExcelToJson API call and returns the data in JSON format if successful.
+     * The format file provider implementation.
+     * If successful the uploadComplete function is executed.
+     * The function is executed when the open file button is pushed. 
+     * @param {*} e 
+     */
     var uploadFileProvider = function (e) {
         //get browser timezone and set the global variale
         getTimezonePicker();
@@ -2439,7 +2453,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             alert('Please select xlsx files only!');
             clearAllForException();
         }
-
 
         toggleAlert(elAlertInfo, 'Parsing... transferring file');
         api.getSession(function (credentials) {
@@ -2453,7 +2466,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     credentials: credentials
                 }
             });
-
 
             if (window.FormData) {
                 fd = new FormData();
@@ -2510,8 +2522,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         });
     };
 
-
-
     //function return the provider selected 
     var getTemplateProviderNameFromSelection = function () {
         if (elJsonDropDownMenu.selectedIndex != 0) {
@@ -2538,8 +2548,15 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         return [];
     };
 
-    async function uploadCompleteProviderAsync(e) {
-
+    /**
+     * Provide file implementation...
+     * Executes when the excel transactions are converted to Json and the ExcelToJson call has completed.
+     * This function seems to serve as a transaction data parser and to finally set the transactions variable with the result. 
+     * It then sets the UI state ready to import the transactions.
+     * @param {XMLHttpRequest} request An XMLHttpRequest object containing the transactions
+     * @returns Nothing is returned
+     */
+    async function uploadCompleteProviderAsync(request) {
         var results;
         var headingsExtracted;
         // retrieve the name of the provider selected
@@ -2554,8 +2571,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         currencyCodeMapped = extractedProviderTemplate[0]["currencyCodeMapped"];
         isCellDateType = extractedProviderTemplate[0]["isCellDateType"];
 
-
-        results = addBlanckColumn(resultsParser(e));
+        results = addBlanckColumn(resultsParser(request));
         if (results.error) {
             toggleAlert(elAlertError, results.error.message);
             return;
