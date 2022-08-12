@@ -643,7 +643,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     /**
      * Parses the xhr response text to confirm it is valid Json format.
      * @param {XMLHttpRequest} request The XMLHttpRequest object.
-     * @returns An object containing the JSON data and/or any errors that might have occurred.
+     * @returns An object containing two properties: data and error. The data property contains the fuel transaction data in JSON format and the error property contains any errors that might have occurred.
      */
     var resultsParser = function (request) {
         var jsonResponse,
@@ -721,7 +721,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             });
     };
 
-
+    /**
+     * 
+     * @returns 
+     */
     var FuelTransactionParser = function () {
         var self = this;
         var regex = new RegExp(' ', 'g');
@@ -738,7 +741,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             return parseInt(parts[2], 10) >= 1606;
         };
 
-        // value parser - parses string values and returns a zero length string for null or double quotes.
+        /**
+         * Parses string values and returns a zero length string empty values.
+         * @param {*} s The string to parse.
+         * @returns The string returned.
+         */
         var getStringValue = function (s) {
             let length = s.length;
             if (length > 0 && s[0] === '"') {
@@ -752,12 +759,20 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             return (s === '(null)' ? '' : s.trim());
         };
 
-        // returns a float value for a valid float or 0.0 otherwise
+        /** 
+         *  returns a float value for a valid float or 0.0 otherwise
+         */
         var getFloatValue = function (float) {
             var value = parseFloat(float);
             return isNaN(value) ? 0.0 : value;
         };
 
+        /**
+         * Parses date values to ISO format 8601 (UTC I believe).
+         * The timezone is always zero UTC offset, as denoted by the suffix Z
+         * @param {*} date The date value to parse
+         * @returns The ISO format date
+         */
         var getDateValue = function (date) {
             var fromStringDateUtc;
             var fromStringDate = new Date(date);
@@ -783,9 +798,20 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             return fromOADate(getFloatValue(date)).toISOString();
         };
 
+        /**
+         * converts miles to kilometres
+         * @param {*} miles 
+         * @returns 
+         */
         var milesToKm = function (miles) {
             return miles / 0.62137;
         };
+        
+        /**
+         * converts gallons to litres
+         * @param {*} gallons 
+         * @returns 
+         */
         var gallonsToLitres = function (gallons) {
             return gallons * 3.785;
         };
@@ -2410,7 +2436,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
     /**
      * 
-     * @param {*} transactions 
+     * @param {*} transactions An object containing the fuel transaction data (and error data which is irrelevant to this process).
      * @returns 
      */
     var addBlanckColumn = function (transactions) {
