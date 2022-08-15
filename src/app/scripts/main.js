@@ -12,54 +12,80 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
     // DOM Elements
     var elContainer;
+    /** input file type element id=files */
     var elFiles;
+    /** Open File button */
     var elParseButton;
+    /** Generic/WEX Import button */
     var elImportButton;
+    /** Generic/WEX Cancel button */
     var elCancelButton;
+    /** Provider Import button */
     var elImportButtonProvider;
+    /** Provider Cancel button */
     var elCancelButtonProvider;
+    /** WEX Fleet select element - facilitates batch sorting of imports for WEX & Generic imports */
     var elFleet;
+    /** The Generic import example button element */
     var elExampleButton;
+    /** The filename input text type */
     var elFileName;
+    /** The transaction list table in the UI */
     var elTransactionList;
+    /** The transaction list table in the UI for the Json Provider implementation */
     var elTransactionListProvider;
+    /** The transaction list table container div */
     var elTransactionContainer;
+    /** The transaction list table container div for the Json Provider implementation */
     var elTransactionContainerProvider;
+    /** the file selection container div */
     var elFileSelectContainer;
+    /** Successfully added fuel transactions alert div */
     var elAlertSuccess;
+    /** The alertInfo element */
     var elAlertInfo;
+    /** The alertError element */
     var elAlertError;
     var elSample;
     var elForm;
+    /** represents the count of transactions e.g. Showing first 3/3 transactions... displayed directly above the transactions table.*/
     var elListCount;
+    /** represents the count of transactions e.g. Showing first 3/3 transactions... for the json provider implementation*/
     var elListCountProvider;
 
+    /** the file selection container div for the json provider implementation */
     var elFileJsonSelectContainer;
+    /** hidden file type input element for the json files */
     var elFilesJson;
+    /** the json filename for the json provider implementation */
     var elFileNameJson;
+    // Import Json File Button
     var elParseButtonJson;
     var elJsonDropDownMenu;
+    /** NodeList reference to the selector radio buttons */
     var elSelector;
+    /** the file selection container div for the json provider implementation */
     var elFileSelectContainerProvider;
-
+    /** input file type for the transaction file for the json provider implementation */
     var elFileProvider;
+    /** the transaction filename for the json provider implementation */
     var elFileNameProvider;
+    /** Provider Open File Button */
     var elParseButtonProvider;
-
     var elTimezonePicker;
     var elTimezoneCheckbox;
-
-
-
     // scoped vars
+    /** Transaction list */
     var transactions;
     var database;
     var version;
     var ROW_LIMIT = 10;
     var unitVolumeLiters;
     var unitOdoKm;
+    /** The date format defined in the dateFormat property of the selected provider.*/
     var dateFormat;
     var hourFormat;
+    /** The date format depending on the excel cell type setting. If a date type then "MM/DD/YYYY" + " " + hourFormat; otherwise use the dateFormat property.*/
     var dateHoursComposed;
     var fileJsonToParse;
     var objProviderTemplate;
@@ -71,8 +97,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     const moment = require('moment');
     const cc = require('currency-codes');
 
-    // functions
-
+    /**
+     * Toggles the disabled property of the Open File button
+     * @param  {boolean} toggle true or false
+     */
     var toggleParse = function (toggle) {
         if (toggle) {
             elParseButton.removeAttribute('disabled');
@@ -83,7 +111,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     };
 
 
-    // enable or disable (grayout) the button to import the Json file
+    /**
+     * Toggles the disabled property of the Import Json File button
+     * @param  {boolean} toggle true or false
+     */
     var toggleParseJson = function (toggle) {
         if (toggle) {
             //make visible the button to import the Json file
@@ -95,7 +126,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
-    // enable or disable (grayout) the button of the provider xls section 
+    /**
+     * Toggles the disabled property of the Provider Open File button
+     * @param  {boolean} toggle true or false
+     */
     var toggleParseProvider = function (toggle) {
         if (toggle) {
             //make visible the button of the provider xls section 
@@ -107,6 +141,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
+    /**
+     * Toggles the disabled property of the Generic/WEX Import button
+     * @param  {boolean} toggle true or false
+     */
     var toggleImport = function (toggle) {
         if (toggle) {
             elImportButton.removeAttribute('disabled');
@@ -117,6 +155,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
+    /**
+     * Toggles the disabled property of the Provider Import button
+     * @param  {boolean} toggle true = enable, false = disable
+     */
     var toggleImportProvider = function (toggle) {
         if (toggle) {
             elImportButtonProvider.removeAttribute('disabled');
@@ -125,6 +167,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
+    /**
+     * Toggles the disabled property of the Fleet Select element
+     * @param  {boolean} toggle true or false
+     */
     var toggleFleet = function (toggle) {
         if (toggle) {
             elFleet.removeAttribute('disabled');
@@ -133,6 +179,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
+    /**
+     * Toggles enabled/disabled property of the files input type element
+     * @param  {boolean} toggle true or false
+     */
     var toggleBrowse = function (toggle) {
         if (toggle) {
             elFiles.removeAttribute('disabled');
@@ -141,6 +191,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
+    /**
+     * Toggles enabled/disabled property of the json files input type element
+     * @param  {boolean} toggle true or false
+     */
+    // TODO not used it seems
     var toggleBrowseJson = function (toggle) {
         if (toggle) {
             elFilesJson.removeAttribute('disabled');
@@ -149,23 +204,36 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
-
+    /**
+     * Toggles alerts: hides all alerts and displays the alert passed in and sets
+     * the value to the content argument.
+     * @param  {Element} el The alert element to show.
+     * @param  {string} content The content to display in the alert.
+     */
     var toggleAlert = function (el, content) {
         elAlertSuccess.style.display = 'none';
         elAlertInfo.style.display = 'none';
         elAlertError.style.display = 'none';
         if (el) {
-            el.querySelector('span').textContent = content; toggleParse
+            el.querySelector('span').textContent = content;
+            toggleParse;
             el.style.display = 'block';
         }
     };
 
+    /**
+     * Clears all items from the fleet select element
+     */
     var clearFleets = function () {
         while (elFleet.firstChild) {
             elFleet.removeChild(elFleet.firstChild);
         }
     };
 
+    /**
+     * Fills the fleets select element with items and enables it.
+     * @param  {Array} fleets An array of string values (fleets).
+     */
     var setFleetSelection = function (fleets) {
         clearFleets();
         fleets.sort();
@@ -180,6 +248,9 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
+    /**
+     * Clears the transaction lists
+     */
     var clearTransactionsList = function () {
         //container that hide the transaction
         elTransactionContainer.style.display = 'none';
@@ -195,13 +266,14 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
     var clearTransactionsListProvider = function () {
         //container that hide the transaction
         elTransactionContainerProvider.style.display = 'none';
-
         elFileSelectContainerProvider.style.display = 'none';
         elFileJsonSelectContainer.style.display = 'block';
-
-
     };
 
+    /**
+     * Clears the transactions, clears the fleet dropdown, 
+     * disables the open file button and disables the WEX/Generic import button.
+     */
     var clearTransactions = function () {
         clearTransactionsList();
         clearFleets();
@@ -209,6 +281,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         toggleImport(false);
     };
 
+    /**
+     * Clears the transactions, clears the fleet dropdown, 
+     * disables the open file button, disables the WEX/Generic import button and
+     * disables all alerts for the Json Provider implementation.
+     */
     var clearTransactionsProvider = function () {
         clearTransactionsListProvider();
         clearFleets();
@@ -217,11 +294,16 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         toggleAlert();
     };
 
+    /**
+     * Renders (displays) the transactions contained in the global transactions variable 
+     * into the elTransactionList, which represents the transactions table (id=transactionList) in the UI.
+     */
     var renderTransactions = function () {
         var elBody;
         var visibleCount = 0;
         var totalRowsCount = 0;
         var fleetName = elFleet.options[elFleet.selectedIndex].value;
+        // setup the table headings
         var getColumnHeading = function (column) {
             var columnHeadings = {
                 'vehicleIdentificationNumber': 'VIN',
@@ -241,6 +323,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             };
             return columnHeadings[column] || column;
         };
+        // creates each table row
         var createRow = function (row, isHeading) {
             var elRow = document.createElement('TR');
             var createColumn = function (columnName) {
@@ -260,23 +343,28 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             return elRow;
         };
 
+        // hides the transaction table container
         elTransactionContainer.style.display = 'none';
         elFileSelectContainer.style.display = 'block';
 
+        // removes any existing table rows in the UI.
         while (elTransactionList.firstChild) {
             elTransactionList.removeChild(elTransactionList.firstChild);
         }
 
+        // adds all the table rows.
         elBody = document.createElement('TBODY');
         transactions.forEach(function (transaction, i) {
             var elHead;
 
             if (i === 0) {
+                // creates the table head row.
                 elHead = document.createElement('THEAD');
                 elHead.appendChild(createRow(transaction, true));
                 elTransactionList.appendChild(elHead);
             }
             if (!fleetName || transaction.fleet === fleetName) {
+                // creates each table row if it belongs to the fleet selected.
                 totalRowsCount++;
                 if (visibleCount < ROW_LIMIT) {
                     visibleCount++;
@@ -290,6 +378,12 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         elFileSelectContainer.style.display = 'none';
     };
 
+    /**
+     * Renders (displays) the transactions contained in the global transactions variable 
+     * into the elTransactionList, which represents the transactions table (id=transactionList) in the UI
+     * for the json provider implementation.
+     * @param {Array} transactions An array of fuel transactions
+     */
     var renderTransactionsProvider = function (transactions) {
 
         var elBody;
@@ -368,16 +462,19 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         elTransactionContainerProvider.style.display = 'block';
         elFileSelectContainerProvider.style.display = 'none';
         elFileJsonSelectContainer.style.display = 'none';
-
-
-
     };
 
-
+    /**
+     * Clears the file type input and filename text input
+     */
     var clearFiles = function () {
         elFiles.value = null;
         elFileName.value = '';
     };
+
+    /**
+     * Clears the
+     */
     var clearFilesJson = function () {
         elFilesJson.value = null;
         elFileNameJson.value = null;
@@ -390,10 +487,19 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         elFileNameProvider.value = '';
         toggleParseProvider();
     };
+
+    /**
+     * @returns The correctly formed Geotab API URL
+     */
     var getUrl = function () {
         return window.location.protocol + '//' + window.location.hostname + '/apiv1';
     };
 
+    /**
+     * Selects the first file (if many) and enables the open file button, clears
+     * the transaction list and disables all alerts.
+     * @param {Event} e The event emitter
+     */
     var fileSelected = function (e) {
         var file;
         if (e.target.files) {
@@ -410,8 +516,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         toggleAlert();
     };
 
-
-    // section that select the xls transaction file related to the provider fileProviderSelected
+    /**
+     * Selects the zero index file (if many) and enables the provider open file button
+     * and disables all alerts for the json provider implementation.
+     * @param {Event} e The event emitter
+     */
     var fileProviderSelected = function (e) {
         var file;
         if (e.target.files) {
@@ -423,18 +532,19 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         if (file) {
             elFileNameProvider.value = file.name;
             toggleParseProvider(true);
-
         }
         toggleAlert();
     };
 
 
     // Section for Json file selected
+    /**
+     * Selects the zero index file (if many) and enables the import JSON file button
+     * and disables all alerts for the json provider implementation.
+     * @param {Event} e The event emitter
+     */
     var fileSelectedJson = function (e) {
-
         clearTransactionsProvider();
-
-
         if (e.target.files) {
             fileJsonToParse = e.target.files[0];
         } else {
@@ -443,16 +553,30 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
         if (fileJsonToParse) {
             elFileNameJson.value = fileJsonToParse.name;
-
-            // enable or disable (grayout) the button to import the Json file
             toggleParseJson(true);
-
-
         }
         toggleAlert();
     };
 
-
+    /**
+     * Information from a fuel card provider representing a fuel transaction. Fuel card information will be matched to a Device by one of these fields: vehicleIdentificationNumber, serialNumber, licencePlate or comments. The combination of all fields (excluding sourceData) are used to ensure no duplicate transactions can be added.
+     * @param {string} vin The vehicle identification number (VIN) of the vehicle. This is used to associate the transaction with a Device. Maximum length [255] Default [""].
+     * @param {string} description The vehicle description of the vehicle. This can be used to associate the transaction with a Device. Maximum length [255] Default [""].
+     * @param {string} serialNumber The serial number of the device. This can be used to associate the transaction with a Device. Maximum length [255] Default [""].
+     * @param {string} licencePlate The licence plate of the vehicle of the vehicle. This can be used to associate the transaction with a Device. Maximum length [255] Default [""].
+     * @param {string} comments The free text field where any user information can be stored and referenced for this entity. This can be used to associate the transaction with a Device. Maximum length [1024] Default [""].
+     * @param {string} dateTime The UTC date and time of the transaction.
+     * @param {number} volume The volume of fuel purchased in Liters. Default [0].
+     * @param {number} odometer The driver recorded odometer reading in km. Default [0].
+     * @param {number} cost The cost of the fuel transaction. Default [0].
+     * @param {string} currencyCode The three digit ISO 427 currency code (http://www.xe.com/iso4217.php). Default ["USD"].
+     * @param {object} location The Coordinate of the transaction retailer. Default [0,0].
+     * @param {string} provider The FuelTransactionProvider of this transaction. Default [Unknown].
+     * @param {string} driverName The fuel card holder name. This can be used to associate the transaction with a Driver. Maximum length [255] Default [""].
+     * @param {string} sourceData The JSON string representing the source data. Default [""].
+     * @param {string} productType The FuelTransactionProductType of this transaction. Default [Unknown].
+     * @returns A Fuel Transaction entity/record.
+     */
     var FuelTransaction = function (vin, description, serialNumber, licencePlate, comments, dateTime, volume, odometer, cost, currencyCode, location, provider, driverName, sourceData, productType) {
         var self = {
             vehicleIdentificationNumber: vin || '',
@@ -474,9 +598,28 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         return self;
     };
 
+    /**
+     * The FuelTransaction data for the Json provider implementation
+     * @param {string} cardNumber The masked or partial purchasing card number. <**>
+     * @param {string} comments The free text field where any user information can be stored and referenced for this entity. This can be used to associate the transaction with a Device. Maximum length [1024] Default [""].
+     * @param {string} description The vehicle description of the vehicle. This can be used to associate the transaction with a Device. Maximum length [255] Default [""].
+     * @param {string} driverName The fuel card holder name. This can be used to associate the transaction with a Driver. Maximum length [255] Default [""].
+     * @param {*} externalReference 
+     * @param {string} licencePlate The licence plate of the vehicle of the vehicle. This can be used to associate the transaction with a Device. Maximum length [255] Default [""].
+     * @param {string} provider The FuelTransactionProvider of this transaction. Default [Unknown].
+     * @param {string} serialNumber The serial number of the device. This can be used to associate the transaction with a Device. Maximum length [255] Default [""].
+     * @param {string} siteName The site/merchant name where the transaction took place. <**>
+     * @param {string} vehicleIdentificationNumber The vehicle identification number (VIN) of the vehicle. This is used to associate the transaction with a Device. Maximum length [255] Default [""].
+     * @param {number} cost The cost of the fuel transaction. Default [0].
+     * @param {string} currencyCode The three digit ISO 427 currency code (http://www.xe.com/iso4217.php). Default ["USD"].
+     * @param {string} dateTime The UTC date and time of the transaction.
+     * @param {number} odometer The driver recorded odometer reading in km. Default [0].
+     * @param {string} productType The FuelTransactionProductType of this transaction. Default [Unknown].
+     * @param {number} volume The volume of fuel purchased in Liters. Default [0].
+     * @returns A Fuel Transaction entity/record.
+     */
     var FuelTransactionProvider = function (cardNumber, comments, description, driverName, externalReference, licencePlate, provider, serialNumber, siteName, vehicleIdentificationNumber, cost, currencyCode, dateTime, odometer, productType, volume) {
         var self = {
-
             cardNumber: cardNumber || '',
             comments: comments || '',
             description: description || '',
@@ -493,17 +636,21 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             odometer: odometer || '',
             productType: productType || '',
             volume: volume || '',
-
         };
         return self;
     };
 
-    var resultsParser = function (xhr) {
+    /**
+     * Parses the xhr response text to confirm it is valid Json format.
+     * @param {XMLHttpRequest} request The XMLHttpRequest object.
+     * @returns An object containing two properties: data and error. The data property contains the fuel transaction data in JSON format and the error property contains any errors that might have occurred.
+     */
+    var resultsParser = function (request) {
         var jsonResponse,
             data,
             error;
-        if (xhr.target && xhr.target.responseText.length > 0) {
-            jsonResponse = JSON.parse(xhr.target.responseText);
+        if (request.target && request.target.responseText.length > 0) {
+            jsonResponse = JSON.parse(request.target.responseText);
             if (!jsonResponse.error) {
                 data = jsonResponse.result;
             } else {
@@ -519,7 +666,14 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         };
     };
 
-    var uploadComplete = function (e) {
+    /**
+     * Executes when the excel transactions are converted to Json and the ExcelToJson call has completed.
+     * This function seems to serve as a transaction data parser and to finally set the transactions variable with the result. 
+     * It then sets the UI state ready to import the transactions.
+     * @param {XMLHttpRequest} request An XMLHttpRequest object containing the transactions
+     * @returns Nothing is returned
+     */
+    var uploadComplete = function (request) {
         var results;
         var fuelTransactionParser = new FuelTransactionParser();
 
@@ -535,8 +689,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         // -------------
 
         clearFiles();
-        results = resultsParser(e);
+        // parses the results from the object passed in
+        results = resultsParser(request);
 
+        // alerts and exits on error
         if (results.error) {
             toggleAlert(elAlertError, results.error.message);
             return;
@@ -544,7 +700,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
         fuelTransactionParser.parse(results.data)
             .then(function (result) {
-
+                // setting the result to the global transactions variable
                 transactions = result;
                 if (transactions === null) {
                     toggleAlert(elAlertError, 'Can not determine file provider type, try converting to MyGeotab file type');
@@ -565,6 +721,10 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             });
     };
 
+    /**
+     * 
+     * @returns 
+     */
     var FuelTransactionParser = function () {
         var self = this;
         var regex = new RegExp(' ', 'g');
@@ -581,7 +741,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             return parseInt(parts[2], 10) >= 1606;
         };
 
-        // value parsers
+        /**
+         * Parses string values and returns a zero length string empty values.
+         * @param {*} s The string to parse.
+         * @returns The string returned.
+         */
         var getStringValue = function (s) {
             let length = s.length;
             if (length > 0 && s[0] === '"') {
@@ -595,11 +759,20 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             return (s === '(null)' ? '' : s.trim());
         };
 
+        /** 
+         *  returns a float value for a valid float or 0.0 otherwise
+         */
         var getFloatValue = function (float) {
             var value = parseFloat(float);
             return isNaN(value) ? 0.0 : value;
         };
 
+        /**
+         * Parses date values to ISO format 8601 (UTC I believe).
+         * The timezone is always zero UTC offset, as denoted by the suffix Z
+         * @param {*} date The date value to parse
+         * @returns The ISO format date
+         */
         var getDateValue = function (date) {
             var fromStringDateUtc;
             var fromStringDate = new Date(date);
@@ -625,9 +798,20 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             return fromOADate(getFloatValue(date)).toISOString();
         };
 
+        /**
+         * converts miles to kilometres
+         * @param {*} miles 
+         * @returns 
+         */
         var milesToKm = function (miles) {
             return miles / 0.62137;
         };
+        
+        /**
+         * converts gallons to litres
+         * @param {*} gallons 
+         * @returns 
+         */
         var gallonsToLitres = function (gallons) {
             return gallons * 3.785;
         };
@@ -1240,6 +1424,12 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         form.submit();
     };
 
+    /**
+     * Sends the excel file to the ExcelToJson API call and returns the data in JSON format if successful.
+     * If successful the uploadComplete function is executed.
+     * The function is executed when the open file button is pushed. 
+     * @param {*} e 
+     */
     var uploadFile = function (e) {
         e.preventDefault();
         toggleAlert(elAlertInfo, 'Parsing... transferring file');
@@ -1255,6 +1445,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                 }
             });
 
+            // TODO understand why this is done???
             if (window.FormData) {
                 fd = new FormData();
                 xhr = new XMLHttpRequest();
@@ -1268,7 +1459,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                 xhr.addEventListener('abort', uploadFailed, false);
 
                 if (getUrl() == 'http://localhost/apiv1') {
-                    xhr.open('POST', 'https://proxy.geotab.com/apiv1')
+                    xhr.open('POST', 'https://proxy.geotab.com/apiv1');
                 }
                 else {
                     xhr.open('POST', getUrl());
@@ -1283,10 +1474,14 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         });
     };
 
-
-    var uploadProgress = function (e) {
-        if (e.lengthComputable) {
-            var percentComplete = Math.round(e.loaded * 100 / e.tota);
+    /**
+     * Calculates the progress of a XMLHttpRequest file upload and reports it to the
+     * alertInfo element.
+     * @param {XMLHttpRequestUpload} requestUpload The XMLHttpRequestUpload object.
+     */
+    var uploadProgress = function (requestUpload) {
+        if (requestUpload.lengthComputable) {
+            var percentComplete = Math.round(requestUpload.loaded * 100 / requestUpload.tota);
             if (percentComplete < 100) {
                 toggleAlert(elAlertInfo, 'Parsing: transferring file ' + percentComplete.toString() + '%');
             } else {
@@ -1296,11 +1491,20 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         }
     };
 
-    var uploadFailed = function (e) {
+    /**
+     * Displays a file upload failed message in the alertError element when a 
+     * XMLHttpRequest error occurs.
+     * The event details are logged to the console.
+     * @param {XMLHttpRequest} request An XMLHttpRequest object
+     */
+    var uploadFailed = function (request) {
         toggleAlert(elAlertError, 'There was an error attempting to upload the file.');
-        console.log(e);
+        console.log(request);
     };
 
+    /**
+     * Imports the fuel transactions of the selected file 
+     */
     var importFile = function () {
         var fleetName = elFleet.options[elFleet.selectedIndex].value;
         var callSets = [];
@@ -1313,7 +1517,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         var message = 'Importing fuel transactions...';
         var updateTotal = function (results) {
             totalAdded += typeof results === 'string' ? 1 : results.length;
-            console.log("results: ", results)
+            console.log("results: ", results);
         };
         var doCalls = function (calls) {
             return new Promise(function (resolve, reject) {
@@ -1360,6 +1564,9 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         });
     };
 
+    /**
+     * Imports the fuel transactions of the selected file for the config provider file implementation
+     */
     var importFileProvider = function () {
 
         var callSets = [];
@@ -1387,17 +1594,13 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             };
         };
 
-
-
-
         toggleImportProvider(false);
 
         toggleAlert(elAlertInfo, message);
-        transactions.forEach(function (transaction, j) {
 
+        transactions.forEach(function (transaction, j) {
             callSet.push(['Add', { typeName: 'FuelTransaction', entity: transaction }]);
             total++;
-
             if (callSet.length === callLimit || j === transactions.length - 1) {
                 callSets.push(callSet);
                 callSet = [];
@@ -1413,24 +1616,21 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
         caller.then(function (results) {
             updateTotal(results);
-
-
             var temp = JSON.stringify(results);
-
             console.log("Transaction Imported with ID: ", temp.replace(/[\[\]"]+/g, ""));
-
             //window.alert("Transaction ID: "+temp.replace(/[\[\]"]+/g, ""));
             clearTransactionsProvider();
             toggleAlert(elAlertSuccess, totalAdded);
 
         }).catch(function (e) {
-
             toggleAlert(elAlertError, e.toString());
-
         });
     };
 
-    // Generic format button
+    /**
+     * Toggles the generic format example element between visible and hidden.
+     * @param {*} e 
+     */
     var toggleExample = function (e) {
         var checked = e.target.checked;
         if (!checked) {
@@ -1441,6 +1641,12 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         elSample.style.display = checked ? 'block' : 'none';
     };
 
+    /**
+     * Parsing provider transactions
+     * @param {*} transactions Transaction list
+     * @param {*} provider Provider template from the Json file
+     * @returns 
+     */
     async function parsingTransactionWithProviderAsync(transactions, provider) {
         var arrayOfParsedTransaction = [];
 
@@ -1461,24 +1667,24 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         //fuelTransactionImport object in uploadCompleteProviderAsync function
         return jsonObjParsed;
     }
+
+    /**
+     * Parse a single transaction asynchronously for the new provider implementation
+     */
     async function loopParseTransactionInTemplateAsync(singleTransaction, provider) {
         var newTranscationObj = new FuelTransactionProvider();
 
         for (var prop in provider) {
-            if (provider[prop] == null) provider[prop] = "";//if json file has null field change in ""        
+            if (provider[prop] == null) { provider[prop] = ""; }//if json file has null field change in ""        
         }
-
 
         //check of the mandatory fields
         //Stop the execution
-
         if (provider["licencePlate"] == "" && provider["vehicleIdentificationNumber"] == "" && provider["serialNumber"] == "") {
             console.log("Not mapped into Json file, Licence Plate or Vin or Serial Number is needed");
             window.alert("Licence Plate, VIN and Serial Number are not mapped into Json file at least one must be filled");
             clearAllForException();
-
-        }
-        else {
+        } else {
             if (singleTransaction[provider["licencePlate"]] == "" || singleTransaction[provider["licencePlate"]] == undefined) {
                 if (singleTransaction[provider["vehicleIdentificationNumber"]] == "" || singleTransaction[provider["vehicleIdentificationNumber"]] == undefined) {
                     if (singleTransaction[provider["serialNumber"]] == "" || singleTransaction[provider["serialNumber"]] == undefined) {
@@ -1488,61 +1694,50 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     }
                 }
             }
-
-
         }
 
-
         for (var prop in provider) {
-
             switch (prop) {
                 case "comments":
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
-                        if (singleTransaction[provider[prop]].length > 1024) newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 1024);
+                        if (singleTransaction[provider[prop]].length > 1024) { newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 1024); }
                         newTranscationObj[prop] = singleTransaction[provider[prop]];
                     }
                     break;
                 case "description":
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
-                        if (singleTransaction[provider[prop]].length > 255) newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255);
+                        if (singleTransaction[provider[prop]].length > 255) { newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255); }
                         newTranscationObj[prop] = singleTransaction[provider[prop]];
                     }
                     break;
                 case "driverName":
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
-                        if (singleTransaction[provider[prop]].length > 255) newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255);
+                        if (singleTransaction[provider[prop]].length > 255) { newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255); }
                         newTranscationObj[prop] = singleTransaction[provider[prop]];
                     }
                     break;
                 case "externalReference":
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
-                        if (singleTransaction[provider[prop]].length > 255) newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255);
+                        if (singleTransaction[provider[prop]].length > 255) { newTranscationObj[prop] = singleTransaction[provider[prop]].substring(0, 255); }
                         newTranscationObj[prop] = singleTransaction[provider[prop]];
                     }
                     break;
                 case "licencePlate":
-
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
-
-                        if (singleTransaction[provider[prop]].length > 255) singleTransaction[provider[prop]].substring(0, 255);
+                        if (singleTransaction[provider[prop]].length > 255) { singleTransaction[provider[prop]].substring(0, 255); }
                         newTranscationObj[prop] = singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, '');
                     }
-
                     break;
                 case "serialNumber":
-
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
                         newTranscationObj[prop] = singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, '');
-
                     }
-
                     break;
-
                 case "siteName":
                     if (provider[prop] != "") {
-                        if (typeof (provider[prop]) == "object") {
+                        if (typeof (provider[prop]) === "object") {
                             for (var inner in provider[prop]) {
-                                if (singleTransaction[provider[prop][inner]] != "" && singleTransaction[provider[prop][inner]] != undefined) newTranscationObj[prop] += singleTransaction[provider[prop][inner]] + " ";
+                                if (singleTransaction[provider[prop][inner]] != "" && singleTransaction[provider[prop][inner]] != undefined) { newTranscationObj[prop] += singleTransaction[provider[prop][inner]] + " "; }
                             }
                             newTranscationObj[prop] = newTranscationObj[prop].slice(0, -1);
                             /*
@@ -1555,37 +1750,24 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                              console.log(newTranscationObj);
                              //put locationCoordinatesProvider into location
                             */
-
                         }
-                        else newTranscationObj[prop] = singleTransaction[provider[prop]];
+                        else { newTranscationObj[prop] = singleTransaction[provider[prop]]; }
                     }
-
                     break;
-
-
                 case "vehicleIdentificationNumber":
-
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
                         newTranscationObj[prop] = singleTransaction[provider[prop]].toUpperCase().replace(/\s/g, '');
                     }
                     break;
-
                 case "cost":
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
-
                         newTranscationObj[prop] = parseFloat(singleTransaction[provider[prop]].replace(/,/g, '.'));
-
                     }
-               
                     else {
                         newTranscationObj[prop] = null;
                     }
-                  
-
-
                     break;
                 case "currencyCode":
-
                     // check if currency is defined in the template, if not check in column mapping
                     if (currencyCodeMapped != "" && currencyCodeMapped != undefined) {
                         currencyCodeMapped = currencyCodeMapped.trim().toUpperCase();
@@ -1613,19 +1795,12 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                             }
                         }
                         else {
-                            if (singleTransaction[provider[prop]] != "") newTranscationObj[prop] = null;
+                            if (singleTransaction[provider[prop]] != "") { newTranscationObj[prop] = null; }
                         }
 
                     }
-
-
-
-
                     break;
-
                 case "dateTime":
-
-
                     dateHoursComposed = dateFormat;
                     if (provider[prop] != "") {
                         isCellDateType = isCellDateType.toUpperCase();
@@ -1634,28 +1809,26 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                             window.alert("isCellDateType is the cell type in the xlsx, can be Y or N, please check the JSON mapping file");
                             clearAllForException();
                         }
-
-
-
                         //check if is an obj, if so means that date is composed by 2 cells
-                        if (typeof (provider[prop]) == "object" && provider[prop].length > 1) {
+                        if (typeof (provider[prop]) === "object" && provider[prop].length > 1) {
 
                             if (singleTransaction[provider[prop][0]] != "" && singleTransaction[provider[prop][0]] != undefined && singleTransaction[provider[prop][1]] != undefined && singleTransaction[provider[prop][1]] != undefined) {
 
-
-                                if (isCellDateType == "Y") dateHoursComposed = "MM/DD/YYYY" + " " + hourFormat;
-                                else dateHoursComposed = dateFormat + " " + hourFormat;
-
+                                if (isCellDateType == "Y") {
+                                    dateHoursComposed = "MM/DD/YYYY" + " " + hourFormat;
+                                }
+                                else {
+                                    dateHoursComposed = dateFormat + " " + hourFormat;
+                                }
 
                                 //remove the spaces before and after
                                 singleTransaction[provider[prop][0]] = singleTransaction[provider[prop][0]].trim();
                                 singleTransaction[provider[prop][1]] = singleTransaction[provider[prop][1]].trim();
                                 singleTransaction[provider[prop][0]] = singleTransaction[provider[prop][0]].slice(0, 10);
 
-                                if(singleTransaction[provider[prop][1]].length >= hourFormat.length)
-                                {
+                                if (singleTransaction[provider[prop][1]].length >= hourFormat.length) {
                                     console.log("Split", singleTransaction[provider[prop][1]].slice(0, hourFormat.length));
-                                    singleTransaction[provider[prop][1]] = singleTransaction[provider[prop][1]].slice(0,hourFormat.length);
+                                    singleTransaction[provider[prop][1]] = singleTransaction[provider[prop][1]].slice(0, hourFormat.length);
                                     console.log("Split", singleTransaction[provider[prop][1]].slice(0, hourFormat.length));
 
                                 }
@@ -1665,30 +1838,19 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                                 console.log("Date Fields are empty or invalid");
                                 window.alert("Date Fields are empty or invalid");
                                 clearAllForException();
-
                             }
-
-
                         }
                         else {
-
-                            if (isCellDateType == "Y") dateHoursComposed = "MM/DD/YYYY HH:mm:ss";
-                            else dateHoursComposed = dateFormat;
-
+                            if (isCellDateType == "Y") {
+                                dateHoursComposed = "MM/DD/YYYY HH:mm:ss";
+                            }
+                            else {
+                                dateHoursComposed = dateFormat;
+                            }
                             newTranscationObj[prop] = getDateValueProvider(singleTransaction[provider[prop]]);
                         }
-
-
-
                     }
-
-
-
-
                     break;
-
-
-
                 case "odometer":
                     var tmp;
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
@@ -1714,7 +1876,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     break;
 
                 case "productType":
-
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
                         newTranscationObj[prop] = getProductType(singleTransaction[provider[prop]]);
                     }
@@ -1743,22 +1904,21 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     break;
 
                 default:
-                    if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") newTranscationObj[prop] = singleTransaction[provider[prop]];
+                    if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") { newTranscationObj[prop] = singleTransaction[provider[prop]]; }
                     break;
             }
         }
-
         return newTranscationObj;
     }
 
-
-
+    /**
+     * Checks the date submitted Parses and returns the date submitted.
+     * @param {*} date The date value to parse.
+     * @returns The allowed date value.
+     */
     var getDateValueProvider = function (date) {
-
         var dateFormatted;
-
         var dateFormats = {
-
             //YYYY 0 to 39
             "id0": "YYYY-MM-DD",
             "id1": "YYYY-MM-DDTHH:mm:ss",
@@ -2051,7 +2211,8 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             "id348": "DDMMYY H.mm",
             "id349": "DDMMYY H.m",
 
-        }
+        };
+        /** Gets the dateFormats id if the input date is in the format expected otherwise throws and exception and returns null */
         function getFormat(dateInput) {
 
             for (var prop in dateFormats) {
@@ -2076,27 +2237,22 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         var formatFound = getFormat(date);
 
         if (formatFound !== null) {
-
             var offsetInNumber;
             var guessed;
-
             console.log("Offest from OS: ", moment(new Date()).utcOffset());
             console.log("offest calc from picker: ", timezoneFromPicker);
-
             guessed = moment.tz.guess();
-
-
-            if (elTimezoneCheckbox.checked) offsetInNumber = moment().tz(timezoneFromPicker).utcOffset();
-            else offsetInNumber = moment().tz(guessed).utcOffset();
-
+            if (elTimezoneCheckbox.checked) { 
+                offsetInNumber = moment().tz(timezoneFromPicker).utcOffset(); 
+            }
+            else { 
+                offsetInNumber = moment().tz(guessed).utcOffset(); 
+            }
             console.log("offset In Number taken from picker: ", offsetInNumber);
             console.log("Date not formatted: ", date);
             console.log("Format Found ",formatFound);
             dateFormatted = moment.utc(date, formatFound, true).utcOffset(offsetInNumber, true).format();
-
             console.log("dateFormatted: ", dateFormatted);
-
-
         }
         else {
             console.log("Date Format in mapping file not allowed or missing");
@@ -2107,7 +2263,9 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         return dateFormatted;
     };
 
-
+    /**
+     * Resets all state items and throws an Execution aborted exception.
+     */
     var clearAllForException = function () {
         clearFiles();
         clearFilesJson();
@@ -2120,16 +2278,31 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         elFileSelectContainerProvider.style.display = 'none';
         elJsonDropDownMenu.style.display = "none";
         throw new Error('Execution aborted');
-    }
+    };
 
+    /**
+     * Converts gallons to litres.
+     * @param {*} gallons The gallon value.
+     * @returns The litre value.
+     */
     var gallonsToLitres = function (gallons) {
         return gallons * 3.785;
     };
 
+    /**
+     * Converts miles to kilometres
+     * @param {*} miles The mile value.
+     * @returns The kilometre Value.
+     */
     var milesToKm = function (miles) {
         return miles / 0.62137;
     };
 
+    /**
+     * Gets the formatted product type value.
+     * @param {*} productType The product type.
+     * @returns The formatted product type.
+     */
     var getProductType = (productType) => {
         let pt = productType.toLowerCase().replace(' ', '');
         switch (pt) {
@@ -2164,30 +2337,25 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             //container that show the File selection
             clearFilesProvider();
             elFileSelectContainerProvider.style.display = 'block';
-
             setSelectedIndexTimezonePicker();
-
             toggleTimeZonePicker(false);
-
-
         }
         else {
 
         }
-
-
-
     };
 
-    // Function fired when user click Import,
-    // function is parsing the json file with providers
+    /**
+     * Parses the json file with providers. If the file is a valid Json file it populates the providers dropdown.
+     * @param {*} event The click event object.
+     */
     var parseJsonMapping = function (event) {
 
         event.preventDefault();
         // get the file
         var upload = document.getElementById('filesJson');
         var result;
-        var ok;
+        var isJsonFile = false;
 
         // Make sure the DOM element exists
         if (upload) {
@@ -2199,48 +2367,44 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     if (validateIfJsonFIle(reader.result)) {
                         result = JSON.parse(reader.result); // Parse the result into an object
                         objProviderTemplate = result;
-
-                        ok = true;
-
+                        isJsonFile = true;
                     }
                     else {
                         alert('Please select JSON files only!');
-                        ok = false;
+                        //isJsonFile = false;
                         clearFilesJson();
                     }
 
                 });
 
-                reader.readAsText(upload.files[0]); // Read the uploaded file
-                //when the load is ended, I check if file uploaded was Json file and flagged as true
-                // I build the dropdown menu 
+                // Read the uploaded file
+                reader.readAsText(upload.files[0]); 
+                // when the load is completed, check if the file is Json file and build the dropdown menu 
                 reader.addEventListener('loadend', function () {
-                    if (ok) {
-
+                    if (isJsonFile) {
                         elJsonDropDownMenu.length = 0;
                         elJsonDropDownMenu.style.display = "block";
-
                         let defaultOption = document.createElement('option');
                         defaultOption.text = 'Choose Provider';
-
                         elJsonDropDownMenu.appendChild(defaultOption);
                         elJsonDropDownMenu.selectedIndex = 0;
-
                         let option;
                         for (let i = 0; i < result.providers.length; i++) {
                             option = document.createElement('option');
                             option.text = result.providers[i].Name;
                             elJsonDropDownMenu.appendChild(option);
-
-
-
                         }
                     }
-                })
+                });
             }
         }
-    }
+    };
 
+    /**
+     * Checks if the file passed in is a Json file.
+     * @param {*} fileJsonToCheck The file to check.
+     * @returns True or False.
+     */
     var validateIfJsonFIle = function (fileJsonToCheck) {
         try {
             JSON.parse(fileJsonToCheck);
@@ -2248,13 +2412,15 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         catch (err) {
             console.log(err);
             return false;
-
         }
         return true;
-    }
+    };
 
+    /**
+     * The function that fires for the change events for each selector.
+     * It sets the environment state for each selection change.
+     */
     var showSelectorSection = function () {
-
         for (var i = 0; i < elSelector.length; i++) {
             if (elSelector[i].checked) {
                 switch (elSelector[i].id) {
@@ -2264,14 +2430,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                         clearTransactions();
                         clearTransactionsProvider();
                         elTransactionContainerProvider.style.display = 'none';
-
                         elFileJsonSelectContainer.style.display = 'block';
                         elFileSelectContainer.style.display = 'none';
                         elFileSelectContainerProvider.style.display = 'none';
                         elJsonDropDownMenu.style.display = "none";
-
                         break;
-
                     default:
                         clearFiles();
                         clearFilesJson();
@@ -2284,31 +2447,44 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                 }
             }
         }
-    }
+    };
 
-    var addBlanckColumn = function (transactionsToBeChecked) {
-        for (var i = 0; i < transactionsToBeChecked.data.length; i++) {
+    /**
+     * 
+     * @param {*} transactions An object containing the fuel transaction data (and error data which is irrelevant to this process).
+     * @returns 
+     */
+    var addBlanckColumn = function (transactions) {
+        for (var i = 0; i < transactions.data.length; i++) {
             // get Headers object as master to compare, because header cannot 
             // be empty
-            var keysHeader = Object.keys(transactionsToBeChecked.data[0]);
-            var keysTempTransaction = Object.keys(transactionsToBeChecked.data[i]);
+            var keysHeader = Object.keys(transactions.data[0]);
+            var keysTempTransaction = Object.keys(transactions.data[i]);
 
             var z = 0;
             var tempVar = z;
             for (z; z < keysHeader.length; z++) {
-                //compare the column header with the transaction column
-                //if not match I add column with key equal to Header name
+                // Compare the column header with the transaction column
+                // if not match I add column with key equal to Header name
                 // and value=null
                 if (keysHeader[z] != keysTempTransaction[tempVar]) {
-                    transactionsToBeChecked.data[i][keysHeader[z]] = "";
-                    keysTempTransaction = Object.keys(transactionsToBeChecked.data[i]);
+                    transactions.data[i][keysHeader[z]] = "";
+                    keysTempTransaction = Object.keys(transactions.data[i]);
                 }
-                else tempVar++;
+                else { tempVar++; }
             }
         }
-        return transactionsToBeChecked;
-    }
+        return transactions;
+    };
 
+    //todo understand how we combine this with uploadFile
+    /**
+     * Sends the excel file to the ExcelToJson API call and returns the data in JSON format if successful.
+     * The format file provider implementation.
+     * If successful the uploadComplete function is executed.
+     * The function is executed when the open file button is pushed. 
+     * @param {*} e 
+     */
     var uploadFileProvider = function (e) {
         //get browser timezone and set the global variale
         getTimezonePicker();
@@ -2318,7 +2494,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             alert('Please select xlsx files only!');
             clearAllForException();
         }
-
 
         toggleAlert(elAlertInfo, 'Parsing... transferring file');
         api.getSession(function (credentials) {
@@ -2333,7 +2508,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                 }
             });
 
-
             if (window.FormData) {
                 fd = new FormData();
                 xhr = new XMLHttpRequest();
@@ -2347,7 +2521,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                 xhr.addEventListener('abort', uploadFailed, false);
 
                 if (getUrl() == 'http://localhost/apiv1') {
-                    xhr.open('POST', 'https://proxy.geotab.com/apiv1')
+                    xhr.open('POST', 'https://proxy.geotab.com/apiv1');
                 }
                 else {
                     xhr.open('POST', getUrl());
@@ -2369,7 +2543,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                             clearAllForException();
                         }
 
-                        if (data['error']['message'] = "data['error']['message']");
+                        if (data['error']['message'] = "data['error']['message']") { ; }
                         {
                             console.log(data['error']['message']);
                             alert("Error importing transaction file" + "\n" + "Please check your xlsx file");
@@ -2377,7 +2551,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                         }
 
                     }
-                }
+                };
 
 
 
@@ -2387,9 +2561,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             database = credentials.database;
             toggleParse(false);
         });
-    }
-
-
+    };
 
     //function return the provider selected 
     var getTemplateProviderNameFromSelection = function () {
@@ -2397,10 +2569,9 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             return elJsonDropDownMenu.options[elJsonDropDownMenu.selectedIndex].value;
         }
         else {
-            console.log("json dropdown menu error, provider not selected")
+            console.log("json dropdown menu error, provider not selected");
         }
-
-    }
+    };
 
     var getHeadings = function getHeadings(data) {
         var headRow = data[0];
@@ -2418,13 +2589,20 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         return [];
     };
 
-    async function uploadCompleteProviderAsync(e) {
-
+    /**
+     * Provide file implementation...
+     * Executes when the excel transactions are converted to Json and the ExcelToJson call has completed.
+     * This function seems to serve as a transaction data parser and to finally set the transactions variable with the result. 
+     * It then sets the UI state ready to import the transactions.
+     * @param {XMLHttpRequest} request An XMLHttpRequest object containing the transactions
+     * @returns Nothing is returned
+     */
+    async function uploadCompleteProviderAsync(request) {
         var results;
         var headingsExtracted;
         // retrieve the name of the provider selected
         var providerSelected = getTemplateProviderNameFromSelection();
-        // retrieve the keys of the provider selected from the full template ojbect
+        // retrieve the keys of the provider selected from the full template object
         var extractedProviderTemplate = objProviderTemplate.providers.filter((provider) => provider.Name === providerSelected);
 
         unitVolumeLiters = extractedProviderTemplate[0]["unitVolumeLiters"];
@@ -2434,8 +2612,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         currencyCodeMapped = extractedProviderTemplate[0]["currencyCodeMapped"];
         isCellDateType = extractedProviderTemplate[0]["isCellDateType"];
 
-
-        results = addBlanckColumn(resultsParser(e));
+        results = addBlanckColumn(resultsParser(request));
         if (results.error) {
             toggleAlert(elAlertError, results.error.message);
             return;
@@ -2487,7 +2664,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             }
         }
 
-    }
+    };
 
     var toggleTimeZonePicker = function (toggle) {
         if (toggle) {
@@ -2506,8 +2683,8 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
 
     var timezoneCheckbox = function () {
 
-        if (elTimezoneCheckbox.checked) toggleTimeZonePicker(true);
-        else toggleTimeZonePicker(false);
+        if (elTimezoneCheckbox.checked) { toggleTimeZonePicker(true); }
+        else { toggleTimeZonePicker(false); }
     };
     /*
         async function  getCoordFromAddressProvider (location) {
@@ -2540,12 +2717,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
          */
 
         initialize: function (geotabApi, freshState, initializeCallback) {
-
-
-
-
             api = geotabApi;
-
             elContainer = document.getElementById('importFuelTransactions_fp');
             elFiles = document.getElementById('files');
             elParseButton = document.getElementById('parseButton');
@@ -2617,10 +2789,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
          * @param {object} freshState - The page state object allows access to URL, page navigation and global group filter.
          */
         focus: function (geotabApi, freshState) {
-
-
-
-
             // getting the current user to display in the UI
             geotabApi.getSession(session => {
                 //elContainer.querySelector('#importFuelTransactions_fp-user').textContent = session.userName;
@@ -2669,8 +2837,6 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
         blur: function () {
             // hide main content
             elContainer.className += 'hidden';
-
-
 
             // events
             elFiles.removeEventListener('change', fileSelected, false);
