@@ -1763,6 +1763,9 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                     if (singleTransaction[provider[prop]] != undefined && singleTransaction[provider[prop]] != "") {
                         newTranscationObj[prop] = parseFloat(singleTransaction[provider[prop]].replace(/,/g, '.'));
                     }
+                    else {
+                        newTranscationObj[prop] = null;
+                    }
                     break;
                 case "currencyCode":
                     // check if currency is defined in the template, if not check in column mapping
@@ -1864,6 +1867,12 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                             newTranscationObj[prop] = parseFloat(tmp).toFixed(1);
                         }
                     }
+                  
+                    else {
+                        if (singleTransaction[provider[prop]] == "" || singleTransaction[provider[prop]]== undefined) newTranscationObj[prop] = null;                        
+                    }
+                   
+
                     break;
 
                 case "productType":
@@ -1887,6 +1896,11 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
                             newTranscationObj[prop] = parseFloat(tmp).toFixed(1);
                         }
                     }
+                   
+                    else {
+                        if (singleTransaction[provider[prop]] == "" || singleTransaction[provider[prop]]== undefined) newTranscationObj[prop] = null;
+                    }
+                    
                     break;
 
                 default:
@@ -2236,6 +2250,7 @@ geotab.addin.addinFuelTransactionImport_fp = function () {
             }
             console.log("offset In Number taken from picker: ", offsetInNumber);
             console.log("Date not formatted: ", date);
+            console.log("Format Found ",formatFound);
             dateFormatted = moment.utc(date, formatFound, true).utcOffset(offsetInNumber, true).format();
             console.log("dateFormatted: ", dateFormatted);
         }
