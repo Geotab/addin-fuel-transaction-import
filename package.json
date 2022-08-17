@@ -1,0 +1,64 @@
+{
+  "name": "generator-addin",
+  "version": "3.4.2",
+  "description": "MyGeotab/Geotab Drive add-in generator",
+  "homepage": "https://github.com/geotab/generator-addin",
+  "author": {
+    "name": "The Geotab Team",
+    "email": "support@geotab.com",
+    "url": "https://geotab.com/sdk"
+  },
+  "files": [
+    "generators"
+  ],
+  "main": "generators/index.js",
+  "keywords": [
+    "geotab",
+    "mygeotab",
+    "drive",
+    "addin",
+    "add-in",
+    "yeoman-generator"
+  ],
+  "resolutions": {
+    "ansi-regex": "5.0.1"
+  },
+  "dependencies": {
+    "ansi-regex": "^5.0.1",
+    "camelcase": "^3.0.0",
+    "chalk": "^1.0.0",
+    "yeoman-generator": "^5.4.2",
+    "yosay": "^2.0.2"
+  },
+  "devDependencies": {
+    "mocha": "^9.1.3",
+    "yeoman-assert": "^3.1.1",
+    "yeoman-environment": "^3.8.0",
+    "yeoman-test": "^6.2.0"
+  },
+  "eslintConfig": {
+    "env": {
+      "es6": true,
+      "node": true,
+      "browser": true,
+      "mocha": true
+    },
+    "rules": {
+      "quotes": [
+        2,
+        "single"
+      ]
+    },
+    "globals": {
+      "geotab": true,
+      "dialogPolyfill": true,
+      "GeotabApi": true,
+      "rison": true
+    }
+  },
+  "repository": "https://github.com/Geotab/generator-addin",
+  "scripts": {
+    "test": "mocha test --timeout 10000"
+  },
+  "license": "Apache-2.0"
+}
