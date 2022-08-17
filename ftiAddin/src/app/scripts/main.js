@@ -3,11 +3,68 @@
  */
 geotab.addin.ftiAddin = function () {
   'use strict';
+  /** The root container. */
+  var elAddin = document.getElementById('ftiAddin');
+  /** The provider file input html reference. */
+  var elProviderFile = document.getElementById('providerFile');
+  let elProviderDropdown = document.getElementById('providerDropdown');
 
-    
-    // the root container
-    var elAddin = document.getElementById('ftiAddin');
-  
+  /**
+   * Selects the first file (if many) and enables the open file button, clears
+   * the transaction list and disables all alerts.
+   * @param {Event} e The event emitter
+   */
+    var fileSelected = function (e) {
+      let file = elProviderFile.files[0];
+      let jsonObject;
+      let reader = new FileReader();
+      reader.readAsText(file);
+      reader.addEventListener('loadend', () => {
+        //let data = reader.result;
+        jsonObject = JSON.parse(reader.result);
+        console.log(jsonObject);
+        // populate the dropdown provider list
+        elProviderDropdown.length = 0;
+        elProviderDropdown.style.display = 'block';
+        let defaultOption = document.createElement('option');
+        defaultOption.text = 'Choose Provider';
+        elProviderDropdown.appendChild(defaultOption);
+        elProviderDropdown.selectedIndex = 0;
+        let option;
+        for (let i = 0; i < jsonObject.providers.length; i++) {
+            option = document.createElement('option');
+            option.text = jsonObject.providers[i].Name;
+            elProviderDropdown.appendChild(option);
+        }
+      });
+      
+      // var jsonObject;
+      // var file;
+      // if (e.target.files) {
+      //     file = e.target.files[0];
+      // } else {
+      //     // ie9
+      //     file = { name: elFiles.value.substring(elFiles.value.lastIndexOf('\\') + 1, elFiles.length) };
+      // }
+      // if (file) {
+      //   var reader = new FileReader();
+      //   reader.addEventListener('load', function() {
+      //     jsonObject = JSON.parse(reader.result);
+      //   })
+      //     console.log('file selected...');
+      //     console.log(file.name);
+      //     console.log(jsonObject);
+      // }
+    };
+
+  function addEvents(){
+    elProviderFile.addEventListener('change', fileSelected, false);
+  }
+
+  function removeEvents(){
+    elProviderFile.removeEventListener('change', fileSelected, false);
+  }
+
   return {
     
     /**
@@ -25,6 +82,7 @@ geotab.addin.ftiAddin = function () {
       if (freshState.translate) {
         freshState.translate(elAddin || '');
       }
+      addEvents();
       // MUST call initializeCallback when done any setup
         initializeCallback();
     },
@@ -62,6 +120,7 @@ geotab.addin.ftiAddin = function () {
      * @param {object} freshState - The page state object allows access to URL, page navigation and global group filter.
     */
     blur: function () {
+      removeEvents();
       // hide main content
       elAddin.className += ' hidden';
     }

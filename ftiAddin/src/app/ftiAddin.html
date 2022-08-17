@@ -12,16 +12,39 @@
 <body>
 
   <div id="app" >
-    
       <div id="ftiAddin">
         <header class="geotabPageHeader">
-          <h1 class="geotabPageName">ftiAddin <span class="subdued">sub title</span></h1>
+          <span>
+            <h1 class="geotabPageName">Fuel Transaction Addin</h1>
+            <p>Version 2.0.0</p>
+          </span>
           <div class="pageNameSecondary">
             <h3 class="geotabSecondaryTitle">by: <span id="ftiAddin-user"></span></h3>
           </div>
+          <hr style="border-top: 3px solid #5293c6">
         </header>
+        <main>
+          <h2>Fuel Transaction Import</h2>
+          <div id="inputDiv">
+            <div>
+              <label for="providerFile">Select the configuration File: </label>
+              <input type="file" name="providerFile" id="providerFile">
+            </div>
+            <div>
+              <label for="providerDropdown">Fuel provider:</label>
+              <select name="providerDropdown" id="providerDropdown">
+                <option value="none">None selected</option>
+              </select>
+            </div>
+          </div>
+          <div id="outputDiv">
+
+          </div>
+          <div id="errorDiv">
+
+          </div>
+        </main>
       </div>
-    
   </div>
 
 </body>
