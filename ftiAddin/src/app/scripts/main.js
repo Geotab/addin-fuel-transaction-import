@@ -8,13 +8,18 @@ geotab.addin.ftiAddin = function () {
   /** The provider file input element. */
   var elProviderFile = document.getElementById('providerFile');
   let elProviderDropdown = document.getElementById('providerDropdown');
+  let elInputDiv = document.getElementById('inputDiv');
+  let elOutputDiv = document.getElementById('outputDiv');
   let elErrorDiv = document.getElementById('errorDiv');
+  let elErrorTitle = document.getElementById('errorTitle');
+  let elErrorMessage = document.getElementById('errorMessage');
 
   /**
    * Manages the provider file selection change event.
    * @param {*} event The event object.
    */
   var ProviderFileSelectionChangeEvent = async function (event) {
+    ToggleWindowDisplayState(true, false, false);
     let file = elProviderFile.files[0];
     if(file){
       var jsonObject = await GetJsonObjectFromFileAsync(file);
@@ -48,7 +53,7 @@ geotab.addin.ftiAddin = function () {
    * @param {*} providerConfiguration provider configuration json object
    */
   function PopulateProviderDropdown(providerConfiguration){
-    if(providerConfiguration){
+    if(providerConfiguration && providerConfiguration.providers){
       console.log(providerConfiguration);
       elProviderDropdown.length = 0;
       let defaultOption = document.createElement('option');
@@ -62,15 +67,28 @@ geotab.addin.ftiAddin = function () {
           elProviderDropdown.appendChild(option);
       }
     } else {
-      let alert = 'no providers found.';
-      ToggleAlert(alert);
+      let title = 'Alert';
+      let alert = 'no providers found...';
+      ToggleAlert(title, alert);
     }
   }
 
-  function ToggleAlert(alert){
-    elErrorDiv.style.display = 'block';
-    
-    elErrorDiv.innerHTML = alert;
+  /**
+   * Toggles the window display state for the 3 main sections - input, output and error.
+   * @param {Boolean} input true to display the input section.
+   * @param {Boolean} output true to display the output section.
+   * @param {Boolean} error true to display the error section.
+   */
+  function ToggleWindowDisplayState(input, output, error){
+    input ? elInputDiv.classList.remove('ftiHidden'): elInputDiv.classList.add('ftiHidden');
+    output ? elOutputDiv.classList.remove('ftiHidden'): elOutputDiv.classList.add('ftiHidden');
+    error ? elErrorDiv.classList.remove('ftiHidden'): elErrorDiv.classList.add('ftiHidden');
+  }
+
+  function ToggleAlert(title, alert){
+    ToggleWindowDisplayState(true, false, true);
+    elErrorTitle.innerText = title;
+    elErrorMessage.innerText = alert;
   }
 
   /**
@@ -103,6 +121,7 @@ geotab.addin.ftiAddin = function () {
       if (freshState.translate) {
         freshState.translate(elAddin || '');
       }
+      //ToggleWindowState(true, false, false);
       addEvents();
       // MUST call initializeCallback when done any setup
         initializeCallback();
@@ -121,13 +140,14 @@ geotab.addin.ftiAddin = function () {
     */
     focus: function (freshApi, freshState) {
       
-          // getting the current user to display in the UI
-          freshApi.getSession(session => {
-            elAddin.querySelector('#ftiAddin-user').textContent = session.userName;
-          });
+      // getting the current user to display in the UI
+      freshApi.getSession(session => {
+        elAddin.querySelector('#ftiAddin-user').textContent = session.userName;
+      });
           
+      ToggleWindowDisplayState(true, false, false);
           
-          elAddin.className = '';
+      elAddin.className = '';
       // show main content
       
     },
