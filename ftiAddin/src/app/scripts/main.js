@@ -5,64 +5,73 @@ geotab.addin.ftiAddin = function () {
   'use strict';
   /** The root container. */
   var elAddin = document.getElementById('ftiAddin');
-  /** The provider file input html reference. */
+  /** The provider file input element. */
   var elProviderFile = document.getElementById('providerFile');
   let elProviderDropdown = document.getElementById('providerDropdown');
 
   /**
-   * Selects the first file (if many) and enables the open file button, clears
-   * the transaction list and disables all alerts.
-   * @param {Event} e The event emitter
+   * Manages the provider file selection change event.
+   * @param {*} event The event object.
    */
-    var fileSelected = function (e) {
-      let file = elProviderFile.files[0];
-      let jsonObject;
+  var ProviderFileSelectionChangeEvent = async function (event) {
+    let file = elProviderFile.files[0];
+    if(file){
+      //let jsonObject = GetJsonObjectFromFileAsync(file);
+      var ojb = await GetJsonObjectFromFileAsync(file);
+      PopulateProviderDropdown(ojb);
+    }
+  };
+
+  /**
+   * Gets the json object from a file object.
+   * @param {*} fileInput file input element.
+   */
+  function GetJsonObjectFromFileAsync(file) {
+    return new Promise(function(resolve, reject){
       let reader = new FileReader();
       reader.readAsText(file);
       reader.addEventListener('loadend', () => {
-        //let data = reader.result;
-        jsonObject = JSON.parse(reader.result);
-        console.log(jsonObject);
-        // populate the dropdown provider list
-        elProviderDropdown.length = 0;
-        elProviderDropdown.style.display = 'block';
-        let defaultOption = document.createElement('option');
-        defaultOption.text = 'Choose Provider';
-        elProviderDropdown.appendChild(defaultOption);
-        elProviderDropdown.selectedIndex = 0;
-        let option;
-        for (let i = 0; i < jsonObject.providers.length; i++) {
-            option = document.createElement('option');
-            option.text = jsonObject.providers[i].Name;
-            elProviderDropdown.appendChild(option);
-        }
+        let jsonObject = JSON.parse(reader.result);
+        //PopulateProviderDropdown(jsonObject);
+        resolve(jsonObject);
       });
-      
-      // var jsonObject;
-      // var file;
-      // if (e.target.files) {
-      //     file = e.target.files[0];
-      // } else {
-      //     // ie9
-      //     file = { name: elFiles.value.substring(elFiles.value.lastIndexOf('\\') + 1, elFiles.length) };
-      // }
-      // if (file) {
-      //   var reader = new FileReader();
-      //   reader.addEventListener('load', function() {
-      //     jsonObject = JSON.parse(reader.result);
-      //   })
-      //     console.log('file selected...');
-      //     console.log(file.name);
-      //     console.log(jsonObject);
-      // }
-    };
+      //reject('Nothing returned...');
+    });
+  }
+  
 
-  function addEvents(){
-    elProviderFile.addEventListener('change', fileSelected, false);
+  /**
+   * Populates the provider dropdown from the providerConfiguration JSON object
+   * @param {*} providerConfiguration provider configuration json object
+   */
+  function PopulateProviderDropdown(providerConfiguration){
+    // if(providerConfiguration){
+      console.log(providerConfiguration);
+      elProviderDropdown.length = 0;
+      let defaultOption = document.createElement('option');
+      defaultOption.text = 'Choose Provider';
+      elProviderDropdown.appendChild(defaultOption);
+      elProviderDropdown.selectedIndex = 0;
+      let option;
+      for (let i = 0; i < providerConfiguration.providers.length; i++) {
+          option = document.createElement('option');
+          option.text = providerConfiguration.providers[i].Name;
+          elProviderDropdown.appendChild(option);
+      }
+    // }
   }
 
+  /**
+   * Wire up all events on initialisation.
+   */
+  function addEvents(){
+    elProviderFile.addEventListener('change', ProviderFileSelectionChangeEvent, false);
+  }
+  /**
+   * Decouple events on blur.
+   */
   function removeEvents(){
-    elProviderFile.removeEventListener('change', fileSelected, false);
+    elProviderFile.removeEventListener('change', ProviderFileSelectionChangeEvent, false);
   }
 
   return {
