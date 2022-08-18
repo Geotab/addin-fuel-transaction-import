@@ -1,3 +1,11 @@
-.hidden {
+.ftiHidden {
     display: none;
+}
+
+.ftiErrorDiv {
+    color: red;
+}
+
+.ftiOutputDiv {
+    color: darkblue;
 }

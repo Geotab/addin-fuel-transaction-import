@@ -8,6 +8,7 @@ geotab.addin.ftiAddin = function () {
   /** The provider file input element. */
   var elProviderFile = document.getElementById('providerFile');
   let elProviderDropdown = document.getElementById('providerDropdown');
+  let elErrorDiv = document.getElementById('errorDiv');
 
   /**
    * Manages the provider file selection change event.
@@ -16,26 +17,28 @@ geotab.addin.ftiAddin = function () {
   var ProviderFileSelectionChangeEvent = async function (event) {
     let file = elProviderFile.files[0];
     if(file){
-      //let jsonObject = GetJsonObjectFromFileAsync(file);
-      var ojb = await GetJsonObjectFromFileAsync(file);
-      PopulateProviderDropdown(ojb);
+      var jsonObject = await GetJsonObjectFromFileAsync(file);
+      PopulateProviderDropdown(jsonObject);
     }
   };
 
   /**
-   * Gets the json object from a file object.
-   * @param {*} fileInput file input element.
+   * Returns a json object from a file object.
+   * @param {*} fileInput file object.
    */
   function GetJsonObjectFromFileAsync(file) {
     return new Promise(function(resolve, reject){
-      let reader = new FileReader();
-      reader.readAsText(file);
-      reader.addEventListener('loadend', () => {
-        let jsonObject = JSON.parse(reader.result);
-        //PopulateProviderDropdown(jsonObject);
-        resolve(jsonObject);
-      });
-      //reject('Nothing returned...');
+      try {
+        let reader = new FileReader();
+        reader.readAsText(file);
+        reader.addEventListener('loadend', () => {
+          let jsonObject = JSON.parse(reader.result);
+          resolve(jsonObject);
+        });
+      }
+      catch (error) {
+        reject(error);
+      }
     });
   }
   
@@ -45,7 +48,7 @@ geotab.addin.ftiAddin = function () {
    * @param {*} providerConfiguration provider configuration json object
    */
   function PopulateProviderDropdown(providerConfiguration){
-    // if(providerConfiguration){
+    if(providerConfiguration){
       console.log(providerConfiguration);
       elProviderDropdown.length = 0;
       let defaultOption = document.createElement('option');
@@ -58,7 +61,16 @@ geotab.addin.ftiAddin = function () {
           option.text = providerConfiguration.providers[i].Name;
           elProviderDropdown.appendChild(option);
       }
-    // }
+    } else {
+      let alert = 'no providers found.';
+      ToggleAlert(alert);
+    }
+  }
+
+  function ToggleAlert(alert){
+    elErrorDiv.style.display = 'block';
+    
+    elErrorDiv.innerHTML = alert;
   }
 
   /**
