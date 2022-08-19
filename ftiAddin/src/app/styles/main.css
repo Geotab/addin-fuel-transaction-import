@@ -2,6 +2,10 @@
     display: none;
 }
 
+.ftiBlock {
+    display: block;
+}
+
 .ftiErrorDiv {
     color: red;
 }

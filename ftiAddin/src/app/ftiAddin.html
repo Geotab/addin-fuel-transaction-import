@@ -25,16 +25,27 @@
         </header>
         <main>
           <h1>Fuel Transaction Import</h1>
-          <div id="inputDiv">
-            <div>
+          <h2 class="geotabSecondaryTitle">Input Criteria</h2>
+          <div id="inputDiv" class="geotabFieldset">
+            <div class="geotabField">
               <label for="providerFile">Select the configuration File: </label>
               <input type="file" name="providerFile" id="providerFile">
             </div>
-            <div>
+            <div class="geotabField">
               <label for="providerDropdown">Fuel provider:</label>
               <select name="providerDropdown" id="providerDropdown">
                 <option value="none">None selected</option>
               </select>
+            </div>
+            <div class="geotabField">
+              <label for="importFile">Select the import File (xls): </label>
+              <input type="file" name="importFile" id="importFile">
+            </div>
+            <div class="geotabField">
+              <div class="horizontalButtonSet">
+                <button class="geotabButton">Preview</button>
+                <button class="geotabButton">Import</button>
+              </div>
             </div>
           </div>
           <div id="outputDiv" class="ftiOutputDiv ftiHidden">
