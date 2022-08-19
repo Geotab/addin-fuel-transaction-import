@@ -3,6 +3,9 @@
  */
 geotab.addin.ftiAddin = function () {
   'use strict';
+
+  const fuelTransactionParser = require('./FuelTransactionParser');
+
   /** The root container. */
   var elAddin = document.getElementById('ftiAddin');
   /** The provider file input element. */
@@ -19,6 +22,12 @@ geotab.addin.ftiAddin = function () {
   let elErrorTitle = document.getElementById('errorTitle');
   /** The error text message element */
   let elErrorMessage = document.getElementById('errorMessage');
+  /** The transaction Array list */
+  var transactions;
+
+  function ParseFuelTransaction(){
+      fuelTransactionParser.FuelTransactionParser();
+  }
 
   /**
    * Manages the provider file selection change event.
