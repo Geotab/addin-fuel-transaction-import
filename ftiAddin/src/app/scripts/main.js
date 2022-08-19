@@ -7,11 +7,17 @@ geotab.addin.ftiAddin = function () {
   var elAddin = document.getElementById('ftiAddin');
   /** The provider file input element. */
   var elProviderFile = document.getElementById('providerFile');
+  /** The fuel provider dropdown box */
   let elProviderDropdown = document.getElementById('providerDropdown');
+  /** The inputDiv section */
   let elInputDiv = document.getElementById('inputDiv');
+  /** The outputDiv section */
   let elOutputDiv = document.getElementById('outputDiv');
+  /** The errorDiv section */
   let elErrorDiv = document.getElementById('errorDiv');
+  /** The error title element */
   let elErrorTitle = document.getElementById('errorTitle');
+  /** The error text message element */
   let elErrorMessage = document.getElementById('errorMessage');
 
   /**
@@ -49,7 +55,7 @@ geotab.addin.ftiAddin = function () {
   
 
   /**
-   * Populates the provider dropdown from the providerConfiguration JSON object
+   * Populates the provider dropdown from the provider configuration JSON object
    * @param {*} providerConfiguration provider configuration json object
    */
   function PopulateProviderDropdown(providerConfiguration){
@@ -69,7 +75,7 @@ geotab.addin.ftiAddin = function () {
     } else {
       let title = 'Alert';
       let alert = 'no providers found...';
-      ToggleAlert(title, alert);
+      SetErrorDiv(title, alert);
     }
   }
 
@@ -85,7 +91,13 @@ geotab.addin.ftiAddin = function () {
     error ? elErrorDiv.classList.remove('ftiHidden'): elErrorDiv.classList.add('ftiHidden');
   }
 
-  function ToggleAlert(title, alert){
+
+  /**
+   * Sets the errorDiv title and text elements.
+   * @param {*} title The title heading text element.
+   * @param {*} alert The alert message text element.
+   */
+  function SetErrorDiv(title, alert){
     ToggleWindowDisplayState(true, false, true);
     elErrorTitle.innerText = title;
     elErrorMessage.innerText = alert;
