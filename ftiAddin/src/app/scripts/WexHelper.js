@@ -3,7 +3,7 @@
 * @param {any} productType - The WEX product type
 * @returns {any} params - The MyGeotab product type
 */
-    let getProductType = productType => {
+    let getWexProductType = productType => {
     let productCode = parseInt(productType, 10) || 0;
     switch (productCode) {
         case 21:
@@ -92,6 +92,69 @@
     }
 };
 
+/**
+ * Parse product type from code for WEX customer files
+ * @param {any} productType - The WEX prododuct type
+ * @returns {any} params - The MyGeotab product type
+ */
+    var getWexCustomerProductType = (productType) => {
+    switch (productType) {
+        // case '':
+        //     return 'NonFuel';
+        case 'UNa':
+        case 'UNb':
+        case 'UNc':
+        case 'UNL':
+        case 'UNLEADED':
+        case 'UNLALC57':
+        case 'UNLALC10':
+        case 'UNLALC77':
+            return 'Regular';
+        // case '':
+        //     return 'Midgrade';
+        case 'SUP':
+        case 'UN+':
+        case 'U+c':
+        case 'U+a':
+        case 'SUa':
+        case 'U+b':
+        case 'SUb':
+        case 'SUc':
+        case 'SUPER UN':
+        case 'UNL PLUS':
+        case 'UN+ALC57':
+        case 'UN+ALC10':
+        case 'SUPALC10':
+        case 'UN+ALC77':
+        case 'SUPALC77':
+        case 'SUPALC57':
+        case 'PREMIUM':
+        case 'UN+EADED PLUS':
+        case 'SUPER UNLEADED':
+            return 'Premium';
+        // case '':
+        //     return 'Super';
+        case 'DIESEL':
+        case 'PREM DSL':
+        case 'DSL':
+        case 'DS+':
+        case 'DSLDIESEL':
+            return 'Diesel';
+        case 'ETHANL85':
+        case 'E85':
+        case 'E85ETHANOL85':
+            return 'E85';
+        case 'CNG':
+            return 'CNG';
+        case 'PRO':
+        case 'PROPANE':
+            return 'LPG';
+        default:
+            return 'Unknown';
+    }
+};
+
 module.exports = {
-    getProductType
+    getWexProductType,
+    getWexCustomerProductType
 }

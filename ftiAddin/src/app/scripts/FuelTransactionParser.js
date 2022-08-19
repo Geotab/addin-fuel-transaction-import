@@ -1,6 +1,7 @@
     const parsers = require('./Parsers');
     const converters = require('./Converters');
     const wexHelper = require('./WexHelper');
+    const productTypeHelper = require('./ProductTypeHelper');
     /**
      * Parses the fuel transactions
      * @returns 
@@ -47,7 +48,7 @@
                                 'Wex',
                                 (parsers.getStringValue(dataRow.ColumnU) + ' ' + parsers.getStringValue(dataRow.ColumnV) + ' ' + parsers.getStringValue(dataRow.ColumnT)).trim(),
                                 JSON.stringify(rawTransaction),
-                                getProductType(parsers.getStringValue(dataRow.ColumnQ))
+                                wexHelper.getProductType(parsers.getStringValue(dataRow.ColumnQ))
                             );
 
                             fuelTransaction.fleet = parsers.getStringValue(dataRow.ColumnA);
@@ -223,67 +224,6 @@
                         return moment.tz(dateTime.replace('T', ' ').replace('Z', ''), timezoneid).toISOString();
                     };
 
-                    /**
-                     * Parse product type from code for WEX customer files
-                     * @param {any} productType - The WEX prododuct type
-                     * @returns {any} params - The MyGeotab product type
-                     */
-                    var getProductType = (productType) => {
-                        switch (productType) {
-                            // case '':
-                            //     return 'NonFuel';
-                            case 'UNa':
-                            case 'UNb':
-                            case 'UNc':
-                            case 'UNL':
-                            case 'UNLEADED':
-                            case 'UNLALC57':
-                            case 'UNLALC10':
-                            case 'UNLALC77':
-                                return 'Regular';
-                            // case '':
-                            //     return 'Midgrade';
-                            case 'SUP':
-                            case 'UN+':
-                            case 'U+c':
-                            case 'U+a':
-                            case 'SUa':
-                            case 'U+b':
-                            case 'SUb':
-                            case 'SUc':
-                            case 'SUPER UN':
-                            case 'UNL PLUS':
-                            case 'UN+ALC57':
-                            case 'UN+ALC10':
-                            case 'SUPALC10':
-                            case 'UN+ALC77':
-                            case 'SUPALC77':
-                            case 'SUPALC57':
-                            case 'PREMIUM':
-                            case 'UN+EADED PLUS':
-                            case 'SUPER UNLEADED':
-                                return 'Premium';
-                            // case '':
-                            //     return 'Super';
-                            case 'DIESEL':
-                            case 'PREM DSL':
-                            case 'DSL':
-                            case 'DS+':
-                            case 'DSLDIESEL':
-                                return 'Diesel';
-                            case 'ETHANL85':
-                            case 'E85':
-                            case 'E85ETHANOL85':
-                                return 'E85';
-                            case 'CNG':
-                                return 'CNG';
-                            case 'PRO':
-                            case 'PROPANE':
-                                return 'LPG';
-                            default:
-                                return 'Unknown';
-                        }
-                    };
 
                     // Convert spread sheet rows to Fuel Transaction objects
                     data.forEach(function (dataRow) {
@@ -310,7 +250,7 @@
                                 'WexCustomer',
                                 parsers.getStringValue(dataRow.ColumnL),
                                 JSON.stringify(rawTransaction),
-                                getProductType(parsers.getStringValue(dataRow.ColumnR))
+                                wexHelper.getWexCustomerProductType(parsers.getStringValue(dataRow.ColumnR))
                             );
 
                             fuelTransaction.address = parsers.getStringValue(dataRow.ColumnH) + ', ' + parsers.getStringValue(dataRow.ColumnI) + ', ' + parsers.getStringValue(dataRow.ColumnJ) + ', ' + parsers.getStringValue(dataRow.ColumnK);
@@ -341,36 +281,6 @@
                 });
             },
             geotab: function (headings, data) {
-                /**
-                * Parse product type from code for generic files
-                * @param {any} productType - The generic product type
-                * @returns {any} params - The MyGeotab product type
-                */
-                var getProductType = (productType) => {
-                    let pt = productType.toLowerCase().replace(' ', '');
-                    switch (pt) {
-                        case 'nonfuel':
-                            return 'NonFuel';
-                        case 'regular':
-                            return 'Regular';
-                        case 'midgrade':
-                            return 'Midgrade';
-                        case 'premium':
-                            return 'Premium';
-                        case 'super':
-                            return 'Super';
-                        case 'diesel':
-                            return 'Diesel';
-                        case 'e85':
-                            return 'E85';
-                        case 'cng':
-                            return 'CNG';
-                        case 'lpg':
-                            return 'LPG';
-                        default:
-                            return 'Unknown';
-                    }
-                };
 
                 return new Promise(function (resolve) {
                     var transactionList = [];
@@ -399,7 +309,7 @@
                                 'Unknown',
                                 parsers.getStringValue(dataRow.ColumnM),
                                 JSON.stringify(rawTransaction),
-                                getProductType(parsers.getStringValue(dataRow.ColumnN))
+                                productTypeHelper.getProductType(parsers.getStringValue(dataRow.ColumnN))
                             );
 
                             fuelTransaction.fleet = parsers.getStringValue(database);
