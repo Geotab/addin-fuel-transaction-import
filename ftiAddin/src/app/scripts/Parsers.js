@@ -52,7 +52,7 @@ var parseDateValue = function (date) {
         return fromStringDateUtc.toISOString();
     }
 
-    return fromOADate(getFloatValue(date)).toISOString();
+    return fromOADate(parseFloatValue(date)).toISOString();
 };
 
 module.exports = {

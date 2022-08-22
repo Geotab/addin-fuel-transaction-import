@@ -382,3 +382,21 @@
 
         return self;
     };
+
+    var getHeadings = function (data) {
+        var headRow = data[0];
+        var isHeadingRow = true;
+        Object.keys(headRow).forEach(function (columName) {
+            if (!isNaN(parseInt(columName, 10))) {
+                isHeadingRow = false;
+            }
+        });
+        if (isHeadingRow) {
+            return data.shift();
+        }
+        return [];
+    };
+
+    module.exports = {
+        getHeadings
+    }
