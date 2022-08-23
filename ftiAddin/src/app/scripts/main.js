@@ -43,6 +43,13 @@ geotab.addin.ftiAddin = function () {
   };
 
   /**
+   * clears the fuel provider dropdown when the config file selection receives the focus.
+   */
+  function ProviderFileFocusEvent() {
+    InitialiseProviderDropdown('None selected');
+  }
+
+  /**
    * Returns a json object from a file object.
    * @param {*} fileInput file object.
    */
@@ -62,6 +69,13 @@ geotab.addin.ftiAddin = function () {
     });
   }
   
+  function InitialiseProviderDropdown(text){
+    elProviderDropdown.length = 0;
+    let defaultOption = document.createElement('option');
+    defaultOption.text = text;
+    elProviderDropdown.appendChild(defaultOption);
+    elProviderDropdown.selectedIndex = 0;
+  }
 
   /**
    * Populates the provider dropdown from the provider configuration JSON object
@@ -69,12 +83,7 @@ geotab.addin.ftiAddin = function () {
    */
   function PopulateProviderDropdown(providerConfiguration){
     if(providerConfiguration && providerConfiguration.providers){
-      console.log(providerConfiguration);
-      elProviderDropdown.length = 0;
-      let defaultOption = document.createElement('option');
-      defaultOption.text = 'Choose Provider';
-      elProviderDropdown.appendChild(defaultOption);
-      elProviderDropdown.selectedIndex = 0;
+      InitialiseProviderDropdown('Choose provider');
       let option;
       for (let i = 0; i < providerConfiguration.providers.length; i++) {
           option = document.createElement('option');
@@ -117,12 +126,15 @@ geotab.addin.ftiAddin = function () {
    */
   function addEvents(){
     elProviderFile.addEventListener('change', ProviderFileSelectionChangeEvent, false);
+    elProviderFile.addEventListener('focus', ProviderFileFocusEvent, false);
   }
+
   /**
    * Decouple events on blur.
    */
   function removeEvents(){
     elProviderFile.removeEventListener('change', ProviderFileSelectionChangeEvent, false);
+    elProviderFile.removeEventListener('focus', ProviderFileFocusEvent, false);
   }
 
   return {
