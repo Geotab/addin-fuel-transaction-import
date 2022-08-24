@@ -52,8 +52,8 @@ geotab.addin.ftiAddin = function () {
     toggleWindowDisplayState(true, false, false);
     let file = elProviderFile.files[0];
     if(file){
-      providerConfigFile = await getJsonObjectFromFileAsync(file);
-      populateProviderDropdown(providerConfigFile);
+      providerConfigurationFile = await getJsonObjectFromFileAsync(file);
+      populateProviderDropdown(providerConfigurationFile);
     }
   };
 
@@ -113,7 +113,17 @@ geotab.addin.ftiAddin = function () {
   }
 
   async function providerDropdownOnchangeEvent(event){
-
+    console.log(providerConfigurationFile);
+    console.log(event);
+    var selectedIndex = elProviderDropdown.selectedIndex;
+    console.log(selectedIndex);
+    var selectedValue = elProviderDropdown.options[elProviderDropdown.selectedIndex].value;
+    console.log(selectedValue);
+    var dropdownItemCount = elProviderDropdown.length;
+    console.log(dropdownItemCount);
+    if (selectedIndex != '0') {
+      console.log('Index selected: ' + selectedIndex);
+    }
   }
 
   /**
@@ -166,7 +176,7 @@ geotab.addin.ftiAddin = function () {
   function addEvents(){
     elProviderFile.addEventListener('change', providerFileSelectionChangeEvent, false);
     elProviderFile.addEventListener('focus', providerFileFocusEvent, false);
-    elProviderDropdown.addEventListener('onchange', providerDropdownOnchangeEvent, false);
+    elProviderDropdown.addEventListener('change', providerDropdownOnchangeEvent, false);
     elPreviewButton.addEventListener('click', preview, false);
   }
 
@@ -176,6 +186,8 @@ geotab.addin.ftiAddin = function () {
   function removeEvents(){
     elProviderFile.removeEventListener('change', providerFileSelectionChangeEvent, false);
     elProviderFile.removeEventListener('focus', providerFileFocusEvent, false);
+    elProviderDropdown.removeEventListener('change', providerDropdownOnchangeEvent, false);
+    elPreviewButton.removeEventListener('click', preview, false);
   }
 
   return {
