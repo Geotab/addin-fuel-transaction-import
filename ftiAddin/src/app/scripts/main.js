@@ -6,6 +6,7 @@ geotab.addin.ftiAddin = function () {
 
   const fuelTransactionParser = require('./FuelTransactionParser');
   const fileOperations = require('./FileOperations');
+  const parsers = require('./Parsers');
 
   let api;
   /** The root container. */
@@ -132,15 +133,19 @@ geotab.addin.ftiAddin = function () {
   async function preview() {
     let file = elImportFile.files[0];
     fileOperations.uploadFilePromise(api, file)
-    .then (function(request) {
+    .then (request => {
       console.log('completed file upload...');
-      fileOperations.uploadCompletePromise(request);
+      return fileOperations.uploadCompletePromise(request);
     })
-    .then (() => {
+    .then (results => {
       console.log('time to process the results...');
+      console.log('results: ' + results.data[0]['ColumnA']);      
+      console.log('results: ' + results.data[1]['ColumnA']);      
+      var headings = parsers.getHeadings(results.data);
+      console.log(headings);
     })
-    .catch (function(error) {
-      console.log('failed file upload...');
+    .catch (error => {
+      console.log('Preview process error experienced:');
       console.log(error);
     });
   }

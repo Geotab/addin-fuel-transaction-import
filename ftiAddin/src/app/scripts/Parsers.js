@@ -81,38 +81,58 @@ var parseDateValue = function (date) {
     };
 };
 
-    /**
-     * todo: Not clear why this was in the existing release - add the documentation for this later if used.
-     * @param {*} transactions An object containing the fuel transaction data (and error data which is irrelevant to this process).
-     * @returns 
-     */
-         var addBlanckColumn = function (transactions) {
-            for (var i = 0; i < transactions.data.length; i++) {
-                // get Headers object as master to compare, because header cannot 
-                // be empty
-                var keysHeader = Object.keys(transactions.data[0]);
-                var keysTempTransaction = Object.keys(transactions.data[i]);
-    
-                var z = 0;
-                var tempVar = z;
-                for (z; z < keysHeader.length; z++) {
-                    // Compare the column header with the transaction column
-                    // if not match I add column with key equal to Header name
-                    // and value=null
-                    if (keysHeader[z] != keysTempTransaction[tempVar]) {
-                        transactions.data[i][keysHeader[z]] = '';
-                        keysTempTransaction = Object.keys(transactions.data[i]);
-                    }
-                    else { tempVar++; }
+/**
+ * Gets the headings from the transaction data
+ * @param {*} data 
+ * @returns 
+ */
+function getHeadings(data) {
+    var headRow = data[0];
+    var isHeadingRow = true;
+    Object.keys(headRow).forEach(function (columName) {
+        if (!isNaN(parseInt(columName, 10))) {
+            isHeadingRow = false;
+        }
+    });
+    if (isHeadingRow) {
+        return data.shift();
+    }
+    return [];
+};
+
+/**
+ * todo: Not clear why this was in the existing release - add the documentation for this later if used.
+ * @param {*} transactions An object containing the fuel transaction data (and error data which is irrelevant to this process).
+ * @returns 
+ */
+        var addBlanckColumn = function (transactions) {
+        for (var i = 0; i < transactions.data.length; i++) {
+            // get Headers object as master to compare, because header cannot 
+            // be empty
+            var keysHeader = Object.keys(transactions.data[0]);
+            var keysTempTransaction = Object.keys(transactions.data[i]);
+
+            var z = 0;
+            var tempVar = z;
+            for (z; z < keysHeader.length; z++) {
+                // Compare the column header with the transaction column
+                // if not match I add column with key equal to Header name
+                // and value=null
+                if (keysHeader[z] != keysTempTransaction[tempVar]) {
+                    transactions.data[i][keysHeader[z]] = '';
+                    keysTempTransaction = Object.keys(transactions.data[i]);
                 }
+                else { tempVar++; }
             }
-            return transactions;
-        };
+        }
+        return transactions;
+    };
 
 module.exports = {
     parseStringValue,
     parseFloatValue,
     parseDateValue,
     resultsParser,
+    getHeadings,
     addBlanckColumn
 }

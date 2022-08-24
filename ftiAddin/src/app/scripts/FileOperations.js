@@ -52,7 +52,7 @@ function uploadFilePromise (api, file) {
  * This function seems to serve as a transaction data parser and to finally set the transactions variable with the result. 
  * It then sets the UI state ready to import the transactions.
  * @param {XMLHttpRequest} request An XMLHttpRequest object containing the transactions
- * @returns Nothing is returned
+ * @returns {Promise} A promise is returned
  */
 function uploadCompletePromise(request) {
     return new Promise((resolve, reject) => {
