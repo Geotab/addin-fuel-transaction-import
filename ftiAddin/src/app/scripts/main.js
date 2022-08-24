@@ -22,6 +22,10 @@ geotab.addin.ftiAddin = function () {
   let elErrorTitle = document.getElementById('errorTitle');
   /** The error text message element */
   let elErrorMessage = document.getElementById('errorMessage');
+  /** The preview button */
+  let elPreviewButton = document.getElementById('previewButton');
+  /** The import button */
+  let elImportButton = document.getElementById('importButton');
   /** The transaction Array list */
   var transactions;
 
@@ -33,27 +37,27 @@ geotab.addin.ftiAddin = function () {
    * Manages the provider file selection change event.
    * @param {*} event The event object.
    */
-  var ProviderFileSelectionChangeEvent = async function (event) {
-    ToggleWindowDisplayState(true, false, false);
+  var providerFileSelectionChangeEvent = async function (event) {
+    toggleWindowDisplayState(true, false, false);
     let file = elProviderFile.files[0];
     if(file){
-      var jsonObject = await GetJsonObjectFromFileAsync(file);
-      PopulateProviderDropdown(jsonObject);
+      var jsonObject = await getJsonObjectFromFileAsync(file);
+      populateProviderDropdown(jsonObject);
     }
   };
 
   /**
    * clears the fuel provider dropdown when the config file selection receives the focus.
    */
-  function ProviderFileFocusEvent() {
-    InitialiseProviderDropdown('None selected');
+  function providerFileFocusEvent() {
+    initialiseProviderDropdown('None selected');
   }
 
   /**
    * Returns a json object from a file object.
    * @param {*} fileInput file object.
    */
-  function GetJsonObjectFromFileAsync(file) {
+  function getJsonObjectFromFileAsync(file) {
     return new Promise(function(resolve, reject){
       try {
         let reader = new FileReader();
@@ -69,7 +73,7 @@ geotab.addin.ftiAddin = function () {
     });
   }
   
-  function InitialiseProviderDropdown(text){
+  function initialiseProviderDropdown(text){
     elProviderDropdown.length = 0;
     let defaultOption = document.createElement('option');
     defaultOption.text = text;
@@ -81,9 +85,9 @@ geotab.addin.ftiAddin = function () {
    * Populates the provider dropdown from the provider configuration JSON object
    * @param {*} providerConfiguration provider configuration json object
    */
-  function PopulateProviderDropdown(providerConfiguration){
+  function populateProviderDropdown(providerConfiguration){
     if(providerConfiguration && providerConfiguration.providers){
-      InitialiseProviderDropdown('Choose provider');
+      initialiseProviderDropdown('Choose provider');
       let option;
       for (let i = 0; i < providerConfiguration.providers.length; i++) {
           option = document.createElement('option');
@@ -93,7 +97,7 @@ geotab.addin.ftiAddin = function () {
     } else {
       let title = 'Alert';
       let alert = 'no providers found...';
-      SetErrorDiv(title, alert);
+      setErrorDiv(title, alert);
     }
   }
 
@@ -103,7 +107,7 @@ geotab.addin.ftiAddin = function () {
    * @param {Boolean} output true to display the output section.
    * @param {Boolean} error true to display the error section.
    */
-  function ToggleWindowDisplayState(input, output, error){
+  function toggleWindowDisplayState(input, output, error){
     input ? elInputDiv.classList.remove('ftiHidden'): elInputDiv.classList.add('ftiHidden');
     output ? elOutputDiv.classList.remove('ftiHidden'): elOutputDiv.classList.add('ftiHidden');
     error ? elErrorDiv.classList.remove('ftiHidden'): elErrorDiv.classList.add('ftiHidden');
@@ -115,26 +119,31 @@ geotab.addin.ftiAddin = function () {
    * @param {*} title The title heading text element.
    * @param {*} alert The alert message text element.
    */
-  function SetErrorDiv(title, alert){
-    ToggleWindowDisplayState(true, false, true);
+  function setErrorDiv(title, alert) {
+    toggleWindowDisplayState(true, false, true);
     elErrorTitle.innerText = title;
     elErrorMessage.innerText = alert;
+  }
+
+  async function Preview() {
+
   }
 
   /**
    * Wire up all events on initialisation.
    */
   function addEvents(){
-    elProviderFile.addEventListener('change', ProviderFileSelectionChangeEvent, false);
-    elProviderFile.addEventListener('focus', ProviderFileFocusEvent, false);
+    elProviderFile.addEventListener('change', providerFileSelectionChangeEvent, false);
+    elProviderFile.addEventListener('focus', providerFileFocusEvent, false);
+    elPreviewButton.addEventListener('click', Preview, false);
   }
 
   /**
    * Decouple events on blur.
    */
   function removeEvents(){
-    elProviderFile.removeEventListener('change', ProviderFileSelectionChangeEvent, false);
-    elProviderFile.removeEventListener('focus', ProviderFileFocusEvent, false);
+    elProviderFile.removeEventListener('change', providerFileSelectionChangeEvent, false);
+    elProviderFile.removeEventListener('focus', providerFileFocusEvent, false);
   }
 
   return {
@@ -178,7 +187,7 @@ geotab.addin.ftiAddin = function () {
         elAddin.querySelector('#ftiAddin-user').textContent = session.userName;
       });
           
-      ToggleWindowDisplayState(true, false, false);
+      toggleWindowDisplayState(true, false, false);
           
       elAddin.className = '';
       // show main content
