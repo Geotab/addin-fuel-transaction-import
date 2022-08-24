@@ -5,7 +5,9 @@ geotab.addin.ftiAddin = function () {
   'use strict';
 
   const fuelTransactionParser = require('./FuelTransactionParser');
+  const fileOperations = require('./FileOperations');
 
+  let api;
   /** The root container. */
   var elAddin = document.getElementById('ftiAddin');
   /** The provider file input element. */
@@ -26,6 +28,8 @@ geotab.addin.ftiAddin = function () {
   let elPreviewButton = document.getElementById('previewButton');
   /** The import button */
   let elImportButton = document.getElementById('importButton');
+  /** The import file input element */
+  let elImportFile = document.getElementById('importFile');
   /** The transaction Array list */
   var transactions;
 
@@ -125,8 +129,17 @@ geotab.addin.ftiAddin = function () {
     elErrorMessage.innerText = alert;
   }
 
-  async function Preview() {
-
+  async function preview() {
+    let file = elImportFile.files[0];
+    fileOperations.uploadFilePromise(api, file)
+    .then(function(request) {
+      console.log('completed file upload...');
+      fileOperations.uploadCompletePromise(request);
+    })
+    .catch(function(error) {
+      console.log('failed file upload...');
+      console.log(error);
+    });
   }
 
   /**
@@ -135,7 +148,7 @@ geotab.addin.ftiAddin = function () {
   function addEvents(){
     elProviderFile.addEventListener('change', providerFileSelectionChangeEvent, false);
     elProviderFile.addEventListener('focus', providerFileFocusEvent, false);
-    elPreviewButton.addEventListener('click', Preview, false);
+    elPreviewButton.addEventListener('click', preview, false);
   }
 
   /**
@@ -159,6 +172,8 @@ geotab.addin.ftiAddin = function () {
      *        for display to the user.
      */
     initialize: function (freshApi, freshState, initializeCallback) {
+      // set the global api reference.
+      api = freshApi;
       // Loading translations if available
       if (freshState.translate) {
         freshState.translate(elAddin || '');
