@@ -31,8 +31,14 @@ geotab.addin.ftiAddin = function () {
   let elImportButton = document.getElementById('importButton');
   /** The import file input element */
   let elImportFile = document.getElementById('importFile');
-  /** The transaction Array list */
-  var transactions;
+  /** The provider configuration file */
+  let providerConfigurationFile;
+  /** The provider configuration object */
+  var providerConfiguration;
+  /** The excel transactions */
+  var transactionsExcel;
+  /** The json transactions */
+  var transactionsJson;
 
   function ParseFuelTransaction(){
       fuelTransactionParser.FuelTransactionParser();
@@ -46,8 +52,8 @@ geotab.addin.ftiAddin = function () {
     toggleWindowDisplayState(true, false, false);
     let file = elProviderFile.files[0];
     if(file){
-      var jsonObject = await getJsonObjectFromFileAsync(file);
-      populateProviderDropdown(jsonObject);
+      providerConfigFile = await getJsonObjectFromFileAsync(file);
+      populateProviderDropdown(providerConfigFile);
     }
   };
 
@@ -106,6 +112,10 @@ geotab.addin.ftiAddin = function () {
     }
   }
 
+  async function providerDropdownOnchangeEvent(event){
+
+  }
+
   /**
    * Toggles the window display state for the 3 main sections - input, output and error.
    * @param {Boolean} input true to display the input section.
@@ -134,13 +144,13 @@ geotab.addin.ftiAddin = function () {
     let file = elImportFile.files[0];
     fileOperations.uploadFilePromise(api, file)
     .then (request => {
-      console.log('completed file upload...');
+      console.log('File upload completed...');
       return fileOperations.uploadCompletePromise(request);
     })
     .then (results => {
-      console.log('time to process the results...');
-      console.log('results: ' + results.data[0]['ColumnA']);      
-      console.log('results: ' + results.data[1]['ColumnA']);      
+      console.log('Process the results...');
+      // console.log('results: ' + results.data[0]['ColumnA']);      
+      // console.log('results: ' + results.data[1]['ColumnA']);      
       var headings = parsers.getHeadings(results.data);
       console.log(headings);
     })
@@ -156,6 +166,7 @@ geotab.addin.ftiAddin = function () {
   function addEvents(){
     elProviderFile.addEventListener('change', providerFileSelectionChangeEvent, false);
     elProviderFile.addEventListener('focus', providerFileFocusEvent, false);
+    elProviderDropdown.addEventListener('onchange', providerDropdownOnchangeEvent, false);
     elPreviewButton.addEventListener('click', preview, false);
   }
 
