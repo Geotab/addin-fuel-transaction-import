@@ -132,11 +132,14 @@ geotab.addin.ftiAddin = function () {
   async function preview() {
     let file = elImportFile.files[0];
     fileOperations.uploadFilePromise(api, file)
-    .then(function(request) {
+    .then (function(request) {
       console.log('completed file upload...');
       fileOperations.uploadCompletePromise(request);
     })
-    .catch(function(error) {
+    .then (() => {
+      console.log('time to process the results...');
+    })
+    .catch (function(error) {
       console.log('failed file upload...');
       console.log(error);
     });

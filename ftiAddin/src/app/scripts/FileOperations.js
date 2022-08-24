@@ -55,10 +55,21 @@ function uploadFilePromise (api, file) {
  * @returns Nothing is returned
  */
 function uploadCompletePromise(request) {
-    console.log('in uploadCompletePromise...');
-    var result = parsers.resultsParser(request);
-    console.log(request);
-    console.log(result);
+    return new Promise((resolve, reject) => {
+        console.log('in uploadCompletePromise...');
+        console.log(request);
+        var results = parsers.resultsParser(request);
+        console.log(results);
+        //var newResult = parsers.addBlanckColumn(result);
+        if (results.error) {
+            reject(results.error.message);
+        }
+        else if (results.data.length == 1) {
+            reject('The file doesn\'t contain any transactions');
+        }
+        console.log(results.data);
+        resolve(results);
+    });
 };
 
 module.exports = {
