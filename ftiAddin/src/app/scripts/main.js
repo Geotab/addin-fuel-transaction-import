@@ -64,6 +64,7 @@ geotab.addin.ftiAddin = function () {
    * Clears the fuel provider dropdown when the config file selection receives the focus.
    */
   function providerFileFocusEvent() {
+    toggleWindowDisplayState(true, false, false);
     initialiseProviderDropdown('None selected');
   }
 
@@ -124,6 +125,7 @@ geotab.addin.ftiAddin = function () {
    * @param {Event} event The event object.
    */
   async function providerDropdownChangeEvent(event) {
+    toggleWindowDisplayState(true, false, false);
     let element = event.target;
     // console.log(providerConfigurationFile);
     var selectedIndex = element.selectedIndex;
@@ -177,8 +179,16 @@ geotab.addin.ftiAddin = function () {
     elErrorMessage.innerText = alert;
   }
 
-  async function parse() {
+  /**
+   * The parse button click event.
+   */
+  async function parseClickEvent() {
+    // Check initial state.
     let file = elImportFile.files[0];
+    if(!file)
+    {
+      setErrorDiv('File Not Found', 'Please select an import file.');
+    }
     fileOperations.uploadFilePromise(api, file)
       .then(request => {
         console.log('File upload completed...');
@@ -204,7 +214,7 @@ geotab.addin.ftiAddin = function () {
     elProviderFile.addEventListener('change', providerFileSelectionChangeEvent, false);
     elProviderFile.addEventListener('focus', providerFileFocusEvent, false);
     elProviderDropdown.addEventListener('change', providerDropdownChangeEvent, false);
-    elParseButton.addEventListener('click', parse, false);
+    elParseButton.addEventListener('click', parseClickEvent, false);
   }
 
   /**
@@ -214,7 +224,7 @@ geotab.addin.ftiAddin = function () {
     elProviderFile.removeEventListener('change', providerFileSelectionChangeEvent, false);
     elProviderFile.removeEventListener('focus', providerFileFocusEvent, false);
     elProviderDropdown.removeEventListener('change', providerDropdownChangeEvent, false);
-    elParseButton.removeEventListener('click', parse, false);
+    elParseButton.removeEventListener('click', parseClickEvent, false);
   }
 
   return {
