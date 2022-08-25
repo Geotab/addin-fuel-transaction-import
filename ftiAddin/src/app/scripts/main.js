@@ -246,6 +246,7 @@ geotab.addin.ftiAddin = function () {
     elProviderFile.removeEventListener('focus', providerFileFocusEvent, false);
     elProviderDropdown.removeEventListener('change', providerDropdownChangeEvent, false);
     elParseButton.removeEventListener('click', parseClickEvent, false);
+    elImportFile.removeEventListener('focus', importFileFocusEvent, false);
   }
 
   return {
