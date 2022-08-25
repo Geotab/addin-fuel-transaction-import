@@ -35,6 +35,8 @@ geotab.addin.ftiAddin = function () {
   let providerConfigurationFile;
   /** The provider configuration object */
   let providerConfiguration;
+  /** The excel file containing the transactions to be imported */
+  let importFile;
   /** The excel transactions */
   var transactionsExcel;
   /** The json transactions */
@@ -148,7 +150,7 @@ geotab.addin.ftiAddin = function () {
     if (providerConfigurationFile) {
       console.log('providerConfigurationFile: ' + providerConfigurationFile);
       // sets the providerConfiguration array to the providerName
-      providerConfiguration = providerConfigurationFile.providers.filter(provider => 
+      providerConfiguration = providerConfigurationFile.providers.filter(provider =>
         provider.Name === providerName
       );
     }
@@ -180,16 +182,27 @@ geotab.addin.ftiAddin = function () {
   }
 
   /**
+   * Initialises the global importFile variable.
+   */
+  function getImportFile() {
+    if (elImportFile) {
+      importFile = elImportFile.files[0];
+    } else {
+      setErrorDiv('No import file selected', 'Please select an import file prior to this operation.');
+    }
+  }
+
+  /**
    * The parse button click event.
    */
   async function parseClickEvent() {
+    getImportFile();
     // Check initial state.
-    let file = elImportFile.files[0];
-    if(!file)
-    {
+    if (!importFile) {
       setErrorDiv('File Not Found', 'Please select an import file.');
+      return;
     }
-    fileOperations.uploadFilePromise(api, file)
+    fileOperations.uploadFilePromise(api, importFile)
       .then(request => {
         console.log('File upload completed...');
         return fileOperations.uploadCompletePromise(request);
@@ -208,6 +221,13 @@ geotab.addin.ftiAddin = function () {
   }
 
   /**
+   * Resets the window state when the import file input receives the focus.
+   */
+  function importFileFocusEvent() {
+    toggleWindowDisplayState(true, false, false);
+  }
+
+  /**
    * Wire up all events on initialisation.
    */
   function addEvents() {
@@ -215,6 +235,7 @@ geotab.addin.ftiAddin = function () {
     elProviderFile.addEventListener('focus', providerFileFocusEvent, false);
     elProviderDropdown.addEventListener('change', providerDropdownChangeEvent, false);
     elParseButton.addEventListener('click', parseClickEvent, false);
+    elImportFile.addEventListener('focus', importFileFocusEvent, false);
   }
 
   /**
