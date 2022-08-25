@@ -13,8 +13,73 @@ function FuelTransactionParser(transactions, headings, dateFormat) {
   });
 }
 
-async function validateProviderConfiguration(provider){
-    
+/**
+ * Validates the providerConfiguration. The validation rules are:
+ * 1. A device identifier:
+ * - device (default null) - if null, best attempt will be auto matched to a device based on vehicleIdentificationNumber, serialNumber, licencePlate or comments properties.
+ * - licencePlate (default = empty string)
+ * - serialNumber (default = empty string)
+ * - vehicleIdentificationNumber (default = empty string)
+ * - description (default = empty string)
+ * - comments (default = empty string)
+ * 2. dateTime - The UTC date and time of the transaction.
+ * 3. volume - The volume of fuel purchased in Liters. Default [0].
+ * 4. cost - The cost of the fuel transaction. Default [0].
+ * 5. currencyCode - The three digit ISO 427 currency code (http://www.xe.com/iso4217.php). Default ['USD'].
+ * @param {*} providerConfiguration A single item array containing a JsonObject with the provider configuration.
+ */
+function validateProviderConfiguration(providerConfiguration) {
+
+  var output = {
+    isValid: false,
+    reason: ''
+  };
+
+  //device identifier validation
+  if (providerConfiguration['device']) {
+    output.isValid = true;
+  } else {
+    if (
+      providerConfiguration['licencePlate'] ||
+      providerConfiguration['serialNumber'] ||
+      providerConfiguration['vehicleIdentificationNumber'] ||
+      providerConfiguration['description'] ||
+      providerConfiguration['comments']) {
+      output.isValid = true;
+    } else {
+      output.isValid = false;
+      output.reason = 'No device identifier defined.';
+      return output;
+    };
+  }
+
+  //dateTime validation
+  if (!providerConfiguration['dateTime']) {
+    output.isValid = false;
+    output.reason = 'No date and time defined.';
+    return output;
+  }
+
+  //volume validation
+  if (!providerConfiguration['volume']) {
+    output.isValid = false;
+    output.reason = 'No volume defined.';
+    return output;
+  }
+
+  //cost validation
+  if (!providerConfiguration['cost']) {
+    output.isValid = false;
+    output.reason = 'No cost defined.';
+    return output;
+  }
+
+  //currencyCode validation
+  if (!providerConfiguration['currencyCode']) {
+    output.isValid = false;
+    output.reason = 'No currency code defined.';
+    return output;
+  }
 }
 
 /**
@@ -57,10 +122,10 @@ async function parseTransactionAsync(transaction, provider) {
           transaction[provider['serialNumber']] == undefined
         ) {
           console.log('One of Licence Plate or Vin or Serial Number is needed');
-        //   window.alert(
-        //     'Licence Plate, VIN and Serial Number are not present, at least one must be filled'
-        //   );
-        //   clearAllForException();
+          //   window.alert(
+          //     'Licence Plate, VIN and Serial Number are not present, at least one must be filled'
+          //   );
+          //   clearAllForException();
         }
       }
     }
@@ -224,13 +289,13 @@ async function parseTransactionAsync(transaction, provider) {
             currencyCodeMapped = currencyCodeMapped.replace(/[^a-zA-Z]/g, '');
 
             if (!cc.codes().includes(currencyCodeMapped.toUpperCase())) {
-            //   window.alert(
-            //     'Invalid format for currency: ' +
-            //       currencyCodeMapped +
-            //       '\n' +
-            //       ' Please follow ISO 4217 3-letter standard for representing currency. Eg: USD'
-            //   );
-            //   clearAllForException();
+              //   window.alert(
+              //     'Invalid format for currency: ' +
+              //       currencyCodeMapped +
+              //       '\n' +
+              //       ' Please follow ISO 4217 3-letter standard for representing currency. Eg: USD'
+              //   );
+              //   clearAllForException();
             } else {
               newTranscationObj[prop] = currencyCodeMapped;
             }
@@ -292,13 +357,13 @@ async function parseTransactionAsync(transaction, provider) {
               }
               newTranscationObj[prop] = getDateValueProvider(
                 transaction[provider[prop][0]] +
-                  ' ' +
-                  transaction[provider[prop][1]]
+                ' ' +
+                transaction[provider[prop][1]]
               );
             } else {
               console.log('Date Fields are empty or invalid');
-            //   window.alert('Date Fields are empty or invalid');
-            //   clearAllForException();
+              //   window.alert('Date Fields are empty or invalid');
+              //   clearAllForException();
             }
           } else {
             if (isCellDateType == 'Y') {
@@ -396,5 +461,6 @@ async function parseTransactionAsync(transaction, provider) {
 }
 
 module.exports = {
+  validateProviderConfiguration,
   FuelTransactionParser,
 };

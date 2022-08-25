@@ -209,6 +209,10 @@ geotab.addin.ftiAddin = function () {
       })
       .then(results => {
         console.log('Process the results...');
+        var result = fuelTransactionParser.validateProviderConfiguration(providerConfiguration[0]);
+        console.log('validation result, isValid: ' + result.isValid);
+        console.log('validation result, reason: ' + result.reason);
+        //console.log(result);
         // console.log('results: ' + results.data[0]['ColumnA']);      
         // console.log('results: ' + results.data[1]['ColumnA']);      
         var headings = parsers.getHeadings(results.data);
@@ -268,8 +272,9 @@ geotab.addin.ftiAddin = function () {
       if (freshState.translate) {
         freshState.translate(elAddin || '');
       }
-      //ToggleWindowState(true, false, false);
+      // ToggleWindowState(true, false, false);
       addEvents();
+
       // MUST call initializeCallback when done any setup
       initializeCallback();
     },
