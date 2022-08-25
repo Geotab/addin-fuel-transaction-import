@@ -26,7 +26,7 @@ geotab.addin.ftiAddin = function () {
   /** The error text message element */
   let elErrorMessage = document.getElementById('errorMessage');
   /** The preview button */
-  let elPreviewButton = document.getElementById('previewButton');
+  let elParseButton = document.getElementById('parseButton');
   /** The import button */
   let elImportButton = document.getElementById('importButton');
   /** The import file input element */
@@ -34,14 +34,17 @@ geotab.addin.ftiAddin = function () {
   /** The provider configuration file */
   let providerConfigurationFile;
   /** The provider configuration object */
-  var providerConfiguration;
+  let providerConfiguration;
   /** The excel transactions */
   var transactionsExcel;
   /** The json transactions */
   var transactionsJson;
 
-  function ParseFuelTransaction(){
-      fuelTransactionParser.FuelTransactionParser();
+  /**
+   * todo: add the documentation when ready.
+   */
+  function ParseFuelTransaction() {
+    fuelTransactionParser.FuelTransactionParser();
   }
 
   /**
@@ -51,14 +54,14 @@ geotab.addin.ftiAddin = function () {
   var providerFileSelectionChangeEvent = async function (event) {
     toggleWindowDisplayState(true, false, false);
     let file = elProviderFile.files[0];
-    if(file){
+    if (file) {
       providerConfigurationFile = await getJsonObjectFromFileAsync(file);
       populateProviderDropdown(providerConfigurationFile);
     }
   };
 
   /**
-   * clears the fuel provider dropdown when the config file selection receives the focus.
+   * Clears the fuel provider dropdown when the config file selection receives the focus.
    */
   function providerFileFocusEvent() {
     initialiseProviderDropdown('None selected');
@@ -66,10 +69,10 @@ geotab.addin.ftiAddin = function () {
 
   /**
    * Returns a json object from a file object.
-   * @param {*} fileInput file object.
+   * @param {*} file The file object.
    */
   function getJsonObjectFromFileAsync(file) {
-    return new Promise(function(resolve, reject){
+    return new Promise(function (resolve, reject) {
       try {
         let reader = new FileReader();
         reader.readAsText(file);
@@ -83,27 +86,31 @@ geotab.addin.ftiAddin = function () {
       }
     });
   }
-  
-  function initialiseProviderDropdown(text){
+
+  /**
+   * Initialises the provider dropdown box.
+   * @param {string} defaultOptionText The default option text to display.
+   */
+  function initialiseProviderDropdown(defaultOptionText) {
     elProviderDropdown.length = 0;
     let defaultOption = document.createElement('option');
-    defaultOption.text = text;
+    defaultOption.text = defaultOptionText;
     elProviderDropdown.appendChild(defaultOption);
     elProviderDropdown.selectedIndex = 0;
   }
 
   /**
    * Populates the provider dropdown from the provider configuration JSON object
-   * @param {*} providerConfiguration provider configuration json object
+   * @param {jsonObject} providerConfigurationFile The provider configuration file.
    */
-  function populateProviderDropdown(providerConfiguration){
-    if(providerConfiguration && providerConfiguration.providers){
+  function populateProviderDropdown(providerConfigurationFile) {
+    if (providerConfigurationFile && providerConfigurationFile.providers) {
       initialiseProviderDropdown('Choose provider');
       let option;
-      for (let i = 0; i < providerConfiguration.providers.length; i++) {
-          option = document.createElement('option');
-          option.text = providerConfiguration.providers[i].Name;
-          elProviderDropdown.appendChild(option);
+      for (let i = 0; i < providerConfigurationFile.providers.length; i++) {
+        option = document.createElement('option');
+        option.text = providerConfigurationFile.providers[i].Name;
+        elProviderDropdown.appendChild(option);
       }
     } else {
       let title = 'Alert';
@@ -114,23 +121,36 @@ geotab.addin.ftiAddin = function () {
 
   /**
    * The value change event for the provider dropdown selector.
-   * @param {*} event 
+   * @param {Event} event The event object.
    */
   async function providerDropdownChangeEvent(event) {
     let element = event.target;
-    console.log(providerConfigurationFile);
-    console.log(event);
+    // console.log(providerConfigurationFile);
     var selectedIndex = element.selectedIndex;
-    // var selectedIndex = elProviderDropdown.selectedIndex;
-    console.log('selected index: ' + selectedIndex);
+    // console.log('selected index: ' + selectedIndex);
     var selectedValue = element.value;
-    //var selectedValue = elProviderDropdown.options[elProviderDropdown.selectedIndex].value;
-    console.log('selected value: ' + selectedValue);
-    var dropdownItemCount = elProviderDropdown.length;
-    console.log(dropdownItemCount);
+    // console.log('selected value (providerName): ' + selectedValue);
+    // Don't allow selection of the zero indexed item = Choose provider
     if (selectedIndex != '0') {
-      console.log('Index selected: ' + selectedIndex);
+      setProviderConfigurationVariable(selectedValue);
     }
+  }
+
+  /**
+   * Sets the providerConfiguration variable to an array of the providerName supplied.
+   * @param {string} providerName The provider name.
+   */
+  function setProviderConfigurationVariable(providerName) {
+    console.log('providerName: ' + providerName);
+    console.log('providerConfiguration before update: ' + providerConfiguration);
+    if (providerConfigurationFile) {
+      console.log('providerConfigurationFile: ' + providerConfigurationFile);
+      // sets the providerConfiguration array to the providerName
+      providerConfiguration = providerConfigurationFile.providers.filter(provider => 
+        provider.Name === providerName
+      );
+    }
+    console.log('providerConfiguration selected: ' + providerConfiguration[0].Name);
   }
 
   /**
@@ -139,17 +159,17 @@ geotab.addin.ftiAddin = function () {
    * @param {Boolean} output true to display the output section.
    * @param {Boolean} error true to display the error section.
    */
-  function toggleWindowDisplayState(input, output, error){
-    input ? elInputDiv.classList.remove('ftiHidden'): elInputDiv.classList.add('ftiHidden');
-    output ? elOutputDiv.classList.remove('ftiHidden'): elOutputDiv.classList.add('ftiHidden');
-    error ? elErrorDiv.classList.remove('ftiHidden'): elErrorDiv.classList.add('ftiHidden');
+  function toggleWindowDisplayState(input, output, error) {
+    input ? elInputDiv.classList.remove('ftiHidden') : elInputDiv.classList.add('ftiHidden');
+    output ? elOutputDiv.classList.remove('ftiHidden') : elOutputDiv.classList.add('ftiHidden');
+    error ? elErrorDiv.classList.remove('ftiHidden') : elErrorDiv.classList.add('ftiHidden');
   }
 
 
   /**
    * Sets the errorDiv title and text elements.
-   * @param {*} title The title heading text element.
-   * @param {*} alert The alert message text element.
+   * @param {string} title The title heading text element.
+   * @param {string} alert The alert message text element.
    */
   function setErrorDiv(title, alert) {
     toggleWindowDisplayState(true, false, true);
@@ -157,48 +177,48 @@ geotab.addin.ftiAddin = function () {
     elErrorMessage.innerText = alert;
   }
 
-  async function preview() {
+  async function parse() {
     let file = elImportFile.files[0];
     fileOperations.uploadFilePromise(api, file)
-    .then (request => {
-      console.log('File upload completed...');
-      return fileOperations.uploadCompletePromise(request);
-    })
-    .then (results => {
-      console.log('Process the results...');
-      // console.log('results: ' + results.data[0]['ColumnA']);      
-      // console.log('results: ' + results.data[1]['ColumnA']);      
-      var headings = parsers.getHeadings(results.data);
-      console.log(headings);
-    })
-    .catch (error => {
-      console.log('Preview process error experienced:');
-      console.log(error);
-    });
+      .then(request => {
+        console.log('File upload completed...');
+        return fileOperations.uploadCompletePromise(request);
+      })
+      .then(results => {
+        console.log('Process the results...');
+        // console.log('results: ' + results.data[0]['ColumnA']);      
+        // console.log('results: ' + results.data[1]['ColumnA']);      
+        var headings = parsers.getHeadings(results.data);
+        console.log(headings);
+      })
+      .catch(error => {
+        console.log('Preview process error experienced:');
+        console.log(error);
+      });
   }
 
   /**
    * Wire up all events on initialisation.
    */
-  function addEvents(){
+  function addEvents() {
     elProviderFile.addEventListener('change', providerFileSelectionChangeEvent, false);
     elProviderFile.addEventListener('focus', providerFileFocusEvent, false);
     elProviderDropdown.addEventListener('change', providerDropdownChangeEvent, false);
-    elPreviewButton.addEventListener('click', preview, false);
+    elParseButton.addEventListener('click', parse, false);
   }
 
   /**
    * Decouple events on blur.
    */
-  function removeEvents(){
+  function removeEvents() {
     elProviderFile.removeEventListener('change', providerFileSelectionChangeEvent, false);
     elProviderFile.removeEventListener('focus', providerFileFocusEvent, false);
     elProviderDropdown.removeEventListener('change', providerDropdownChangeEvent, false);
-    elPreviewButton.removeEventListener('click', preview, false);
+    elParseButton.removeEventListener('click', parse, false);
   }
 
   return {
-    
+
     /**
      * initialize() is called only once when the Add-In is first loaded. Use this function to initialize the
      * Add-In's state such as default values or make API requests (MyGeotab or external) to ensure interface
@@ -219,7 +239,7 @@ geotab.addin.ftiAddin = function () {
       //ToggleWindowState(true, false, false);
       addEvents();
       // MUST call initializeCallback when done any setup
-        initializeCallback();
+      initializeCallback();
     },
 
     /**
@@ -234,17 +254,17 @@ geotab.addin.ftiAddin = function () {
      * @param {object} freshState - The page state object allows access to URL, page navigation and global group filter.
     */
     focus: function (freshApi, freshState) {
-      
+
       // getting the current user to display in the UI
       freshApi.getSession(session => {
         elAddin.querySelector('#ftiAddin-user').textContent = session.userName;
       });
-          
+
       toggleWindowDisplayState(true, false, false);
-          
+
       elAddin.className = '';
       // show main content
-      
+
     },
 
     /**
