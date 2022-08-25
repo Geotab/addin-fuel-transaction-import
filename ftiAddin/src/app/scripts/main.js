@@ -112,13 +112,20 @@ geotab.addin.ftiAddin = function () {
     }
   }
 
-  async function providerDropdownOnchangeEvent(event){
+  /**
+   * The value change event for the provider dropdown selector.
+   * @param {*} event 
+   */
+  async function providerDropdownChangeEvent(event) {
+    let element = event.target;
     console.log(providerConfigurationFile);
     console.log(event);
-    var selectedIndex = elProviderDropdown.selectedIndex;
-    console.log(selectedIndex);
-    var selectedValue = elProviderDropdown.options[elProviderDropdown.selectedIndex].value;
-    console.log(selectedValue);
+    var selectedIndex = element.selectedIndex;
+    // var selectedIndex = elProviderDropdown.selectedIndex;
+    console.log('selected index: ' + selectedIndex);
+    var selectedValue = element.value;
+    //var selectedValue = elProviderDropdown.options[elProviderDropdown.selectedIndex].value;
+    console.log('selected value: ' + selectedValue);
     var dropdownItemCount = elProviderDropdown.length;
     console.log(dropdownItemCount);
     if (selectedIndex != '0') {
@@ -176,7 +183,7 @@ geotab.addin.ftiAddin = function () {
   function addEvents(){
     elProviderFile.addEventListener('change', providerFileSelectionChangeEvent, false);
     elProviderFile.addEventListener('focus', providerFileFocusEvent, false);
-    elProviderDropdown.addEventListener('change', providerDropdownOnchangeEvent, false);
+    elProviderDropdown.addEventListener('change', providerDropdownChangeEvent, false);
     elPreviewButton.addEventListener('click', preview, false);
   }
 
@@ -186,7 +193,7 @@ geotab.addin.ftiAddin = function () {
   function removeEvents(){
     elProviderFile.removeEventListener('change', providerFileSelectionChangeEvent, false);
     elProviderFile.removeEventListener('focus', providerFileFocusEvent, false);
-    elProviderDropdown.removeEventListener('change', providerDropdownOnchangeEvent, false);
+    elProviderDropdown.removeEventListener('change', providerDropdownChangeEvent, false);
     elPreviewButton.removeEventListener('click', preview, false);
   }
 
