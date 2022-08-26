@@ -98,9 +98,9 @@ function validateProviderConfiguration(providerConfiguration) {
 function getConfigDefaults() {
     return {
         'unitVolumeLiters': 'Y',
-        "unitOdoKm": "Y",
-        "isCellDateType": "Y",
-        "currencyCodeMapped": "USD",
+        'unitOdoKm': 'Y',
+        'isCellDateType': 'Y',
+        'currencyCodeMapped': 'USD',
     };
 }
 
