@@ -26,6 +26,21 @@ function validateProviderConfiguration(providerConfiguration) {
         reason: ''
     };
 
+    // check for required properties
+    // Name is required
+    if (!providerConfiguration.Name){
+        output.isValid = false;
+        output.reason = 'A provider name is required.';
+        return output;
+    }
+
+    // dateFormat is required
+    if (!providerConfiguration.dateFormat){
+        output.isValid = false;
+        output.reason = 'The dateFormat property is required.';
+        return output;
+    }
+
     //device identifier validation
     if (providerConfiguration.data['device']) {
         output.isValid = true;
@@ -87,6 +102,14 @@ function getConfigDefaults() {
         "isCellDateType": "Y",
         "currencyCodeMapped": "USD",
     };
+}
+
+/**
+ * Checks the configuration for any problems like:
+ * - missing required 
+ */
+function parseConfiguration(){
+
 }
 
 module.exports = {

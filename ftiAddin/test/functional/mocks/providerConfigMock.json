@@ -136,6 +136,65 @@
             "ColumnA"
           ]
         }
+      },
+      {
+        "Name": "",
+        "unitVolumeLiters": "Y",
+        "unitOdoKm": "Y",
+        "isCellDateType": "N",
+        "dateFormat": "DD/MM/YYYY",
+        "timeFormat": "",
+        "currencyCodeMapped": "USD",
+        "data": {
+          "serialNumber": "ColumnI",
+          "cost": "ColumnN",
+          "currencyCode": "ColumnO",
+          "dateTime": [
+            "ColumnP",
+            "ColumnA"
+          ],
+          "odometer": "ColumnQ",
+          "volume": "ColumnS"
+        }
+      },
+      {
+        "Name": "ProviderInvalid6",
+        "unitVolumeLiters": "Y",
+        "unitOdoKm": "Y",
+        "isCellDateType": "N",
+        "dateFormat": "",
+        "timeFormat": "",
+        "currencyCodeMapped": "USD",
+        "data": {
+          "serialNumber": "ColumnI",
+          "cost": "ColumnN",
+          "currencyCode": "ColumnO",
+          "dateTime": [
+            "ColumnP",
+            "ColumnA"
+          ],
+          "odometer": "ColumnQ",
+          "volume": "ColumnS"
+        }
+      },
+      {
+        "Name": "ProviderInvalid6",
+        "unitVolumeLiters": "Y",
+        "unitOdoKm": "Y",
+        "isCellDateType": "N",
+        "timeFormat": "",
+        "currencyCodeMapped": "USD",
+        "data": {
+          "serialNumber": "ColumnI",
+          "cost": "ColumnN",
+          "currencyCode": "ColumnO",
+          "dateTime": [
+            "ColumnP",
+            "ColumnA"
+          ],
+          "odometer": "ColumnQ",
+          "volume": "ColumnS"
+        }
       }
     ]
   }
