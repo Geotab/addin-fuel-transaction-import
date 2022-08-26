@@ -33,13 +33,11 @@ geotab.addin.ftiAddin = function () {
   /** The import file input element */
   let elImportFile = document.getElementById('importFile');
   /** The provider configuration file */
-  let providerConfigurationFile;
+  let configurationFile;
   /** The provider configuration object */
-  let providerConfiguration;
+  let configuration;
   /** The excel file containing the transactions to be imported */
   let importFile;
-  /** The excel transactions */
-  var transactionsExcel;
   /** The json transactions */
   var transactionsJson;
 
@@ -58,8 +56,8 @@ geotab.addin.ftiAddin = function () {
     toggleWindowDisplayState(true, false, false);
     let file = elProviderFile.files[0];
     if (file) {
-      providerConfigurationFile = await getJsonObjectFromFileAsync(file);
-      populateProviderDropdown(providerConfigurationFile);
+      configurationFile = await getJsonObjectFromFileAsync(file);
+      populateProviderDropdown(configurationFile);
     }
   };
 
@@ -147,15 +145,16 @@ geotab.addin.ftiAddin = function () {
    */
   function setProviderConfigurationVariable(providerName) {
     console.log('providerName: ' + providerName);
-    console.log('providerConfiguration before update: ' + providerConfiguration);
-    if (providerConfigurationFile) {
-      console.log('providerConfigurationFile: ' + providerConfigurationFile);
+    console.log('providerConfiguration before update: ' + configuration);
+    if (configurationFile) {
+      console.log('providerConfigurationFile: ' + configurationFile);
       // sets the providerConfiguration array to the providerName
-      providerConfiguration = providerConfigurationFile.providers.filter(provider =>
+      var configurationArray = configurationFile.providers.filter(provider =>
         provider.Name === providerName
       );
+      configuration = configurationArray[0];
     }
-    console.log('providerConfiguration selected: ' + providerConfiguration[0].Name);
+    console.log('configuration selected: ' + configuration.Name);
   }
 
   /**
@@ -203,27 +202,31 @@ geotab.addin.ftiAddin = function () {
       setErrorDiv('File Not Found', 'Please select an import file.');
       return;
     }
+
+    // Execute the pasing process - starts with the excel process
     excelHelper.convertExcelToJsonPromise(api, importFile)
       .then(request => {
-        // console.log('File upload completed...');
-        let results = excelHelper.parseTransactions(request);
-        return results;
+        // set the global transactions variable
+        transactionsJson = excelHelper.parseTransactions(request);
+        return transactionsJson;
       })
       .then(results => {
-        console.log('Process the results...');
-        var result = configHelper.validateConfiguration(providerConfiguration[0]);
+        // validate the configuration data
+        var result = configHelper.validateConfiguration(configuration);
         console.log('validation result, isValid: ' + result.isValid);
         console.log('validation result, reason: ' + result.reason);
-        if(result.isValid){
-          // successful...perform next step
-        } else {
+        if(result.isValid === false){
           setErrorDiv('Configuration File Validation Problem', result.reason)
+          return;
         }
+        // parse the configuration defaults
+        configHelper.parseConfigDefaults(configuration);
+        console.log(configuration);
         //console.log(result);
         // console.log('results: ' + results.data[0]['ColumnA']);      
         // console.log('results: ' + results.data[1]['ColumnA']);      
-        var headings = parsers.getHeadings(results.data);
-        console.log(headings);
+        // var headings = parsers.getHeadings(results.data);
+        // console.log(headings);
       })
       .catch(error => {
         console.log('Preview process error experienced:');
