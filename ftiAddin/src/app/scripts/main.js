@@ -209,7 +209,7 @@ geotab.addin.ftiAddin = function () {
       })
       .then(results => {
         console.log('Process the results...');
-        var result = fuelTransactionParser.validateProviderConfiguration(providerConfiguration[0]);
+        var result = fuelTransactionParser.validateProviderConfiguration(providerConfiguration[0].data);
         console.log('validation result, isValid: ' + result.isValid);
         console.log('validation result, reason: ' + result.reason);
         //console.log(result);
