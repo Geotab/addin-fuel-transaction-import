@@ -52,12 +52,12 @@
       },
       {
         "Name": "ProviderInvalid1",
-        "unitVolumeLiters": "Y",
-        "unitOdoKm": "Y",
-        "isCellDateType": "N",
+        "unitVolumeLiters": "",
+        "unitOdoKm": "",
+        "isCellDateType": "",
         "dateFormat": "DD/MM/YYYY",
         "timeFormat": "HH:mm:ss",
-        "currencyCodeMapped": "USD",
+        "currencyCodeMapped": "",
         "data": {
           "cost": "ColumnN",
           "currencyCode": "ColumnO",

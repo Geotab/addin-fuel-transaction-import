@@ -3,11 +3,10 @@ const parsers = require('./Parsers');
 
 /**
  * Sends the excel file to the ExcelToJson API call and returns the data in JSON format if successful.
- * If successful the uploadComplete function is executed.
- * The function is executed when the open file button is pushed. 
- * @param {*} api 
+ * @param {GeotabApi} The Geotab api.
+ * @param {File} The file object.
  */
-function uploadFilePromise (api, file) {
+function convertExcelToJsonPromise (api, file) {
     return new Promise((resolve, reject) => {
 
         api.getSession(function (credentials) {
@@ -28,7 +27,6 @@ function uploadFilePromise (api, file) {
 
                 fd.append('JSON-RPC', parameters);
                 fd.append('fileToUpload', file);
-                //fd.append('fileToUpload', elFiles.files[0]);
 
                 // upload completed
                 xhr.addEventListener('load', resolve, false);
@@ -46,19 +44,45 @@ function uploadFilePromise (api, file) {
     });
 };
 
+
 /**
- * Provide file implementation...
- * Executes when the excel transactions are converted to Json and the ExcelToJson call has completed.
- * This function seems to serve as a transaction data parser and to finally set the transactions variable with the result. 
- * It then sets the UI state ready to import the transactions.
- * @param {XMLHttpRequest} request An XMLHttpRequest object containing the transactions
- * @returns {Promise} A promise is returned
+ * Parses an xhr (XMLHttpRequest) request response.
+ * If successful the data object will contain the imported JSON formatted configuration file.
+ * @param {XMLHttpRequest} request The XMLHttpRequest object.
+ * @returns An object containing two properties: data and error. The data property contains the JSON formatted configuration data and the error property contains any errors that might have occurred during importing.
  */
-function uploadCompletePromise(request) {
+ var resultsParser = function (request) {
+    var jsonResponse,
+        data,
+        error;
+    if (request.target && request.target.responseText.length > 0) {
+        jsonResponse = JSON.parse(request.target.responseText);
+        if (!jsonResponse.error) {
+            data = jsonResponse.result;
+        } else {
+            error = jsonResponse.error;
+        }
+    }
+    else {
+        error = { message: 'No data' };
+    }
+    return {
+        error: error,
+        data: data
+    };
+};
+
+/**
+ * Executes when the excel transactions are converted to Json and the ExcelToJson call has completed.
+ * This function serves as a transaction data parser and to finally set the transactions variable with the result. 
+ * @param {XMLHttpRequest} request A request containing the transactions in json format.
+ * @returns A the parsed json transaction results or any errors encountered.
+ */
+function parseTransactions(request) {
     return new Promise((resolve, reject) => {
         console.log('in uploadCompletePromise...');
         console.log(request);
-        var results = parsers.resultsParser(request);
+        var results = resultsParser(request);
         console.log(results);
         //var newResult = parsers.addBlanckColumn(result);
         if (results.error) {
@@ -73,6 +97,6 @@ function uploadCompletePromise(request) {
 };
 
 module.exports = {
-    uploadFilePromise,
-    uploadCompletePromise
+    convertExcelToJsonPromise,
+    parseTransactions
 }

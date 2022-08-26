@@ -4,7 +4,7 @@
  */
 
 /**
- * Validates the providerConfiguration. 
+ * Validates the provider configuration object. 
  * The required properties are:
  * 1. A device identifier:
  * - device (default null) - if null, best attempt will be auto matched to a device based on vehicleIdentificationNumber, serialNumber, licencePlate or comments properties.
@@ -17,9 +17,9 @@
  * 3. volume - The volume of fuel purchased in Liters. Default [0].
  * 4. cost - The cost of the fuel transaction. Default [0].
  * 5. currencyCode - The three digit ISO 427 currency code (http://www.xe.com/iso4217.php). Default ['USD'].
- * @param {*} providerConfiguration A single item array containing a JsonObject with the provider configuration.
+ * @param {*} configuration A single item array containing a JsonObject with the provider configuration.
  */
-function validateProviderConfiguration(providerConfiguration) {
+function validateConfiguration(configuration) {
 
     var output = {
         isValid: false,
@@ -28,29 +28,29 @@ function validateProviderConfiguration(providerConfiguration) {
 
     // check for required properties
     // Name is required
-    if (!providerConfiguration.Name){
+    if (!configuration.Name) {
         output.isValid = false;
         output.reason = 'A provider name is required.';
         return output;
     }
 
     // dateFormat is required
-    if (!providerConfiguration.dateFormat){
+    if (!configuration.dateFormat) {
         output.isValid = false;
         output.reason = 'The dateFormat property is required.';
         return output;
     }
 
     //device identifier validation
-    if (providerConfiguration.data['device']) {
+    if (configuration.data['device']) {
         output.isValid = true;
     } else {
         if (
-            providerConfiguration.data['licencePlate'] ||
-            providerConfiguration.data['serialNumber'] ||
-            providerConfiguration.data['vehicleIdentificationNumber'] ||
-            providerConfiguration.data['description'] ||
-            providerConfiguration.data['comments']) {
+            configuration.data['licencePlate'] ||
+            configuration.data['serialNumber'] ||
+            configuration.data['vehicleIdentificationNumber'] ||
+            configuration.data['description'] ||
+            configuration.data['comments']) {
             output.isValid = true;
         } else {
             output.isValid = false;
@@ -60,28 +60,28 @@ function validateProviderConfiguration(providerConfiguration) {
     }
 
     //dateTime validation
-    if (!providerConfiguration.data['dateTime']) {
+    if (!configuration.data['dateTime']) {
         output.isValid = false;
         output.reason = 'No date and time defined.';
         return output;
     }
 
     //volume validation
-    if (!providerConfiguration.data['volume']) {
+    if (!configuration.data['volume']) {
         output.isValid = false;
         output.reason = 'No volume defined.';
         return output;
     }
 
     //cost validation
-    if (!providerConfiguration.data['cost']) {
+    if (!configuration.data['cost']) {
         output.isValid = false;
         output.reason = 'No cost defined.';
         return output;
     }
 
     //currencyCode validation
-    if (!providerConfiguration.data['currencyCode']) {
+    if (!configuration.data['currencyCode']) {
         output.isValid = false;
         output.reason = 'No currency code defined.';
         return output;
@@ -91,28 +91,33 @@ function validateProviderConfiguration(providerConfiguration) {
     return output;
 }
 
-/**
- * The configuration file defaults
- * @returns {JsonObject} Config file default values.
- */
-function getConfigDefaults() {
-    return {
-        'unitVolumeLiters': 'Y',
-        'unitOdoKm': 'Y',
-        'isCellDateType': 'Y',
-        'currencyCodeMapped': 'USD',
-    };
-}
+const configDefaults = {
+    'unitVolumeLiters': 'Y',
+    'unitOdoKm': 'Y',
+    'isCellDateType': 'Y',
+    'currencyCodeMapped': 'USD',
+};
 
 /**
- * Checks the configuration for any problems like:
- * - missing required 
+ * Parses the configuration for any missing property values and applies the default where necessary.
  */
-function parseConfiguration(){
-
+function parseConfigDefaults(configuration) {
+    if (configuration['unitVolumeLiters'] !== 'Y' || configuration['unitVolumeLiters'] !== 'N') {
+        configuration['unitVolumeLiters'] = configDefaults.unitVolumeLiters;
+    }
+    if (configuration['unitOdoKm'] !== 'Y' || configuration['unitOdoKm'] !== 'N') {
+        configuration['unitOdoKm'] = configDefaults.unitOdoKm;
+    }
+    if (configuration['isCellDateType'] !== 'Y' || configuration['isCellDateType'] !== 'N') {
+        configuration['isCellDateType'] = configDefaults.isCellDateType;
+    }
+    if (configuration['currencyCodeMapped'].length !== 3) {
+        configuration['currencyCodeMapped'] = configDefaults.currencyCodeMapped;
+    }
 }
 
 module.exports = {
-    validateProviderConfiguration,
-    getConfigDefaults,
+    validateConfiguration,
+    configDefaults,
+    parseConfigDefaults,
 };

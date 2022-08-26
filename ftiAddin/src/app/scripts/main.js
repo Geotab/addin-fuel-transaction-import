@@ -6,7 +6,7 @@ geotab.addin.ftiAddin = function () {
 
   const fuelTransactionParser = require('./FuelTransactionParser');
   const configHelper = require('./ConfigHelper');
-  const fileOperations = require('./FileOperations');
+  const excelHelper = require('./ExcelHelper');
   const parsers = require('./Parsers');
 
   let api;
@@ -203,14 +203,15 @@ geotab.addin.ftiAddin = function () {
       setErrorDiv('File Not Found', 'Please select an import file.');
       return;
     }
-    fileOperations.uploadFilePromise(api, importFile)
+    excelHelper.convertExcelToJsonPromise(api, importFile)
       .then(request => {
-        console.log('File upload completed...');
-        return fileOperations.uploadCompletePromise(request);
+        // console.log('File upload completed...');
+        let results = excelHelper.parseTransactions(request);
+        return results;
       })
       .then(results => {
         console.log('Process the results...');
-        var result = configHelper.validateProviderConfiguration(providerConfiguration[0]);
+        var result = configHelper.validateConfiguration(providerConfiguration[0]);
         console.log('validation result, isValid: ' + result.isValid);
         console.log('validation result, reason: ' + result.reason);
         if(result.isValid){

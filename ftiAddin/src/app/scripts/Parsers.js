@@ -56,32 +56,6 @@ var parseDateValue = function (date) {
 };
 
 /**
- * Parses an xhr response text to confirm it is valid Json format.
- * @param {XMLHttpRequest} request The XMLHttpRequest object.
- * @returns An object containing two properties: data and error. The data property contains the JSON data and the error property contains any errors that might have occurred.
- */
-    var resultsParser = function (request) {
-    var jsonResponse,
-        data,
-        error;
-    if (request.target && request.target.responseText.length > 0) {
-        jsonResponse = JSON.parse(request.target.responseText);
-        if (!jsonResponse.error) {
-            data = jsonResponse.result;
-        } else {
-            error = jsonResponse.error;
-        }
-    }
-    else {
-        error = { message: 'No data' };
-    }
-    return {
-        error: error,
-        data: data
-    };
-};
-
-/**
  * Gets the headings from the transaction data
  * @param {*} data 
  * @returns 
@@ -132,7 +106,6 @@ module.exports = {
     parseStringValue,
     parseFloatValue,
     parseDateValue,
-    resultsParser,
     getHeadings,
     addBlanckColumn
 }
