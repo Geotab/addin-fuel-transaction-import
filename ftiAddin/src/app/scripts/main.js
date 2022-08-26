@@ -26,7 +26,11 @@ geotab.addin.ftiAddin = function () {
   let elErrorTitle = document.getElementById('errorTitle');
   /** The error text message element */
   let elErrorMessage = document.getElementById('errorMessage');
-  /** The preview button */
+  /** The output title element */
+  let elOutputTitle = document.getElementById('outputTitle');
+  /** The output message element */
+  let elOutputMessage = document.getElementById('outputMessage');
+  /** The parse button */
   let elParseButton = document.getElementById('parseButton');
   /** The import button */
   let elImportButton = document.getElementById('importButton');
@@ -117,7 +121,7 @@ geotab.addin.ftiAddin = function () {
     } else {
       let title = 'Alert';
       let alert = 'no providers found...';
-      setErrorDiv(title, alert);
+      setErrorDisplay(title, alert);
     }
   }
 
@@ -169,16 +173,26 @@ geotab.addin.ftiAddin = function () {
     error ? elErrorDiv.classList.remove('ftiHidden') : elErrorDiv.classList.add('ftiHidden');
   }
 
-
   /**
    * Sets the errorDiv title and text elements.
    * @param {string} title The title heading text element.
-   * @param {string} alert The alert message text element.
+   * @param {string} message The error message text element.
    */
-  function setErrorDiv(title, alert) {
-    toggleWindowDisplayState(true, false, true);
+  function setErrorDisplay(title, message) {
     elErrorTitle.innerText = title;
-    elErrorMessage.innerText = alert;
+    elErrorMessage.innerText = message;
+    toggleWindowDisplayState(true, false, true);
+  }
+
+  /**
+   * Sets the outputDiv title and message elements.
+   * @param {*} title The title
+   * @param {*} message The message
+   */
+  function setOutputDisplay(title, message){
+    elOutputTitle.innerText = title;
+    elOutputMessage.innerText = message;
+    toggleWindowDisplayState(true, true, false);
   }
 
   /**
@@ -188,7 +202,7 @@ geotab.addin.ftiAddin = function () {
     if (elImportFile) {
       importFile = elImportFile.files[0];
     } else {
-      setErrorDiv('No import file selected', 'Please select an import file prior to this operation.');
+      setErrorDisplay('No import file selected', 'Please select an import file prior to this operation.');
     }
   }
 
@@ -199,7 +213,7 @@ geotab.addin.ftiAddin = function () {
     getImportFile();
     // Check initial state.
     if (!importFile) {
-      setErrorDiv('File Not Found', 'Please select an import file.');
+      setErrorDisplay('File Not Found', 'Please select an import file.');
       return;
     }
 
@@ -216,12 +230,13 @@ geotab.addin.ftiAddin = function () {
         console.log('validation result, isValid: ' + result.isValid);
         console.log('validation result, reason: ' + result.reason);
         if(result.isValid === false){
-          setErrorDiv('Configuration File Validation Problem', result.reason)
+          setErrorDisplay('Configuration File Validation Problem', result.reason)
           return;
         }
         // parse the configuration defaults
         configHelper.parseConfigDefaults(configuration);
-        console.log(configuration);
+        //console.log(configuration);
+        setOutputDisplay('Ready for Import', 'The config and import files have been set up ready for the import operation. Hit the Import button to execute the import process.');
         //console.log(result);
         // console.log('results: ' + results.data[0]['ColumnA']);      
         // console.log('results: ' + results.data[1]['ColumnA']);      
