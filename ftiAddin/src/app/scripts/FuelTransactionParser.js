@@ -36,15 +36,15 @@ function validateProviderConfiguration(providerConfiguration) {
   };
 
   //device identifier validation
-  if (providerConfiguration['device']) {
+  if (providerConfiguration.data['device']) {
     output.isValid = true;
   } else {
     if (
-      providerConfiguration['licencePlate'] ||
-      providerConfiguration['serialNumber'] ||
-      providerConfiguration['vehicleIdentificationNumber'] ||
-      providerConfiguration['description'] ||
-      providerConfiguration['comments']) {
+      providerConfiguration.data['licencePlate'] ||
+      providerConfiguration.data['serialNumber'] ||
+      providerConfiguration.data['vehicleIdentificationNumber'] ||
+      providerConfiguration.data['description'] ||
+      providerConfiguration.data['comments']) {
       output.isValid = true;
     } else {
       output.isValid = false;
@@ -54,32 +54,35 @@ function validateProviderConfiguration(providerConfiguration) {
   }
 
   //dateTime validation
-  if (!providerConfiguration['dateTime']) {
+  if (!providerConfiguration.data['dateTime']) {
     output.isValid = false;
     output.reason = 'No date and time defined.';
     return output;
   }
 
   //volume validation
-  if (!providerConfiguration['volume']) {
+  if (!providerConfiguration.data['volume']) {
     output.isValid = false;
     output.reason = 'No volume defined.';
     return output;
   }
 
   //cost validation
-  if (!providerConfiguration['cost']) {
+  if (!providerConfiguration.data['cost']) {
     output.isValid = false;
     output.reason = 'No cost defined.';
     return output;
   }
 
   //currencyCode validation
-  if (!providerConfiguration['currencyCode']) {
+  if (!providerConfiguration.data['currencyCode']) {
     output.isValid = false;
     output.reason = 'No currency code defined.';
     return output;
   }
+
+  // final successful return if all require properties are present
+  return output;
 }
 
 /**
