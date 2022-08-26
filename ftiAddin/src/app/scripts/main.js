@@ -213,6 +213,11 @@ geotab.addin.ftiAddin = function () {
         var result = configHelper.validateProviderConfiguration(providerConfiguration[0]);
         console.log('validation result, isValid: ' + result.isValid);
         console.log('validation result, reason: ' + result.reason);
+        if(result.isValid){
+          // successful...perform next step
+        } else {
+          setErrorDiv('Configuration File Validation Problem', result.reason)
+        }
         //console.log(result);
         // console.log('results: ' + results.data[0]['ColumnA']);      
         // console.log('results: ' + results.data[1]['ColumnA']);      

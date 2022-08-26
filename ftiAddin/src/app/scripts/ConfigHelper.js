@@ -54,7 +54,7 @@ function validateProviderConfiguration(providerConfiguration) {
             output.isValid = true;
         } else {
             output.isValid = false;
-            output.reason = 'No device identifier defined.';
+            output.reason = 'No device identifier has been defined.';
             return output;
         };
     }
