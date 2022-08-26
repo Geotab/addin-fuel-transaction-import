@@ -1,4 +1,9 @@
 /**
+ * Configuration file helper module.
+ * @module ConfigHelper
+ */
+
+/**
  * Validates the providerConfiguration. 
  * The required properties are:
  * 1. A device identifier:
@@ -14,64 +19,77 @@
  * 5. currencyCode - The three digit ISO 427 currency code (http://www.xe.com/iso4217.php). Default ['USD'].
  * @param {*} providerConfiguration A single item array containing a JsonObject with the provider configuration.
  */
- function validateProviderConfiguration(providerConfiguration) {
+function validateProviderConfiguration(providerConfiguration) {
 
     var output = {
-      isValid: false,
-      reason: ''
+        isValid: false,
+        reason: ''
     };
-  
+
     //device identifier validation
     if (providerConfiguration.data['device']) {
-      output.isValid = true;
-    } else {
-      if (
-        providerConfiguration.data['licencePlate'] ||
-        providerConfiguration.data['serialNumber'] ||
-        providerConfiguration.data['vehicleIdentificationNumber'] ||
-        providerConfiguration.data['description'] ||
-        providerConfiguration.data['comments']) {
         output.isValid = true;
-      } else {
-        output.isValid = false;
-        output.reason = 'No device identifier defined.';
-        return output;
-      };
+    } else {
+        if (
+            providerConfiguration.data['licencePlate'] ||
+            providerConfiguration.data['serialNumber'] ||
+            providerConfiguration.data['vehicleIdentificationNumber'] ||
+            providerConfiguration.data['description'] ||
+            providerConfiguration.data['comments']) {
+            output.isValid = true;
+        } else {
+            output.isValid = false;
+            output.reason = 'No device identifier defined.';
+            return output;
+        };
     }
-  
+
     //dateTime validation
     if (!providerConfiguration.data['dateTime']) {
-      output.isValid = false;
-      output.reason = 'No date and time defined.';
-      return output;
+        output.isValid = false;
+        output.reason = 'No date and time defined.';
+        return output;
     }
-  
+
     //volume validation
     if (!providerConfiguration.data['volume']) {
-      output.isValid = false;
-      output.reason = 'No volume defined.';
-      return output;
+        output.isValid = false;
+        output.reason = 'No volume defined.';
+        return output;
     }
-  
+
     //cost validation
     if (!providerConfiguration.data['cost']) {
-      output.isValid = false;
-      output.reason = 'No cost defined.';
-      return output;
+        output.isValid = false;
+        output.reason = 'No cost defined.';
+        return output;
     }
-  
+
     //currencyCode validation
     if (!providerConfiguration.data['currencyCode']) {
-      output.isValid = false;
-      output.reason = 'No currency code defined.';
-      return output;
+        output.isValid = false;
+        output.reason = 'No currency code defined.';
+        return output;
     }
-  
+
     // final successful return if all require properties are present
     return output;
-  }
+}
 
-  module.exports = {
-    validateProviderConfiguration
-  };
-  
+/**
+ * The configuration file defaults
+ * @returns {JsonObject} Config file default values.
+ */
+function getConfigDefaults() {
+    return {
+        'unitVolumeLiters': 'Y',
+        "unitOdoKm": "Y",
+        "isCellDateType": "Y",
+        "currencyCodeMapped": "USD",
+    };
+}
+
+module.exports = {
+    validateProviderConfiguration,
+    getConfigDefaults,
+};
