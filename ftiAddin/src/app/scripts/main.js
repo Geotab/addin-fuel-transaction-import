@@ -5,6 +5,7 @@ geotab.addin.ftiAddin = function () {
   'use strict';
 
   const fuelTransactionParser = require('./FuelTransactionParser');
+  const providerHelper = require('./ProviderHelper');
   const fileOperations = require('./FileOperations');
   const parsers = require('./Parsers');
 
@@ -209,7 +210,7 @@ geotab.addin.ftiAddin = function () {
       })
       .then(results => {
         console.log('Process the results...');
-        var result = fuelTransactionParser.validateProviderConfiguration(providerConfiguration[0].data);
+        var result = providerHelper/providerHelper.validateProviderConfiguration(providerConfiguration[0]);
         console.log('validation result, isValid: ' + result.isValid);
         console.log('validation result, reason: ' + result.reason);
         //console.log(result);
