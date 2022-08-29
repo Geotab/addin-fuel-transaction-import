@@ -11,24 +11,26 @@
 
 <body>
 
-  <div id="app" >
-      <div id="ftiAddin">
-        <header class="geotabPageHeader">
-          <span>
-            <h1 class="geotabPageName">Fuel Transaction Addin</h1>
-            <p>Version 4.0.0</p>
-          </span>
-          <div class="pageNameSecondary">
-            <h3 class="geotabSecondaryTitle">by: <span id="ftiAddin-user"></span></h3>
-          </div>
-          <hr style="border-top: 3px solid #5293c6">
-        </header>
-        <main>
+  <div id="app">
+    <div id="ftiAddin">
+      <header class="geotabPageHeader">
+        <span>
+          <h1 class="geotabPageName">Fuel Transaction Addin</h1>
+          <p>Version 4.0.0</p>
+        </span>
+        <div class="pageNameSecondary">
+          <h3 class="geotabSecondaryTitle">by: <span id="ftiAddin-user"></span></h3>
+        </div>
+        <hr style="border-top: 3px solid #5293c6">
+      </header>
+      <main>
+        <div id="parentDiv" class="ftiParentDiv">
           <h2 class="geotabPageName">Input Criteria</h2>
-          <div id="inputDiv" class="geotabFieldset">
+          <div id="inputDiv">
+            <!-- <div id="inputDiv" class="geotabFieldset ftiInputDiv"> -->
             <div class="geotabField">
-              <label for="providerFile">Select the configuration File: </label>
-              <input type="file" name="providerFile" id="providerFile">
+              <label for="providerFile">Select the configuration File (JSON): </label>
+              <input type="file" name="providerFile" id="providerFile" accept=".json">
             </div>
             <div class="geotabField">
               <label for="providerDropdown">Fuel provider:</label>
@@ -37,8 +39,8 @@
               </select>
             </div>
             <div class="geotabField">
-              <label for="importFile">Select the import File (xls): </label>
-              <input type="file" name="importFile" id="importFile">
+              <label for="importFile">Select the import File (XLS, XLSX, XLT, CSV): </label>
+              <input type="file" name="importFile" id="importFile" accept=".xls,.xlsx,.xlt,.csv">
             </div>
             <div class="geotabField">
               <button id="parseButton" class="geotabButton">Parse</button>
@@ -49,17 +51,19 @@
             </div>
             <div class="geotabField">
               <button id="importButton" class="geotabButton">Import</button>
-            </div>          </div>
-          <div id="outputDiv" class="ftiOutputDiv ftiHidden">
+            </div>
+          </div>
+          <div id="outputDiv" class="ftiOutputDiv">
             <h1 id="outputTitle">Output</h1>
             <p id="outputMessage">This is output.</p>
           </div>
-          <div id="errorDiv" class="ftiErrorDiv ftiHidden">
+          <div id="errorDiv" class="ftiErrorDiv">
             <h1 id="errorTitle"></h1>
             <p id="errorMessage"></p>
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
+    </div>
   </div>
 
 </body>
