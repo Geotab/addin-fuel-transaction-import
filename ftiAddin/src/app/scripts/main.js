@@ -4,10 +4,11 @@
 geotab.addin.ftiAddin = function () {
   'use strict';
 
-  const fuelTransactionParser = require('./FuelTransactionParser');
   const configHelper = require('./ConfigHelper');
   const excelHelper = require('./ExcelHelper');
-  const parsers = require('./Parsers');
+  const importHelper = require('./ImportHelper');
+  const transactionHelper = require('./TransactionHelper');
+  //const parsers = require('./Parsers');
 
   let api;
   /** The root container. */
@@ -42,15 +43,10 @@ geotab.addin.ftiAddin = function () {
   let configuration;
   /** The excel file containing the transactions to be imported */
   let importFile;
+  /** The excel transaction */
+  let transactionsExcel;
   /** The json transactions */
-  var transactionsJson;
-
-  /**
-   * todo: add the documentation when ready.
-   */
-  function ParseFuelTransaction() {
-    fuelTransactionParser.FuelTransactionParser();
-  }
+  let transactionsJson;
 
   /**
    * Manages the provider file selection change event.
@@ -157,6 +153,7 @@ geotab.addin.ftiAddin = function () {
         provider.Name === providerName
       );
       configuration = configurationArray[0];
+      console.log('configuration set: ' + JSON.stringify(configuration));
     }
     console.log('configuration selected: ' + configuration.Name);
   }
@@ -220,11 +217,15 @@ geotab.addin.ftiAddin = function () {
     // Execute the pasing process - starts with the excel process
     excelHelper.convertExcelToJsonPromise(api, importFile)
       .then(request => {
-        // set the global transactions variable
-        transactionsJson = excelHelper.parseTransactions(request);
-        return transactionsJson;
+        // return the parsed transaction results to the next step.
+        return excelHelper.parseTransactions(request);;
       })
       .then(results => {
+        // set the excel transactions variable to the results.
+        transactionsExcel = results;
+        console.log('transactionsExcel: ' + JSON.stringify(transactionsExcel));
+      })
+      .then(() => {
         // validate the configuration data
         var result = configHelper.validateConfiguration(configuration);
         console.log('validation result, isValid: ' + result.isValid);
@@ -236,12 +237,19 @@ geotab.addin.ftiAddin = function () {
         // parse the configuration defaults
         configHelper.parseConfigDefaults(configuration);
         //console.log(configuration);
-        setOutputDisplay('Ready for Import', 'The config and import files have been set up ready for the import operation. Hit the Import button to execute the import process.');
+        // setOutputDisplay('Ready for Import', 'The config and import files have been set up ready for the import operation. Hit the Import button to execute the import process.');
         //console.log(result);
         // console.log('results: ' + results.data[0]['ColumnA']);      
         // console.log('results: ' + results.data[1]['ColumnA']);      
         // var headings = parsers.getHeadings(results.data);
         // console.log(headings);
+      })
+      .then(result => {
+        // parse and get the json transaction.
+        transactionHelper.ParseAndBuildTransactions(transactionsExcel, configuration);
+      })
+      .then(() => {
+        setOutputDisplay('Ready for Import', 'The config and import files have been set up ready for the import operation. Hit the Import button to execute the import process.');
       })
       .catch(error => {
         console.log('Preview process error experienced:');
@@ -257,6 +265,14 @@ geotab.addin.ftiAddin = function () {
   }
 
   /**
+   * Import transactions click event
+   */
+  function importButtonClickEvent(){
+    console.log('transactionsJson: ' + {transactionsJson});
+    importHelper.importTransactions(api, transactionsJson);
+  }
+
+  /**
    * Wire up all events on initialisation.
    */
   function addEvents() {
@@ -265,6 +281,7 @@ geotab.addin.ftiAddin = function () {
     elProviderDropdown.addEventListener('change', providerDropdownChangeEvent, false);
     elParseButton.addEventListener('click', parseClickEvent, false);
     elImportFile.addEventListener('focus', importFileFocusEvent, false);
+    elImportButton.addEventListener('click', importButtonClickEvent, false);
   }
 
   /**
@@ -276,6 +293,7 @@ geotab.addin.ftiAddin = function () {
     elProviderDropdown.removeEventListener('change', providerDropdownChangeEvent, false);
     elParseButton.removeEventListener('click', parseClickEvent, false);
     elImportFile.removeEventListener('focus', importFileFocusEvent, false);
+    elImportButton.removeEventListener('click', importButtonClickEvent, false);
   }
 
   return {

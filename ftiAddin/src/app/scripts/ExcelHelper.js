@@ -76,7 +76,7 @@ function convertExcelToJsonPromise (api, file) {
  * Executes when the excel transactions are converted to Json and the ExcelToJson call has completed.
  * This function serves as a transaction data parser and to finally set the transactions variable with the result. 
  * @param {XMLHttpRequest} request A request containing the transactions in json format.
- * @returns A the parsed json transaction results or any errors encountered.
+ * @returns The parsed json transaction results or any errors encountered.
  */
 function parseTransactions(request) {
     return new Promise((resolve, reject) => {
@@ -92,7 +92,7 @@ function parseTransactions(request) {
             reject('The file doesn\'t contain any transactions');
         }
         console.log(results.data);
-        resolve(results);
+        resolve(results.data);
     });
 };
 

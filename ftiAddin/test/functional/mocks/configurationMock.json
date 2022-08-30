@@ -1,0 +1,28 @@
+{
+  "Name": "Test1",
+  "unitVolumeLiters": "Y",
+  "unitOdoKm": "Y",
+  "isCellDateType": "Y",
+  "dateFormat": "DD/MM/YYYY",
+  "timeFormat": "",
+  "currencyCodeMapped": "CHF",
+  "data": {
+    "cardNumber": "ColumnA",
+    "comments": "",
+    "description": "",
+    "driver": "",
+    "driverName": "ColumnD",
+    "externalReference": "ColumnE",
+    "licencePlate": "ColumnF",
+    "provider": "ColumnG",
+    "serialNumber": "ColumnI",
+    "sourceData": "",
+    "vehicleIdentificationNumber": "ColumnL",
+    "cost": "ColumnN",
+    "currencyCode": "ColumnO",
+    "dateTime": ["ColumnP"],
+    "odometer": "ColumnQ",
+    "productType": "ColumnR",
+    "volume": "ColumnS"
+  }
+}
