@@ -3,7 +3,7 @@
  * @param {*} s The string to parse.
  * @returns The string returned.
  */
-    var parseStringValue = function (s) {
+var parseStringValue = function (s) {
     let length = s.length;
     if (length > 0 && s[0] === '"') {
         s = s.substring(1, s.length);
@@ -15,6 +15,21 @@
     }
     return (s === '(null)' ? '' : s.trim());
 };
+
+/**
+ * Parses the length of a string and if it is greater than the length it is truncated to that length. 
+ * @param {*} string The string to parse.
+ * @param {*} length The length to check.
+ * @returns 
+ */
+function parseStringLength(string, length){
+    if(string.length > length){
+        return string.trimLeft(length);
+    }
+    return string;
+}
+
+
 
 /** 
  *  returns a float value for a valid float or 0.0 otherwise
@@ -104,6 +119,7 @@ function getHeadings(data) {
 
 module.exports = {
     parseStringValue,
+    parseStringLength,
     parseFloatValue,
     parseDateValue,
     getHeadings,

@@ -1,3 +1,5 @@
+const parsers = require('./Parsers');
+
 function ParseAndBuildTransactions(transactionsExcel, configuration) {
     return new Promise((resolve, reject) => {
         // var data = JSON.stringify(transactionsExcel);
@@ -31,14 +33,47 @@ function parseTransaction(transaction, configuration) {
     // key = property
     Object.keys(configuration.data).forEach(key => {
         console.log(key, configuration.data[key]);
-        entity[key] = transaction[configuration.data[key]];
+        let value = transaction[configuration.data[key]];
+        if (value === undefined) {
+            console.log('value is undefined...');
+            return;
+        }
+        switch (key) {
+            case undefined:
+                // todo: remove once all covered
+                console.log('key is undefined...');
+                break;
+            case 'comments':
+                if (value) {
+                    entity[key] = parsers.parseStringValue(parsers.parseStringLength(value, 1024));
+                }
+                break;
+            case 'description':
+                if (value) {
+                    entity[key] = parsers.parseStringValue(parsers.parseStringLength(value, 255));
+                }
+                break;
+            case 'currencyCode':
+                entity[key] = value.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
+            case 'vehicleIdentificationNumber':
+                entity[key] = parsers.parseStringValue(value.toUpperCase().replace(/\s/g, ''));
+                break;
+            case 'cost':
+                entity[key] = parsers.parseFloatValue(value.replace(/,/g, '.'));
+                break;
+            case 'dateTime':
+                entity[key] = parsers.parseDateValue(value);
+                break;
+            default:
+                entity[key] = parsers.parseStringValue(transaction[configuration.data[key]]);
+        }
     });
 
     console.log(configuration.Name, JSON.stringify(entity));
     return entity;
 }
 
-function processTransactionProperty(transaction, configuration){
+function processTransactionProperty(transaction, configuration) {
 
 }
 
