@@ -78,6 +78,10 @@ function parseTransaction(transaction, configuration) {
                     entity[key] = parsers.parseStringValue(value);
             }
         } else {
+            // if currencyCode does not exist the global value should be assigned.
+            if(key === 'currencyCode'){
+                entity[key] = configuration.currencyCodeMapped.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
+            }
             console.log('value is null or undefined...');
         }
     });
