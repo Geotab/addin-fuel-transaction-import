@@ -24,7 +24,7 @@ var parseStringValue = function (s) {
  */
 function parseStringLength(string, length){
     if(string.length > length){
-        return string.trimLeft(length);
+        return string.substring(0, length);
     }
     return string;
 }
