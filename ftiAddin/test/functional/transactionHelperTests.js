@@ -14,12 +14,17 @@ describe('Transaction parsing tests', () => {
         assert.isTrue(entity.currencyCode === 'CHF');
         assert.isTrue(entity.dateTime === '2020-01-18T00:00:00.000Z');
         assert.isTrue(entity.odometer === 100000);
+        assert.isTrue(entity.productType === 'Regular');
         assert.isTrue(entity.volume === 50);
     });
     it('test transaction parsing - all should pass', () => {
         entity = transactionHelper.parseTransaction(transactionMock[1], configurationMock.providers[0]);
         assert.isTrue(entity.cardNumber === 'CDE1');
+        assert.isTrue(entity.comments.length === 1024);
+        assert.isTrue(entity.description.length === 255);
+        assert.isTrue(entity.driverName === 'Sam');
         assert.isTrue(entity.vehicleIdentificationNumber === 'SHSRE5780CU007020');
+        assert.isTrue(entity.externalReference === 'external reference');
         assert.isTrue(entity.serialNumber === 'GANZUEZB8UF0');
         assert.isTrue(entity.cost === 25.3656);
         assert.isTrue(entity.currencyCode === 'USD');

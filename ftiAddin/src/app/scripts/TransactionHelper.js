@@ -133,8 +133,27 @@ var fuelTransactionProductType = {
     'Unknown': 'Unknown product type'
 }
 
+var fuelTransactionProviders = {
+    'Allstar': 'Allstar Fuel Card provider',
+    'Comdata': 'Comdata Fuel Card Provider.',
+    'Drive': 'Drive Add-in.',
+    'FuelTracker': 'Fuel Tracker App.',
+    'Fuelman': 'Fuelman Fuel Card Provider.',
+    'GFN': 'GFN Fuel Card provider',
+    'Keyfuels': 'Keyfuels Fuel Card provider',
+    'TFC': 'TFC Fuel Card provider',
+    'UltramarCST': 'Ultramar CST Fuel Card provider',
+    'Unknown': 'The FuelTransactionProvider is not known.',
+    'Voyager': 'Voyager Fuel Card provider',
+    'Wex': 'Wex Fuel Card Provider.',
+    'WexCanada': 'WexCanada Fuel Card provider',
+    'WexCustomer': 'Wex Fuel Card Provider, customer file format.',
+    'WexLegacy': 'Wex Fuel Card Provider, legacy file format.'
+}
+
 module.exports = {
     ParseAndBuildTransactions,
     parseTransaction,
-    fuelTransactionProductType
+    fuelTransactionProductType,
+    fuelTransactionProviders
 }
