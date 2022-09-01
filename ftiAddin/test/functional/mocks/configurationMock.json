@@ -1,28 +1,151 @@
 {
-  "Name": "Test1",
-  "unitVolumeLiters": "Y",
-  "unitOdoKm": "Y",
-  "isCellDateType": "Y",
-  "dateFormat": "DD/MM/YYYY",
-  "timeFormat": "",
-  "currencyCodeMapped": "CHF",
-  "data": {
-    "cardNumber": "ColumnA",
-    "comments": "",
-    "description": "",
-    "driver": "",
-    "driverName": "ColumnD",
-    "externalReference": "ColumnE",
-    "licencePlate": "ColumnF",
-    "provider": "ColumnG",
-    "serialNumber": "ColumnI",
-    "sourceData": "",
-    "vehicleIdentificationNumber": "ColumnL",
-    "cost": "ColumnN",
-    "currencyCode": "ColumnO",
-    "dateTime": ["ColumnP"],
-    "odometer": "ColumnQ",
-    "productType": "ColumnR",
-    "volume": "ColumnS"
-  }
+  "providers": [
+    {
+      "Name": "Test1",
+      "unitVolumeLiters": "Y",
+      "unitOdoKm": "Y",
+      "isCellDateType": "Y",
+      "dateFormat": "DD/MM/YYYY",
+      "timeFormat": "",
+      "currencyCodeMapped": "USD",
+      "data": {
+        "cardNumber": "ColumnA",
+        "comments": "ColumnB",
+        "description": "ColumnC",
+        "driver": "ColumnM",
+        "driverName": "ColumnD",
+        "externalReference": "ColumnE",
+        "licencePlate": "ColumnF",
+        "provider": "ColumnG",
+        "serialNumber": "ColumnI",
+        "sourceData": "",
+        "vehicleIdentificationNumber": "ColumnL",
+        "cost": "ColumnN",
+        "currencyCode": "ColumnO",
+        "dateTime": [
+          "ColumnP"
+        ],
+        "odometer": "ColumnQ",
+        "productType": "ColumnR",
+        "volume": "ColumnS"
+      }
+    },
+	{
+      "Name": "Test2",
+      "unitVolumeLiters": "Y",
+      "unitOdoKm": "Y",
+      "isCellDateType": "N",
+      "dateFormat": "DD/MM/YYYY",
+      "timeFormat": "",
+      "currencyCodeMapped": "USD",
+      "data": {
+        "cardNumber": "ColumnA",
+        "comments": "",
+        "description": "",
+        "driver": "",
+        "driverName": "ColumnD",
+        "externalReference": "ColumnE",
+        "licencePlate": "ColumnF",
+        "provider": "ColumnG",
+        "serialNumber": "ColumnI",
+        "sourceData": "",
+        "vehicleIdentificationNumber": "ColumnL",
+        "cost": "ColumnN",
+        "currencyCode": "ColumnO",
+        "dateTime": [
+          "ColumnP"
+        ],
+        "odometer": "ColumnQ",
+        "productType": "ColumnR",
+        "volume": "ColumnS"
+      }
+    },
+	{
+      "Name": "Test3",
+      "unitVolumeLiters": "Y",
+      "unitOdoKm": "Y",
+      "isCellDateType": "N",
+      "dateFormat": "",
+      "timeFormat": "",
+      "currencyCodeMapped": "USD",
+      "data": {
+        "cardNumber": "ColumnA",
+        "comments": "",
+        "description": "",
+        "driver": "",
+        "driverName": "ColumnD",
+        "externalReference": "ColumnE",
+        "licencePlate": "ColumnF",
+        "provider": "ColumnG",
+        "serialNumber": "ColumnI",
+        "sourceData": "",
+        "vehicleIdentificationNumber": "ColumnL",
+        "cost": "ColumnN",
+        "currencyCode": "ColumnO",
+        "dateTime": [
+          "ColumnP"
+        ],
+        "odometer": "ColumnQ",
+        "productType": "ColumnR",
+        "volume": "ColumnS"
+      }
+    },
+	{
+      "Name": "Test4",
+      "unitVolumeLiters": "",
+      "unitOdoKm": "",
+      "isCellDateType": "",
+      "dateFormat": "DD/MM/YYYY",
+      "timeFormat": "",
+      "currencyCodeMapped": "",
+      "data": {
+        "cardNumber": "ColumnA",
+        "comments": "",
+        "description": "",
+        "driver": "",
+        "driverName": "ColumnD",
+        "externalReference": "ColumnE",
+        "provider": "ColumnG",
+        "sourceData": "",
+        "cost": "ColumnN",
+        "currencyCode": "ColumnO",
+        "dateTime": [
+          "ColumnP"
+        ],
+        "odometer": "ColumnQ",
+        "productType": "ColumnR",
+        "volume": "ColumnS"
+      }
+    },
+	{
+      "Name": "Test5",
+      "unitVolumeLiters": "",
+      "unitOdoKm": "",
+      "isCellDateType": "",
+      "dateFormat": "DD/MM/YYYY",
+      "timeFormat": "",
+      "currencyCodeMapped": "",
+      "data": {
+        "cardNumber": "ColumnA",
+        "comments": "",
+        "description": "",
+        "driver": "",
+        "driverName": "ColumnD",
+        "externalReference": "ColumnE",
+        "licencePlate": "ColumnF",
+        "provider": "ColumnG",
+        "serialNumber": "ColumnI",
+        "sourceData": "",
+        "vehicleIdentificationNumber": "ColumnL",
+        "cost": "ColumnN",
+        "currencyCode": "ColumnO",
+        "dateTime": [
+          "ColumnP"
+        ],
+        "odometer": "ColumnQ",
+        "productType": "ColumnR",
+        "volume": "ColumnS"
+      }
+    }
+  ]
 }

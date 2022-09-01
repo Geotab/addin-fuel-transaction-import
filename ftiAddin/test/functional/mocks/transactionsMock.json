@@ -1,0 +1,56 @@
+[
+  {
+    "cardNumber": "ABC1",
+    "licencePlate": "LICPLATE",
+    "serialNumber": "G7D020FC5C50",
+    "cost": 124.56,
+    "currencyCode": "CHF",
+    "dateTime": "2020-01-18T00:00:00.000Z",
+    "odometer": 100000,
+    "volume": 50
+  },
+  {
+    "cardNumber": "CDE1",
+    "licencePlate": "",
+    "comments": "",
+    "description": "",
+    "serialNumber": "GANZUEZB8UF0",
+    "vehicleIdentificationNumber": "SHSRE5780CU007020",
+    "cost": 25.3656,
+    "currencyCode": "",
+    "dateTime": "3/24/2020",
+    "odometer": 10542.2356,
+    "volume": 10.236
+  },
+  {
+    "cardNumber": "DEG4",
+    "licencePlate": "LICPLATE",
+    "serialNumber": "G7D020FC5C50",
+    "cost": 78.27,
+    "currencyCode": "USD",
+    "dateTime": "2020-03-27T00:00:00.000Z",
+    "odometer": 100452,
+    "volume": 25
+  },
+  {
+    "cardNumber": "CDE1",
+    "licencePlate": "ABCD",
+    "serialNumber": "GANZUEZB8UF0",
+    "vehicleIdentificationNumber": "SHSRE5780CU007020",
+    "cost": 65.366,
+    "currencyCode": "CHF",
+    "dateTime": "1900-01-22T02:24:00.000Z",
+    "odometer": 10600,
+    "volume": 56.87
+  },
+  {
+    "cardNumber": "DEG4",
+    "licencePlate": "LICPLATE",
+    "serialNumber": "G7D020FC5C50",
+    "cost": 69,
+    "currencyCode": "USD",
+    "dateTime": "2020-03-27T00:00:00.000Z",
+    "odometer": 100452,
+    "volume": 55
+  }
+]

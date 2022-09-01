@@ -21,6 +21,7 @@ function ParseAndBuildTransactions(transactionsExcel, configuration) {
 function parseTransaction(transaction, configuration) {
     // let transOutput;
     let entity = {};
+    let value;
     // let unitVolumeLiters = configuration.unitVolumeLiters;
     // let unitOdoKm = configuration.unitOdoKm;
     // let isCellDateType = configuration.isCellDateType;
@@ -34,7 +35,10 @@ function parseTransaction(transaction, configuration) {
     // key = property
     Object.keys(configuration.data).forEach(key => {
         console.log(key, configuration.data[key]);
-        let value = transaction[configuration.data[key]];
+        // reset value prior to setting the new value to be safe.
+        value = undefined;
+        // set the new value.
+        value = transaction[key];
         if (value) {
             switch (key) {
                 case 'licencePlate':
@@ -50,10 +54,13 @@ function parseTransaction(transaction, configuration) {
                     break;
                 case 'currencyCode':
                     entity[key] = value.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
+                    break;
                 case 'serialNumber':
                 case 'vehicleIdentificationNumber':
                     entity[key] = value.toUpperCase().replace(/\s/g, '');
                     break;
+                case 'productType':
+                    entity[key] = getProductType(value);
                 case 'cost':
                     entity[key] = parsers.parseFloatValue(value);
                     break;
@@ -76,6 +83,7 @@ function parseTransaction(transaction, configuration) {
                     break;
                 default:
                     entity[key] = parsers.parseStringValue(value);
+                    break;
             }
         } else {
             // if currencyCode does not exist the global value should be assigned.
@@ -86,10 +94,46 @@ function parseTransaction(transaction, configuration) {
         }
     });
 
-    console.log(configuration.Name, JSON.stringify(entity));
+    console.log('parseTransaction output for entity: ', JSON.stringify(entity));
     return entity;
 }
 
+
+/**
+ * Parses and gets the product type based on the transaction test value
+ * @param {*} testValue The test value to parse.
+ * @returns A valid product type
+ */
+function getProductType(testValue){
+    if(fuelTransactionProductType.hasOwnProperty(testValue))
+    {
+        return testValue;
+    } else {
+        return fuelTransactionProductType.Unknown;
+    }
+}
+
+/**
+ * A JSON object containing all the valid fuel transaction product types
+ */
+var fuelTransactionProductType = {
+    'CNG': 'CNG (Compressed Natural Gas)',
+    'Diesel': 'Diesel fuel',
+    'DieselExhaustFluid': 'Diesel exhaust fluid',
+    'E85': 'E85 (Ethanol 85%)',
+    'Electric': 'Electric',
+    'Hydrogen': 'Hydrogen',
+    'LPG': 'LPG (Liquid Propane Gas)',
+    'Midgrade': 'Mid grade gasoline (88-89 Octane : 92-93 Ron)',
+    'NonFuel': 'A non-fuel purchase',
+    'Premium': 'Premium grade gasoline (90-91 Octane : 94-95 Ron)',
+    'Regular': 'Regular grade gasoline (86-87 Octane : 90-91 Ron)',
+    'Super': '	Super grade gasoline (92-94+ Octane : 96-99+ Ron)',
+    'Unknown': 'Unknown product type'
+}
+
 module.exports = {
-    ParseAndBuildTransactions
+    ParseAndBuildTransactions,
+    parseTransaction,
+    fuelTransactionProductType
 }
