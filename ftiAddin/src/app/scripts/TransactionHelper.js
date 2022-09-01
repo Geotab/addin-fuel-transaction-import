@@ -61,6 +61,7 @@ function parseTransaction(transaction, configuration) {
                     break;
                 case 'productType':
                     entity[key] = getProductType(value);
+                    break;
                 case 'cost':
                     entity[key] = parsers.parseFloatValue(value);
                     break;
@@ -109,7 +110,7 @@ function getProductType(testValue){
     {
         return testValue;
     } else {
-        return fuelTransactionProductType.Unknown;
+        return Object.keys(fuelTransactionProductType)[12]
     }
 }
 

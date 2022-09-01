@@ -2,6 +2,7 @@
   {
     "cardNumber": "ABC1",
     "licencePlate": "LICPLATE",
+    "productType": "Regular",
     "serialNumber": "G7D020FC5C50",
     "cost": 124.56,
     "currencyCode": "CHF",
@@ -14,6 +15,7 @@
     "licencePlate": "",
     "comments": "",
     "description": "",
+    "productType": "Petrol",
     "serialNumber": "GANZUEZB8UF0",
     "vehicleIdentificationNumber": "SHSRE5780CU007020",
     "cost": 25.3656,
