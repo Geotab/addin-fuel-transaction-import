@@ -15,6 +15,7 @@ describe('Transaction parsing tests', () => {
         assert.isTrue(entity.dateTime === '2020-01-18T00:00:00.000Z');
         assert.isTrue(entity.odometer === 100000);
         assert.isTrue(entity.productType === 'Regular');
+        assert.isUndefined(entity.provider);
         assert.isTrue(entity.volume === 50);
     });
     it('test transaction parsing - all should pass', () => {
@@ -31,6 +32,7 @@ describe('Transaction parsing tests', () => {
         assert.isTrue(entity.dateTime === '2020-03-24T00:00:00.000Z');
         assert.isTrue(entity.odometer === 10542.2356);
         assert.isTrue(entity.productType === 'Unknown');
+        assert.isTrue(entity.provider === 'Allstar');
         assert.isTrue(entity.volume === 10.236);
     });
 });

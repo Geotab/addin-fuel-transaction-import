@@ -59,6 +59,9 @@ function parseTransaction(transaction, configuration) {
                 case 'vehicleIdentificationNumber':
                     entity[key] = value.toUpperCase().replace(/\s/g, '');
                     break;
+                case 'provider':
+                    entity[key] = getProvider(value);
+                    break;
                 case 'productType':
                     entity[key] = getProductType(value);
                     break;
@@ -88,7 +91,7 @@ function parseTransaction(transaction, configuration) {
             }
         } else {
             // if currencyCode does not exist the global value should be assigned.
-            if(key === 'currencyCode'){
+            if (key === 'currencyCode') {
                 entity[key] = configuration.currencyCodeMapped.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
             }
             console.log('value is null or undefined...');
@@ -102,20 +105,19 @@ function parseTransaction(transaction, configuration) {
 
 /**
  * Parses and gets the product type based on the transaction test value
- * @param {*} testValue The test value to parse.
+ * @param {*} input The test value to parse.
  * @returns A valid product type
  */
-function getProductType(testValue){
-    if(fuelTransactionProductType.hasOwnProperty(testValue))
-    {
-        return testValue;
+function getProductType(input) {
+    if (fuelTransactionProductType.hasOwnProperty(input)) {
+        return input;
     } else {
         return Object.keys(fuelTransactionProductType)[12]
     }
 }
 
 /**
- * A JSON object containing all the valid fuel transaction product types
+ * The currently valid fuel transaction product types
  */
 var fuelTransactionProductType = {
     'CNG': 'CNG (Compressed Natural Gas)',
@@ -133,6 +135,20 @@ var fuelTransactionProductType = {
     'Unknown': 'Unknown product type'
 }
 
+/**
+ * Parses and gets the fuel card provider.
+ * @param {*} input The test value.
+ */
+function getProvider(input) {
+    if (fuelTransactionProviders.hasOwnProperty(input)) {
+        return input;
+    }
+    return Object.keys(fuelTransactionProviders)[9];
+}
+
+/**
+ * The currently valid fuel transaction providers.
+ */
 var fuelTransactionProviders = {
     'Allstar': 'Allstar Fuel Card provider',
     'Comdata': 'Comdata Fuel Card Provider.',
