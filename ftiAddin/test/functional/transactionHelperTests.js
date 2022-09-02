@@ -35,14 +35,14 @@ describe('Transaction parsing tests', () => {
         assert.isTrue(entity.provider === 'Allstar');
         assert.isTrue(entity.volume === 10.236);
     });
-    // it('test multiple transactions', () => {
-    //     return transactionHelper.ParseAndBuildTransactions(transactionsExcelMock, configurationMock.providers[0])
-    //     .then(results => {
-    //         assert.isTrue(results[0].cardNumber === 'ABC1');
-    //         assert.isTrue(results[1].provider === 'Allstar');
-    //         assert.isTrue(results[2].serialNumber === 'G7D020FC5C50');
-    //         assert.isTrue(results[3].vehicleIdentificationNumber === 'SHSRE5780CU007020');
-    //         assert.isTrue(results[4].dateTime === '2020-03-27T00:00:00.000Z');
-    //     });
-    // });
+    it('test multiple transactions', () => {
+        return transactionHelper.ParseAndBuildTransactions(transactionsExcelMock, configurationMock.providers[0])
+        .then(results => {
+            assert.isTrue(results[0].cardNumber === 'ABC1');
+            assert.isTrue(results[1].provider === 'Allstar');
+            assert.isTrue(results[2].serialNumber === 'G7D020FC5C50');
+            assert.isTrue(results[3].vehicleIdentificationNumber === 'SHSRE5780CU007020');
+            assert.isTrue(results[4].dateTime === '2020-03-27T00:00:00.000Z');
+        });
+    });
 });

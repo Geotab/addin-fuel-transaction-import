@@ -27,6 +27,12 @@ function ParseAndBuildTransactions(transactionsExcel, configuration) {
     });
 }
 
+/**
+ * Gets a key for the value from a JSON object
+ * @param {*} obj The JSON object.
+ * @param {*} value The value to check.
+ * @returns The key related to the value submitted.
+ */
 function getObjKey(obj, value) {
     return Object.keys(obj).find(key => obj[key] === value);
   }
