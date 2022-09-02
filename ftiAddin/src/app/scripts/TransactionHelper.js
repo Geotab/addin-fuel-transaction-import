@@ -5,7 +5,7 @@ const converters = require('./Converters');
  * Receives the excel transactions and produces the json formated transaction entities.
  * @param {*} transactionsExcel 
  * @param {*} configuration 
- * @returns 
+ * @returns The formatted transactions as an array of json objects.
  */
 function ParseAndBuildTransactions(transactionsExcel, configuration) {
     return new Promise((resolve, reject) => {
@@ -14,7 +14,7 @@ function ParseAndBuildTransactions(transactionsExcel, configuration) {
         let entity;
         transactionsExcel.forEach((transaction, i) => {
             if(i === 0){
-                // mapping (or header) section
+                // get the mapping (or header) to be used in the transaction parsing process that follows.
                 mapping = transaction;
             }else{
                 entity = parseTransaction(transaction, configuration, mapping);

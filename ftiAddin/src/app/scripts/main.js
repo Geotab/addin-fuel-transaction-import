@@ -246,7 +246,7 @@ geotab.addin.ftiAddin = function () {
       })
       .then(result => {
         // parse and get the json transaction.
-        transactionHelper.ParseAndBuildTransactions(transactionsExcel, configuration);
+        transactionsJson = transactionHelper.ParseAndBuildTransactions(transactionsExcel, configuration);
       })
       .then(() => {
         setOutputDisplay('Ready for Import', 'The config and import files have been set up ready for the import operation. Hit the Import button to execute the import process.');
