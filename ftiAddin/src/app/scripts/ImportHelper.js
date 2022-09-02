@@ -1,20 +1,28 @@
 /**
  * Imports the fuel transactions of the selected file for the config provider file implementation
  */
-    function importTransactions(api, transactions) {
-    return new Promise (function (resolve, reject) {
-        var callset,
-        callSets
+function importTransactions(api, transactions) {
+    return new Promise(function (resolve, reject) {
+        // prepare the calls
+        var currentCall = [];
+        var failedCalls = [];
         transactions.forEach(function (transaction, j) {
-            console.log(transaction);
-            // callSet.push(['Add', { typeName: 'FuelTransaction', entity: transaction }]);
-            // total++;
-            // if (callSet.length === callLimit || j === transactions.length - 1) {
-            //     callSets.push(callSet);
-            //     callSet = [];
-            // }
+            currentCall = { typeName: 'FuelTransaction', entity: transaction };
+            console.log('Executing currentCall: ' + currentCall);
+            api.call('Add', currentCall,
+                function (result) {
+                    if (result) {
+                        console.log('transaction added...');
+                    } else {
+                        console.log('WARNING - issue ADDING transaction', currentCall);
+                        failedCalls.push(currentCall);
+                    }
+                }, function (error) {
+                    console.log(error);
+                    failedCalls.push(currentCall);
+                });
         });
-        resolve('all good');
+        resolve(failedCalls);
     });
 };
 

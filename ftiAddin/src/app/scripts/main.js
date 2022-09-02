@@ -246,9 +246,10 @@ geotab.addin.ftiAddin = function () {
       })
       .then(result => {
         // parse and get the json transaction.
-        transactionsJson = transactionHelper.ParseAndBuildTransactions(transactionsExcel, configuration);
+        return transactionHelper.ParseAndBuildTransactions(transactionsExcel, configuration);
       })
-      .then(() => {
+      .then((results) => {
+        transactionsJson = results;
         setOutputDisplay('Ready for Import', 'The config and import files have been set up ready for the import operation. Hit the Import button to execute the import process.');
       })
       .catch(error => {
@@ -268,8 +269,17 @@ geotab.addin.ftiAddin = function () {
    * Import transactions click event
    */
   function importButtonClickEvent(){
-    console.log('transactionsJson: ' + {transactionsJson});
-    importHelper.importTransactions(api, transactionsJson);
+    //console.log('transactionsJson: ' + {transactionsJson});
+    importHelper.importTransactions(api, transactionsJson)
+    .then(result => {
+      console.log('Import process success');
+      console.log('Import result: ', result);
+      setOutputDisplay('Import Success', 'Transactions imported successfully.');
+    })
+    .catch(error => {
+      console.log('Import process error experienced:');
+      console.log(error);
+    });
   }
 
   /**
