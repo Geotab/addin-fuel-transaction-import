@@ -1,12 +1,12 @@
 const transactionHelper = require('../../src/app/scripts/TransactionHelper');
 const assert = require('chai').assert;
-const transactionMock = require('./mocks/transactionsMock.json');
+const transactionsExcelMock = require('./mocks/transactionsExcelMock.json');
 const configurationMock = require('./mocks/configurationMock.json');
 
 describe('Transaction parsing tests', () => {
     let entity;
     it('test transaction parsing - all should pass', () => {
-        entity = transactionHelper.parseTransaction(transactionMock[0], configurationMock.providers[0]);
+        entity = transactionHelper.parseTransaction(transactionsExcelMock[1], configurationMock.providers[0], transactionsExcelMock[0]);
         assert.isTrue(entity.cardNumber === 'ABC1');
         assert.isTrue(entity.licencePlate === 'LICPLATE');
         assert.isTrue(entity.serialNumber === 'G7D020FC5C50');
@@ -19,7 +19,7 @@ describe('Transaction parsing tests', () => {
         assert.isTrue(entity.volume === 50);
     });
     it('test transaction parsing - all should pass', () => {
-        entity = transactionHelper.parseTransaction(transactionMock[1], configurationMock.providers[0]);
+        entity = transactionHelper.parseTransaction(transactionsExcelMock[2], configurationMock.providers[0], transactionsExcelMock[0]);
         assert.isTrue(entity.cardNumber === 'CDE1');
         assert.isTrue(entity.comments.length === 1024);
         assert.isTrue(entity.description.length === 255);
@@ -35,4 +35,14 @@ describe('Transaction parsing tests', () => {
         assert.isTrue(entity.provider === 'Allstar');
         assert.isTrue(entity.volume === 10.236);
     });
+    // it('test multiple transactions', () => {
+    //     return transactionHelper.ParseAndBuildTransactions(transactionsExcelMock, configurationMock.providers[0])
+    //     .then(results => {
+    //         assert.isTrue(results[0].cardNumber === 'ABC1');
+    //         assert.isTrue(results[1].provider === 'Allstar');
+    //         assert.isTrue(results[2].serialNumber === 'G7D020FC5C50');
+    //         assert.isTrue(results[3].vehicleIdentificationNumber === 'SHSRE5780CU007020');
+    //         assert.isTrue(results[4].dateTime === '2020-03-27T00:00:00.000Z');
+    //     });
+    // });
 });

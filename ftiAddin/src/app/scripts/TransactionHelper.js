@@ -1,98 +1,115 @@
 const parsers = require('./Parsers');
 const converters = require('./Converters');
 
+/**
+ * Receives the excel transactions and produces the json formated transaction entities.
+ * @param {*} transactionsExcel 
+ * @param {*} configuration 
+ * @returns 
+ */
 function ParseAndBuildTransactions(transactionsExcel, configuration) {
     return new Promise((resolve, reject) => {
-        // var data = JSON.stringify(transactionsExcel);
-        // data = JSON.parse(data);
         let transactionsOutput = [];
+        let mapping;
+        let entity;
         transactionsExcel.forEach((transaction, i) => {
-            if (i === 0) {
-                // title row so ignore
-            } else {
-                transactionsOutput.push(parseTransaction(transaction, configuration));
+            if(i === 0){
+                // mapping (or header) section
+                mapping = transaction;
+            }else{
+                entity = parseTransaction(transaction, configuration, mapping);
+                console.log('parsed transaction entity: ' + entity);
+                transactionsOutput.push(entity);
             }
         });
         console.log('transactionsOutput: ' + JSON.stringify(transactionsOutput));
-        resolve('ParseAndBuildTransactions completed.')
+        resolve(transactionsOutput)
     });
 }
 
-function parseTransaction(transaction, configuration) {
+function getObjKey(obj, value) {
+    return Object.keys(obj).find(key => obj[key] === value);
+  }
+
+/**
+ * Parse each transaction property.
+ * @param {*} transaction The transaction to parse.
+ * @param {*} configuration The configuration settings.
+ * @param {*} mapping The mapping object.
+ * @returns A FuelTransaction entity ready to be imported into the database.
+ */
+function parseTransaction(transaction, configuration, mapping) {
     // let transOutput;
     let entity = {};
     let value;
-    // let unitVolumeLiters = configuration.unitVolumeLiters;
-    // let unitOdoKm = configuration.unitOdoKm;
-    // let isCellDateType = configuration.isCellDateType;
-    // let dateFormat = configuration.dateFormat;
-    // let timeFormat = configuration.timeFormat;
-    // let currencyCodeMapped = configuration.currencyCodeMapped;
+    // configuration.unitVolumeLiters, configuration.unitOdoKm, configuration.isCellDateType
+    // configuration.dateFormat, configuration.timeFormat, configuration.currencyCodeMapped;
 
     console.log('Parsing provider: ' + configuration.Name);
 
     // loop through the data properties of the transaction object
     // key = property
-    Object.keys(configuration.data).forEach(key => {
-        console.log(key, configuration.data[key]);
+    Object.keys(configuration.data).forEach(keyItem => {
+        console.log(keyItem, configuration.data[keyItem]);
         // reset value prior to setting the new value to be safe.
         value = undefined;
         // set the new value.
-        value = transaction[key];
+        let falseKey = getObjKey(mapping, keyItem)
+        value = transaction[falseKey];
         if (value) {
-            switch (key) {
+            switch (keyItem) {
                 case 'licencePlate':
-                    entity[key] = parsers.parseStringLength(value, 255).toUpperCase().replace(/\s/g, '');
+                    entity[keyItem] = parsers.parseStringLength(value, 255).toUpperCase().replace(/\s/g, '');
                     break;
                 case 'driverName':
                 case 'externalReference':
                 case 'comments':
-                    entity[key] = parsers.parseStringValue(parsers.parseStringLength(value, 1024));
+                    entity[keyItem] = parsers.parseStringValue(parsers.parseStringLength(value, 1024));
                     break;
                 case 'description':
-                    entity[key] = parsers.parseStringValue(parsers.parseStringLength(value, 255));
+                    entity[keyItem] = parsers.parseStringValue(parsers.parseStringLength(value, 255));
                     break;
                 case 'currencyCode':
-                    entity[key] = value.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
+                    entity[keyItem] = value.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
                     break;
                 case 'serialNumber':
                 case 'vehicleIdentificationNumber':
-                    entity[key] = value.toUpperCase().replace(/\s/g, '');
+                    entity[keyItem] = value.toUpperCase().replace(/\s/g, '');
                     break;
                 case 'provider':
-                    entity[key] = getProvider(value);
+                    entity[keyItem] = getProvider(value);
                     break;
                 case 'productType':
-                    entity[key] = getProductType(value);
+                    entity[keyItem] = getProductType(value);
                     break;
                 case 'cost':
-                    entity[key] = parsers.parseFloatValue(value);
+                    entity[keyItem] = parsers.parseFloatValue(value);
                     break;
                 case 'dateTime':
-                    entity[key] = parsers.parseDateValue(value);
+                    entity[keyItem] = parsers.parseDateValue(value);
                     break;
                 case 'odometer':
                     if (configuration.unitOdoKm === 'N') {
                         // value in miles so convert to kilometres.
                         value = converters.milesToKm(value);
                     }
-                    entity[key] = parsers.parseFloatValue(value);
+                    entity[keyItem] = parsers.parseFloatValue(value);
                     break;
                 case 'volume':
                     if (configuration.unitVolumeLiters === 'N') {
                         // value in miles so convert to kilometres.
                         value = converters.gallonsToLitres(value);
                     }
-                    entity[key] = parsers.parseFloatValue(value);
+                    entity[keyItem] = parsers.parseFloatValue(value);
                     break;
                 default:
-                    entity[key] = parsers.parseStringValue(value);
+                    entity[keyItem] = parsers.parseStringValue(value);
                     break;
             }
         } else {
             // if currencyCode does not exist the global value should be assigned.
-            if (key === 'currencyCode') {
-                entity[key] = configuration.currencyCodeMapped.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
+            if (keyItem === 'currencyCode') {
+                entity[keyItem] = configuration.currencyCodeMapped.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
             }
             console.log('value is null or undefined...');
         }
