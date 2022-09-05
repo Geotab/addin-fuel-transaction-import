@@ -1,3 +1,5 @@
+  const moment = require('moment-timezone');
+  
 /**
  * Parses string values and returns a zero length string empty values.
  * @param {*} s The string to parse.
@@ -74,9 +76,17 @@ var parseDateValue = function (date) {
  * input - date and format. the date must be checked against the format and ensured it is a valid date.
  * @param {*} date 
  * @param {*} format 
+ * @returns if a valid date then it is returned otherwise null if an invalid date.
  */
 function parseDate(date, format){
-
+    // parses and returns the date if valid otherwise reports a moment invalid date type.
+    let myDate = moment(date, format);
+    if (myDate.isValid())
+    {
+        return date;
+    } else {
+        return null;
+    }
 }
 
 /**
@@ -131,6 +141,7 @@ module.exports = {
     parseStringLength,
     parseFloatValue,
     parseDateValue,
+    parseDate,
     getHeadings,
     addBlanckColumn
 }

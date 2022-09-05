@@ -53,6 +53,12 @@ function parseTransaction(transaction, configuration, mapping) {
 
     console.log('Parsing provider: ' + configuration.Name);
 
+    let dateFormat = configuration.dateFormat;
+    if (configuration.timeFormat){
+        dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
+    }
+    console.log('dateFormat: ' + dateFormat);
+
     // loop through the data properties of the transaction object
     // key = property
     Object.keys(configuration.data).forEach(keyItem => {
@@ -92,7 +98,8 @@ function parseTransaction(transaction, configuration, mapping) {
                     entity[keyItem] = parsers.parseFloatValue(value);
                     break;
                 case 'dateTime':
-                    entity[keyItem] = parsers.parseDateValue(value);
+                    entity[keyItem] = parsers.parseDate(value, configuration.dateFormat);
+                    //entity[keyItem] = parsers.parseDateValue(value);
                     break;
                 case 'odometer':
                     if (configuration.unitOdoKm === 'N') {
