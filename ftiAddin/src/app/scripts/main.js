@@ -284,8 +284,10 @@ geotab.addin.ftiAddin = function () {
       });
   }
 
+  /**
+   * Loads the time zone dropdown (select) with all global time zones.
+   */
   function loadTimeZoneList() {
-    //let select = document.getElementById("dropdownTimeZone");
     let option;
     elTimeZoneDropdown.innerHTML = '';
     let browserTimeZone = moment.tz.guess();
