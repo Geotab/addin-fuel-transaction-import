@@ -8,8 +8,8 @@ geotab.addin.ftiAddin = function () {
   const excelHelper = require('./ExcelHelper');
   const importHelper = require('./ImportHelper');
   const transactionHelper = require('./TransactionHelper');
-  //const parsers = require('./Parsers');
-
+  const moment = require('moment-timezone');
+  
   let api;
   /** The root container. */
   var elAddin = document.getElementById('ftiAddin');
@@ -17,6 +17,8 @@ geotab.addin.ftiAddin = function () {
   var elProviderFile = document.getElementById('providerFile');
   /** The fuel provider dropdown box */
   let elProviderDropdown = document.getElementById('providerDropdown');
+  /** The time zone dropdown */
+  let elTimeZoneDropdown = document.getElementById('timeZoneDropdown');
   /** The inputDiv section */
   let elInputDiv = document.getElementById('inputDiv');
   /** The outputDiv section */
@@ -186,7 +188,7 @@ geotab.addin.ftiAddin = function () {
    * @param {*} title The title
    * @param {*} message The message
    */
-  function setOutputDisplay(title, message){
+  function setOutputDisplay(title, message) {
     elOutputTitle.innerText = title;
     elOutputMessage.innerText = message;
     toggleWindowDisplayState(true, true, false);
@@ -230,7 +232,7 @@ geotab.addin.ftiAddin = function () {
         var result = configHelper.validateConfiguration(configuration);
         console.log('validation result, isValid: ' + result.isValid);
         console.log('validation result, reason: ' + result.reason);
-        if(result.isValid === false){
+        if (result.isValid === false) {
           setErrorDisplay('Configuration File Validation Problem', result.reason)
           return;
         }
@@ -268,17 +270,35 @@ geotab.addin.ftiAddin = function () {
   /**
    * Import transactions click event
    */
-  function importButtonClickEvent(){
+  function importButtonClickEvent() {
     //console.log('transactionsJson: ' + {transactionsJson});
     importHelper.importTransactions(api, transactionsJson)
-    .then(result => {
-      console.log('Import process success');
-      console.log('Import result: ', result);
-      setOutputDisplay('Import Success', 'Transactions imported successfully.');
-    })
-    .catch(error => {
-      console.log('Import process error experienced:');
-      console.log(error);
+      .then(result => {
+        console.log('Import process success');
+        console.log('Import result: ', result);
+        setOutputDisplay('Import Success', 'Transactions imported successfully.');
+      })
+      .catch(error => {
+        console.log('Import process error experienced:');
+        console.log(error);
+      });
+  }
+
+  function loadTimeZoneList() {
+    //let select = document.getElementById("dropdownTimeZone");
+    let option;
+    elTimeZoneDropdown.innerHTML = '';
+    let browserTimeZone = moment.tz.guess();
+    console.log(browserTimeZone);
+    let timeZones = moment.tz.names();
+    timeZones.forEach((timeZone) => {
+      option = document.createElement('option');
+      option.textContent = `${timeZone} (GMT${moment.tz(timeZone).format('Z')})`;
+      option.value = timeZone;
+      if (timeZone == browserTimeZone) {
+        option.selected = true;
+      }
+      elTimeZoneDropdown.appendChild(option);
     });
   }
 
@@ -328,6 +348,8 @@ geotab.addin.ftiAddin = function () {
       // ToggleWindowState(true, false, false);
       addEvents();
 
+      loadTimeZoneList();
+
       // MUST call initializeCallback when done any setup
       initializeCallback();
     },
@@ -349,6 +371,8 @@ geotab.addin.ftiAddin = function () {
       freshApi.getSession(session => {
         elAddin.querySelector('#ftiAddin-user').textContent = session.userName;
       });
+
+      loadTimeZoneList();
 
       toggleWindowDisplayState(true, false, false);
 

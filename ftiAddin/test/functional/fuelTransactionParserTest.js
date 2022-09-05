@@ -1,5 +1,4 @@
 const assert = require('chai').assert;
-const fuelTransactionParser = require('../../src/app/scripts/FuelTransactionParser');
 const providerConfigMock = require('./mocks/providerConfigMock.json');
 
 // dateFormat = 'DD/MM/YYYY';

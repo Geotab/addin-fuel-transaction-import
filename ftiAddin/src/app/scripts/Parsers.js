@@ -71,6 +71,15 @@ var parseDateValue = function (date) {
 };
 
 /**
+ * input - date and format. the date must be checked against the format and ensured it is a valid date.
+ * @param {*} date 
+ * @param {*} format 
+ */
+function parseDate(date, format){
+
+}
+
+/**
  * Gets the headings from the transaction data
  * @param {*} data 
  * @returns 
