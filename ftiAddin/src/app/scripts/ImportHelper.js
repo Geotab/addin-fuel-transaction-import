@@ -8,17 +8,17 @@ function importTransactions(api, transactions) {
         var failedCalls = [];
         transactions.forEach(function (transaction, j) {
             currentCall = { typeName: 'FuelTransaction', entity: transaction };
-            console.log('Executing currentCall: ' + currentCall);
+            console.log('Executing currentCall: ' + JSON.stringify(currentCall));
             api.call('Add', currentCall,
                 function (result) {
                     if (result) {
                         console.log('transaction added...');
                     } else {
-                        console.log('WARNING - issue ADDING transaction', currentCall);
+                        console.log('WARNING - issue ADDING transaction');
                         failedCalls.push(currentCall);
                     }
                 }, function (error) {
-                    console.log(error);
+                    console.log('ERROR - issue ADDING transaction. Error: ' + error);
                     failedCalls.push(currentCall);
                 });
         });
