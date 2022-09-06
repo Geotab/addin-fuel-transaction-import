@@ -49,6 +49,7 @@ geotab.addin.ftiAddin = function () {
   let transactionsExcel;
   /** The json transactions */
   let transactionsJson;
+  let elProgressDiv = document.getElementById('progressDiv');
   let elProgressText = document.getElementById('progressText');
   let elProgressBar = document.getElementById('progressBar');
 
@@ -167,11 +168,13 @@ geotab.addin.ftiAddin = function () {
    * @param {Boolean} input true to display the input section.
    * @param {Boolean} output true to display the output section.
    * @param {Boolean} error true to display the error section.
+   * @param {Boolean} progress true to display the progress section.
    */
-  function toggleWindowDisplayState(input, output, error) {
+  function toggleWindowDisplayState(input = true, output = false, error = false, progress = false) {
     input ? elInputDiv.classList.remove('ftiHidden') : elInputDiv.classList.add('ftiHidden');
     output ? elOutputDiv.classList.remove('ftiHidden') : elOutputDiv.classList.add('ftiHidden');
     error ? elErrorDiv.classList.remove('ftiHidden') : elErrorDiv.classList.add('ftiHidden');
+    progress ? elProgressDiv.classList.remove('ftiHidden') : elProgressDiv.classList.add('ftiHidden');
   }
 
   /**
@@ -193,7 +196,7 @@ geotab.addin.ftiAddin = function () {
   function setOutputDisplay(title, message) {
     elOutputTitle.innerText = title;
     elOutputMessage.innerText = message;
-    toggleWindowDisplayState(true, true, false);
+    //toggleWindowDisplayState(true, true, false);
   }
 
   /**
@@ -274,6 +277,7 @@ geotab.addin.ftiAddin = function () {
    */
   function importButtonClickEvent() {
     //console.log('transactionsJson: ' + {transactionsJson});
+    toggleWindowDisplayState(true, true, false, true);
     importHelper.importTransactions(api, transactionsJson, elProgressText, elProgressBar)
       .then(result => {
         console.log('Import process success');
