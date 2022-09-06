@@ -49,6 +49,8 @@ geotab.addin.ftiAddin = function () {
   let transactionsExcel;
   /** The json transactions */
   let transactionsJson;
+  let elProgressText = document.getElementById('progressText');
+  let elProgressBar = document.getElementById('progressBar');
 
   /**
    * Manages the provider file selection change event.
@@ -272,7 +274,7 @@ geotab.addin.ftiAddin = function () {
    */
   function importButtonClickEvent() {
     //console.log('transactionsJson: ' + {transactionsJson});
-    importHelper.importTransactions(api, transactionsJson)
+    importHelper.importTransactions(api, transactionsJson, elProgressText, elProgressBar)
       .then(result => {
         console.log('Import process success');
         console.log('Import result: ', result);

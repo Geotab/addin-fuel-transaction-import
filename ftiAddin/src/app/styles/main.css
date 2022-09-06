@@ -6,6 +6,23 @@
     display: block;
 }
 
+.ftiParentDiv {
+    position: relative;
+    display: block;
+}
+
+.ftiProgressBar {
+    width: 100%;
+    height: 20px;
+}
+
+.ftiFormat {
+    position: relative;
+    display: block;
+    width: auto;
+    border: 1px solid black;
+}
+
 .ftiErrorDiv {
     color: red;
 }
