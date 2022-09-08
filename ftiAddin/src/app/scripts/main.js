@@ -9,7 +9,7 @@ geotab.addin.ftiAddin = function () {
   const importHelper = require('./ImportHelper');
   const transactionHelper = require('./TransactionHelper');
   const moment = require('moment-timezone');
-  
+
   let api;
   /** The root container. */
   var elAddin = document.getElementById('ftiAddin');
@@ -275,19 +275,69 @@ geotab.addin.ftiAddin = function () {
   /**
    * Import transactions click event
    */
-  function importButtonClickEvent() {
+  async function importButtonClickEvent() {
     //console.log('transactionsJson: ' + {transactionsJson});
     toggleWindowDisplayState(true, true, false, true);
-    importHelper.importTransactions(api, transactionsJson, elProgressText, elProgressBar)
-      .then(result => {
-        console.log('Import process success');
-        console.log('Import result: ', result);
-        setOutputDisplay('Import Success', 'Transactions imported successfully.');
-      })
-      .catch(error => {
-        console.log('Import process error experienced:');
-        console.log(error);
+    // let output = importHelper.importTransactions(api, transactionsJson, elProgressText, elProgressBar);
+    importHelper.importTrans(api, transactionsJson, elProgressText, elProgressBar, reportErrors);
+    //importHelper.importTransAsync(api, transactionsJson, elProgressText, elProgressBar, reportErrors);
+    //let output = importHelper.importTransAsync(api, transactionsJson, elProgressText, elProgressBar);
+    // output
+    //   .then((output) => {
+    //     console.log('output before: ' + output);
+    //     reportErrors(output);
+    //     console.log('Import transactions completed. Output:');
+    //     console.log('output after: ' + output);
+    //   });
+    // await importHelper.importTransactionsAsync(api, transactionsJson, elProgressText, elProgressBar)
+    //   .then(result => {
+    //     console.log('Import process success');
+    //     console.log('Import result: ', result);
+    //     setOutputDisplay('Import Success', 'Transactions imported successfully.');
+    //   })
+    //   .catch(error => {
+    //     console.log('Import process error experienced:');
+    //     console.log(error);
+    //   });
+  }
+
+  function reportErrors(errors) {
+    if (errors) {
+      let table = document.createElement('table');
+      let thead = document.createElement('thead');
+      let tbody = document.createElement('tbody');
+      table.id = 'myTable';
+
+      table.appendChild(thead);
+      table.appendChild(tbody);
+
+      // let row = document.createElement('tr');
+      // let cell = document.createElement('td')
+      // cell.innerHTML = 'cell 1';
+      // let cell1 = document.createElement('td')
+      // cell1.innerHTML = 'cell 2';
+      // row.appendChild(cell);
+      // row.appendChild(cell1);
+      // tbody.appendChild(row);
+
+      errors.forEach((error, i) => {
+        let row = document.createElement('tr');
+        // let cell = document.createElement('td')
+        let cell = document.createElement('td')
+        cell.innerHTML = error[0];
+        let cell1 = document.createElement('td')
+        cell1.innerHTML = error[1];
+        row.appendChild(cell);
+        row.appendChild(cell1);
+        tbody.appendChild(row);
       });
+      //setErrorDisplay('Errors', errors.toString());
+      elErrorTitle.innerText = 'Errors';
+      elErrorDiv.appendChild(table);
+      toggleWindowDisplayState(true, false, true, true);
+    } else {
+      console.log('No erros reported...');
+    }
   }
 
   /**
