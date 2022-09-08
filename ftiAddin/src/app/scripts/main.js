@@ -58,6 +58,7 @@ geotab.addin.ftiAddin = function () {
    * @param {*} event The event object.
    */
   var providerFileSelectionChangeEvent = async function (event) {
+    console.log('providerFile change event');
     toggleWindowDisplayState(true, false, false);
     let file = elProviderFile.files[0];
     if (file) {
@@ -70,8 +71,9 @@ geotab.addin.ftiAddin = function () {
    * Clears the fuel provider dropdown when the config file selection receives the focus.
    */
   function providerFileFocusEvent() {
+    console.log('providerFile focus event');
     toggleWindowDisplayState(true, false, false);
-    initialiseProviderDropdown('None selected');
+    //initialiseProviderDropdown('None selected');
   }
 
   /**
@@ -111,6 +113,7 @@ geotab.addin.ftiAddin = function () {
    * @param {jsonObject} providerConfigurationFile The provider configuration file.
    */
   function populateProviderDropdown(providerConfigurationFile) {
+    console.log('populateProviderDropdown');
     if (providerConfigurationFile && providerConfigurationFile.providers) {
       initialiseProviderDropdown('Choose provider');
       let option;

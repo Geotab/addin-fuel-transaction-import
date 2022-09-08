@@ -136,7 +136,7 @@ function importTransAsync(api, transactions, elProgressText, elprogressBar, call
 
 async function importTrans(api, transactions, elProgressText, elprogressBar, callback) {
     const transactionCount = transactions.length;
-    let currentCount = 0;
+    let currentCount = 1;
     // prepare the calls
     var currentCall = [];
     var failedCalls = [];
@@ -148,14 +148,14 @@ async function importTrans(api, transactions, elProgressText, elprogressBar, cal
             api.call('Add', currentCall,
                 function (result) {
                     elprogressBar.value = (currentCount / transactionCount) * 100;
-                    elProgressText.innerText = currentCount + ' transaction of ' + transactionCount + ' processed...';
+                    elProgressText.innerText = currentCount + ' transaction/s of ' + transactionCount + ' processed...';
                     currentCount++;
                     resolve(null);
                 }, function (error) {
                     console.log('ERROR - issue ADDING transaction. Error: ' + error);
                     failedCalls.push([JSON.stringify(currentCall), error]);
                     elprogressBar.value = (currentCount / transactionCount) * 100;
-                    elProgressText.innerText = currentCount + ' transaction of ' + transactionCount + ' processed...';
+                    elProgressText.innerText = currentCount + ' transaction/s of ' + transactionCount + ' processed...';
                     currentCount++;
                     resolve(null);
                 });
