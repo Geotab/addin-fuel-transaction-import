@@ -23,57 +23,44 @@
         </div>
         <hr style="border-top: 3px solid #5293c6">
       </header>
-        <div id="parentDiv">
-          <h2 class="geotabPageName">Input Criteria</h2>
-          <div id="inputDiv">
-            <!-- <div id="inputDiv" class="geotabFieldset ftiInputDiv"> -->
-            <div class="geotabField">
-              <label for="providerFile">Select the configuration File (JSON): </label>
-              <input type="file" name="providerFile" id="providerFile" accept=".json">
-            </div>
-            <div class="geotabField">
-              <label for="providerDropdown">Fuel provider:</label>
-              <select name="providerDropdown" id="providerDropdown">
-                <option value="none">None selected</option>
-              </select>
-            </div>
-            <div class="geotabField">
-              <label for="importFile">Select the import File (XLS, XLSX, XLT, CSV): </label>
-              <input type="file" name="importFile" id="importFile" accept=".xls,.xlsx,.xlt,.csv">
-            </div>
-            <div class="geotabField">
-              <label for="timeZoneDropdown">Timezone: </label>
-              <select id="timeZoneDropdown"></select>
-            </div>
-            <div class="geotabField">
-              <button id="parseButton" class="geotabButton">Parse</button>
-              <!-- <div class="horizontalButtonSet">
-                <button id="parseButton" class="geotabButton">Parse</button>
-                <button id="importButton" class="geotabButton">Import</button>
-              </div> -->
-            </div>
-            <div class="geotabField">
-              <button id="importButton" class="geotabButton">Import</button>
-            </div>
-          </div>
-          <div id="progressDiv" class="ftiHidden">
-            <h3>Progress</h3>
-            <progress id="progressBar" max="100" value="0" class="ftiProgressBar"></progress>
-            <p id="progressText"></p>
+      <div id="parentDiv">
+        <h2 class="geotabPageName">Input Criteria</h2>
+        <div id="inputDiv">
+          <!-- <div id="inputDiv" class="geotabFieldset ftiInputDiv"> -->
+          <div class="geotabField">
+            <label for="providerFile">Select the configuration File (JSON): </label>
+            <input type="file" name="providerFile" id="providerFile" accept=".json">
           </div>
           <div class="geotabField">
-            <div id="outputDiv" class="ftiOutputDiv">
-              <h1 id="outputTitle"></h1>
-              <p id="outputMessage"></p>
-            </div>
+            <label for="providerDropdown">Fuel provider:</label>
+            <select name="providerDropdown" id="providerDropdown">
+              <option value="none">None selected</option>
+            </select>
           </div>
           <div class="geotabField">
-            <div id="errorDiv" class="ftiErrorDiv">
-              <h1 id="errorTitle"></h1>
-              <p id="errorMessage"></p>
-            </div>
+            <label for="importFile">Select the import File (XLS, XLSX, XLT, CSV): </label>
+            <input type="file" name="importFile" id="importFile" accept=".xls,.xlsx,.xlt,.csv">
+          </div>
+          <div class="geotabField">
+            <label for="timeZoneDropdown">Timezone: </label>
+            <select id="timeZoneDropdown"></select>
           </div>
         </div>
+        <div id="importButtonDiv" class="ftiImportButtonDiv">
+          <button id="importButton" class="ftiImportButton">Import</button>
+        </div>
+        <div id="progressDiv" class="ftiHidden">
+          <h3>Progress</h3>
+          <progress id="progressBar" max="100" value="0" class="ftiProgressBar"></progress>
+          <p id="progressText"></p>
+        </div>
+        <!-- <div class="geotabField"> -->
+        <div id="outputDiv" class="ftiHidden">
+          <h1 id="outputTitle"></h1>
+          <p id="outputMessage"></p>
+        </div>
+        <!-- </div> -->
+      </div>
     </div>
   </div>
 

@@ -23,18 +23,10 @@ geotab.addin.ftiAddin = function () {
   let elInputDiv = document.getElementById('inputDiv');
   /** The outputDiv section */
   let elOutputDiv = document.getElementById('outputDiv');
-  /** The errorDiv section */
-  let elErrorDiv = document.getElementById('errorDiv');
-  /** The error title element */
-  let elErrorTitle = document.getElementById('errorTitle');
-  /** The error text message element */
-  let elErrorMessage = document.getElementById('errorMessage');
   /** The output title element */
   let elOutputTitle = document.getElementById('outputTitle');
   /** The output message element */
   let elOutputMessage = document.getElementById('outputMessage');
-  /** The parse button */
-  let elParseButton = document.getElementById('parseButton');
   /** The import button */
   let elImportButton = document.getElementById('importButton');
   /** The import file input element */
@@ -125,7 +117,7 @@ geotab.addin.ftiAddin = function () {
     } else {
       let title = 'Alert';
       let alert = 'no providers found...';
-      setErrorDisplay(title, alert);
+      setOutputDisplay(title, alert);
     }
   }
 
@@ -173,22 +165,11 @@ geotab.addin.ftiAddin = function () {
    * @param {Boolean} error true to display the error section.
    * @param {Boolean} progress true to display the progress section.
    */
-  function toggleWindowDisplayState(input = true, output = false, error = false, progress = false) {
+  function toggleWindowDisplayState(input = true, output = false, progress = false) {
     input ? elInputDiv.classList.remove('ftiHidden') : elInputDiv.classList.add('ftiHidden');
     output ? elOutputDiv.classList.remove('ftiHidden') : elOutputDiv.classList.add('ftiHidden');
-    error ? elErrorDiv.classList.remove('ftiHidden') : elErrorDiv.classList.add('ftiHidden');
+    // error ? elErrorDiv.classList.remove('ftiHidden') : elErrorDiv.classList.add('ftiHidden');
     progress ? elProgressDiv.classList.remove('ftiHidden') : elProgressDiv.classList.add('ftiHidden');
-  }
-
-  /**
-   * Sets the errorDiv title and text elements.
-   * @param {string} title The title heading text element.
-   * @param {string} message The error message text element.
-   */
-  function setErrorDisplay(title, message) {
-    elErrorTitle.innerText = title;
-    elErrorMessage.innerText = message;
-    toggleWindowDisplayState(true, false, true);
   }
 
   /**
@@ -209,18 +190,18 @@ geotab.addin.ftiAddin = function () {
     if (elImportFile) {
       importFile = elImportFile.files[0];
     } else {
-      setErrorDisplay('No import file selected', 'Please select an import file prior to this operation.');
+      setOutputDisplay('No import file selected', 'Please select an import file prior to this operation.');
     }
   }
 
   /**
    * The parse button click event.
    */
-  async function parseClickEvent() {
+  async function importButtonClickEvent() {
     getImportFile();
     // Check initial state.
     if (!importFile) {
-      setErrorDisplay('File Not Found', 'Please select an import file.');
+      setOutputDisplay('File Not Found', 'Please select an import file.');
       return;
     }
 
@@ -241,7 +222,7 @@ geotab.addin.ftiAddin = function () {
         console.log('validation result, isValid: ' + result.isValid);
         console.log('validation result, reason: ' + result.reason);
         if (result.isValid === false) {
-          setErrorDisplay('Configuration File Validation Problem', result.reason)
+          setOutputDisplay('Configuration File Validation Problem', result.reason)
           return;
         }
         // parse the configuration defaults
@@ -260,7 +241,13 @@ geotab.addin.ftiAddin = function () {
       })
       .then((results) => {
         transactionsJson = results;
-        setOutputDisplay('Ready for Import', 'The config and import files have been set up ready for the import operation. Hit the Import button to execute the import process.');
+        toggleWindowDisplayState(true, true, false, true);
+        if (transactionsJson) {
+          importHelper.importTransactionsAsync(api, transactionsJson, elProgressText, elProgressBar, reportErrors);
+        } else {
+          setOutputDisplay('Data Issue', 'No transaction found. Please try again...');
+        }
+        // setOutputDisplay('Ready for Import', 'The config and import files have been set up ready for the import operation. Hit the Import button to execute the import process.');
       })
       .catch(error => {
         console.log('Preview process error experienced:');
@@ -278,31 +265,30 @@ geotab.addin.ftiAddin = function () {
   /**
    * Import transactions click event
    */
-  async function importButtonClickEvent() {
-    //console.log('transactionsJson: ' + {transactionsJson});
-    toggleWindowDisplayState(true, true, false, true);
-    // let output = importHelper.importTransactions(api, transactionsJson, elProgressText, elProgressBar);
-    importHelper.importTransactionsAsync(api, transactionsJson, elProgressText, elProgressBar, reportErrors);
-    //importHelper.importTransAsync(api, transactionsJson, elProgressText, elProgressBar, reportErrors);
-    //let output = importHelper.importTransAsync(api, transactionsJson, elProgressText, elProgressBar);
-    // output
-    //   .then((output) => {
-    //     console.log('output before: ' + output);
-    //     reportErrors(output);
-    //     console.log('Import transactions completed. Output:');
-    //     console.log('output after: ' + output);
-    //   });
-    // await importHelper.importTransactionsAsync(api, transactionsJson, elProgressText, elProgressBar)
-    //   .then(result => {
-    //     console.log('Import process success');
-    //     console.log('Import result: ', result);
-    //     setOutputDisplay('Import Success', 'Transactions imported successfully.');
-    //   })
-    //   .catch(error => {
-    //     console.log('Import process error experienced:');
-    //     console.log(error);
-    //   });
-  }
+  // async function importButtonClickEvent() {
+  //   //console.log('transactionsJson: ' + {transactionsJson});
+  //   toggleWindowDisplayState(true, true, false, true);
+  //   importHelper.importTransactionsAsync(api, transactionsJson, elProgressText, elProgressBar, reportErrors);
+  //   //importHelper.importTransAsync(api, transactionsJson, elProgressText, elProgressBar, reportErrors);
+  //   //let output = importHelper.importTransAsync(api, transactionsJson, elProgressText, elProgressBar);
+  //   // output
+  //   //   .then((output) => {
+  //   //     console.log('output before: ' + output);
+  //   //     reportErrors(output);
+  //   //     console.log('Import transactions completed. Output:');
+  //   //     console.log('output after: ' + output);
+  //   //   });
+  //   // await importHelper.importTransactionsAsync(api, transactionsJson, elProgressText, elProgressBar)
+  //   //   .then(result => {
+  //   //     console.log('Import process success');
+  //   //     console.log('Import result: ', result);
+  //   //     setOutputDisplay('Import Success', 'Transactions imported successfully.');
+  //   //   })
+  //   //   .catch(error => {
+  //   //     console.log('Import process error experienced:');
+  //   //     console.log(error);
+  //   //   });
+  // }
 
   function reportErrors(errors) {
     if (errors) {
@@ -313,15 +299,6 @@ geotab.addin.ftiAddin = function () {
 
       table.appendChild(thead);
       table.appendChild(tbody);
-
-      // let row = document.createElement('tr');
-      // let cell = document.createElement('td')
-      // cell.innerHTML = 'cell 1';
-      // let cell1 = document.createElement('td')
-      // cell1.innerHTML = 'cell 2';
-      // row.appendChild(cell);
-      // row.appendChild(cell1);
-      // tbody.appendChild(row);
 
       errors.forEach((error, i) => {
         let row = document.createElement('tr');
@@ -334,10 +311,9 @@ geotab.addin.ftiAddin = function () {
         row.appendChild(cell1);
         tbody.appendChild(row);
       });
-      //setErrorDisplay('Errors', errors.toString());
-      elErrorTitle.innerText = 'Errors';
-      elErrorDiv.appendChild(table);
-      toggleWindowDisplayState(true, false, true, true);
+      elOutputTitle.innerText = 'Errors';
+      elOutputDiv.appendChild(table);
+      toggleWindowDisplayState(true, true, true);
     } else {
       console.log('No erros reported...');
     }
@@ -370,7 +346,7 @@ geotab.addin.ftiAddin = function () {
     elProviderFile.addEventListener('change', providerFileSelectionChangeEvent, false);
     elProviderFile.addEventListener('focus', providerFileFocusEvent, false);
     elProviderDropdown.addEventListener('change', providerDropdownChangeEvent, false);
-    elParseButton.addEventListener('click', parseClickEvent, false);
+    // elParseButton.addEventListener('click', parseClickEvent, false);
     elImportFile.addEventListener('focus', importFileFocusEvent, false);
     elImportButton.addEventListener('click', importButtonClickEvent, false);
   }
@@ -382,7 +358,7 @@ geotab.addin.ftiAddin = function () {
     elProviderFile.removeEventListener('change', providerFileSelectionChangeEvent, false);
     elProviderFile.removeEventListener('focus', providerFileFocusEvent, false);
     elProviderDropdown.removeEventListener('change', providerDropdownChangeEvent, false);
-    elParseButton.removeEventListener('click', parseClickEvent, false);
+    // elParseButton.removeEventListener('click', parseClickEvent, false);
     elImportFile.removeEventListener('focus', importFileFocusEvent, false);
     elImportButton.removeEventListener('click', importButtonClickEvent, false);
   }

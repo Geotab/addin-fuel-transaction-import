@@ -23,6 +23,16 @@
     border: 1px solid black;
 }
 
+.ftiImportButton {
+    width: 200px;
+    height: 50px;
+}
+
+.ftiImportButtonDiv {
+    clear: both;
+    padding: 20px;
+}
+
 .ftiErrorDiv {
     color: red;
 }
