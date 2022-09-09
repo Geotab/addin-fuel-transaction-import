@@ -162,13 +162,11 @@ geotab.addin.ftiAddin = function () {
    * Toggles the window display state for the 3 main sections - input, output and error.
    * @param {Boolean} input true to display the input section.
    * @param {Boolean} output true to display the output section.
-   * @param {Boolean} error true to display the error section.
    * @param {Boolean} progress true to display the progress section.
    */
   function toggleWindowDisplayState(input = true, output = false, progress = false) {
     input ? elInputDiv.classList.remove('ftiHidden') : elInputDiv.classList.add('ftiHidden');
     output ? elOutputDiv.classList.remove('ftiHidden') : elOutputDiv.classList.add('ftiHidden');
-    // error ? elErrorDiv.classList.remove('ftiHidden') : elErrorDiv.classList.add('ftiHidden');
     progress ? elProgressDiv.classList.remove('ftiHidden') : elProgressDiv.classList.add('ftiHidden');
   }
 
@@ -241,7 +239,7 @@ geotab.addin.ftiAddin = function () {
       })
       .then((results) => {
         transactionsJson = results;
-        toggleWindowDisplayState(true, true, false, true);
+        toggleWindowDisplayState(true, true, true);
         if (transactionsJson) {
           importHelper.importTransactionsAsync(api, transactionsJson, elProgressText, elProgressBar, reportErrors);
         } else {
