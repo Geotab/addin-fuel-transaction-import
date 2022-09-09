@@ -282,7 +282,7 @@ geotab.addin.ftiAddin = function () {
     //console.log('transactionsJson: ' + {transactionsJson});
     toggleWindowDisplayState(true, true, false, true);
     // let output = importHelper.importTransactions(api, transactionsJson, elProgressText, elProgressBar);
-    importHelper.importTrans(api, transactionsJson, elProgressText, elProgressBar, reportErrors);
+    importHelper.importTransactionsAsync(api, transactionsJson, elProgressText, elProgressBar, reportErrors);
     //importHelper.importTransAsync(api, transactionsJson, elProgressText, elProgressBar, reportErrors);
     //let output = importHelper.importTransAsync(api, transactionsJson, elProgressText, elProgressBar);
     // output
