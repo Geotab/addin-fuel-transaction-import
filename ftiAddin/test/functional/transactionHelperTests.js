@@ -36,7 +36,7 @@ describe('Transaction parsing tests', () => {
         assert.isTrue(entity.volume === 10.236);
     });
     it('test transaction parsing - all should pass', () => {
-        entity = transactionHelper.parseTransaction(transactionsExcelMock[4], configurationMock.providers[0], transactionsExcelMock[0]);
+        entity = transactionHelper.parseTransaction(transactionsExcelMock[4], configurationMock.providers[0], transactionsExcelMock[0], 'europe/berlin');
         assert.isTrue(entity.dateTime === 'CDE1');
     });
     it('test multiple transactions', () => {

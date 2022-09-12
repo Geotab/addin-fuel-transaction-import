@@ -3,11 +3,12 @@ const converters = require('./Converters');
 
 /**
  * Receives the excel transactions and produces the json formated transaction entities.
- * @param {*} transactionsExcel 
- * @param {*} configuration 
+ * @param {*} transactionsExcel The transactions in excel format.
+ * @param {*} configuration The currently selected fuel provider configuration.
+ * @param {String} timeZone The currently selected time zone.
  * @returns The formatted transactions as an array of json objects.
  */
-function ParseAndBuildTransactions(transactionsExcel, configuration) {
+function ParseAndBuildTransactions(transactionsExcel, configuration, timeZone) {
     return new Promise((resolve, reject) => {
         let transactionsOutput = [];
         let mapping;
@@ -17,7 +18,7 @@ function ParseAndBuildTransactions(transactionsExcel, configuration) {
                 // get the mapping (or header) to be used in the transaction parsing process that follows.
                 mapping = transaction;
             }else{
-                entity = parseTransaction(transaction, configuration, mapping);
+                entity = parseTransaction(transaction, configuration, mapping, timeZone);
                 console.log('parsed transaction entity: ' + entity);
                 transactionsOutput.push(entity);
             }
@@ -40,11 +41,12 @@ function getObjKey(obj, value) {
 /**
  * Parse each transaction property.
  * @param {*} transaction The transaction to parse.
- * @param {*} configuration The configuration settings.
- * @param {*} mapping The mapping object.
+ * @param {*} configuration The configuration settings for this instance.
+ * @param {*} mapping The mapping object (or transaction header mappings) e.g. "ColumnA": "cardNumber" - indicates the excel column mapped to the fuel transaction property.
+ * @param {String} timeZone The currently selected time zone.
  * @returns A FuelTransaction entity ready to be imported into the database.
  */
-function parseTransaction(transaction, configuration, mapping) {
+function parseTransaction(transaction, configuration, mapping, timeZone) {
     // let transOutput;
     let entity = {};
     let value;
@@ -98,7 +100,7 @@ function parseTransaction(transaction, configuration, mapping) {
                     entity[keyItem] = parsers.parseFloatValue(value);
                     break;
                 case 'dateTime':
-                    entity[keyItem] = parsers.parseDate(value, configuration.dateFormat);
+                    entity[keyItem] = parsers.parseDate(value, configuration.dateFormat, timeZone);
                     //entity[keyItem] = parsers.parseDateValue(value);
                     break;
                 case 'odometer':

@@ -76,14 +76,15 @@ var parseDateValue = function (date) {
  * input - date and format. the date must be checked against the format and ensured it is a valid date.
  * @param {*} date 
  * @param {*} format 
+ * @param {String} timeZone The currently selected time zone.
  * @returns if a valid date then it is returned otherwise null if an invalid date.
  */
-function parseDate(date, format){
+function parseDate(date, format, timeZone){
     // parses and returns the date if valid otherwise reports a moment invalid date type.
-    let myDate = moment(date, format);
-    if (myDate.isValid())
-    {
-        return date;
+    // let myDate = moment(date, format);
+    // let myDate = moment.tz(date, format, timeZone).format();
+    if(moment.tz(date, format, timeZone).isValid()){
+        return moment.tz(date, format, timeZone).toISOString();
     } else {
         return null;
     }

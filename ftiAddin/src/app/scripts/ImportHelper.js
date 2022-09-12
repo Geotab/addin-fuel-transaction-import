@@ -25,7 +25,7 @@ async function importTransactionsAsync(api, transactions, elProgressText, elprog
                     resolve(null);
                 }, function (error) {
                     console.log('ERROR - issue ADDING transaction. Error: ' + error);
-                    failedCalls.push([JSON.stringify(currentCall), error]);
+                    failedCalls.push([JSON.stringify(currentCall.entity), error]);
                     elprogressBar.value = (currentCount / transactionCount) * 100;
                     elProgressText.innerText = currentCount + ' transaction/s of ' + transactionCount + ' processed...';
                     currentCount++;

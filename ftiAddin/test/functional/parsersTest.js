@@ -20,15 +20,21 @@ describe('Parsers', function(){
     it('Float parsing', function(){
         assert.equal(parsers.parseFloatValue('test'), 0);
     });
-    it('Date parsing', function(){
-        assert.equal(parsers.parseDateValue('2/15/2022'), '2022-02-15T00:00:00.000Z');
-    });
+    // it('Date parsing', function(){
+    //     assert.equal(parsers.parseDateValue('2/15/2022'), '2022-02-15T00:00:00.000Z');
+    // });
     it('String length parsing', function(){
         assert.isTrue(parsers.parseStringLength('This is a long string', 4) === 'This');
     });
-    // it('Date parsing', function(){
-    //     assert.equal(parsers.parseDateValue('16/2/2022'), '2022-02-16T00:00:00.000Z');
-    // });
+    it('Date parsing', function(){
+        assert.equal(parsers.parseDate('16/2/2022','DD/M/YYYY', 'America/Los_Angeles'), '2022-02-16T08:00:00.000Z');
+    });
+    it('Date parsing', function(){
+        assert.isTrue(parsers.parseDate('16/2/2022','DD/BB/YYYY', 'America/Los_Angeles'), '2022-02-16T08:00:00.000Z');
+    });
+    it('Date parsing', function(){
+        assert.isTrue(parsers.parseDate('16/2/2022','DD-MM-YYYY', 'America/Los_Angeles'), null);
+    });
     // it('Date parsing', function(){
     //     assert.equal(parsers.parseDateValue('16/2/2022 16:23'), '2022-02-16T16:23:00.000Z');
     // });

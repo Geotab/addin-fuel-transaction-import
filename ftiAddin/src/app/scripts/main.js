@@ -193,17 +193,19 @@ geotab.addin.ftiAddin = function () {
   }
 
   /**
-   * The parse button click event.
+   * The import button click event.
    */
   async function importButtonClickEvent() {
+    
     getImportFile();
+
     // Check initial state.
     if (!importFile) {
       setOutputDisplay('File Not Found', 'Please select an import file.');
       return;
     }
 
-    // Execute the pasing process - starts with the excel process
+    // Execute the parsing/import process - starts with the excel process
     excelHelper.convertExcelToJsonPromise(api, importFile)
       .then(request => {
         // return the parsed transaction results to the next step.
@@ -235,7 +237,7 @@ geotab.addin.ftiAddin = function () {
       })
       .then(result => {
         // parse and get the json transaction.
-        return transactionHelper.ParseAndBuildTransactions(transactionsExcel, configuration);
+        return transactionHelper.ParseAndBuildTransactions(transactionsExcel, configuration, elTimeZoneDropdown.value);
       })
       .then((results) => {
         transactionsJson = results;
@@ -260,34 +262,6 @@ geotab.addin.ftiAddin = function () {
     toggleWindowDisplayState(true, false, false);
   }
 
-  /**
-   * Import transactions click event
-   */
-  // async function importButtonClickEvent() {
-  //   //console.log('transactionsJson: ' + {transactionsJson});
-  //   toggleWindowDisplayState(true, true, false, true);
-  //   importHelper.importTransactionsAsync(api, transactionsJson, elProgressText, elProgressBar, reportErrors);
-  //   //importHelper.importTransAsync(api, transactionsJson, elProgressText, elProgressBar, reportErrors);
-  //   //let output = importHelper.importTransAsync(api, transactionsJson, elProgressText, elProgressBar);
-  //   // output
-  //   //   .then((output) => {
-  //   //     console.log('output before: ' + output);
-  //   //     reportErrors(output);
-  //   //     console.log('Import transactions completed. Output:');
-  //   //     console.log('output after: ' + output);
-  //   //   });
-  //   // await importHelper.importTransactionsAsync(api, transactionsJson, elProgressText, elProgressBar)
-  //   //   .then(result => {
-  //   //     console.log('Import process success');
-  //   //     console.log('Import result: ', result);
-  //   //     setOutputDisplay('Import Success', 'Transactions imported successfully.');
-  //   //   })
-  //   //   .catch(error => {
-  //   //     console.log('Import process error experienced:');
-  //   //     console.log(error);
-  //   //   });
-  // }
-
   function reportErrors(errors) {
     if (errors) {
       let table = document.createElement('table');
@@ -296,6 +270,16 @@ geotab.addin.ftiAddin = function () {
       table.id = 'myTable';
 
       table.appendChild(thead);
+
+      let tr = document.createElement('tr');
+      let th = document.createElement('th');
+      let th1 = document.createElement('th');
+      th.innerHTML = 'Transaction';
+      tr.appendChild(th);
+      th1.innerHTML = 'Exception';
+      tr.appendChild(th1);
+      thead.appendChild(tr);
+
       table.appendChild(tbody);
 
       errors.forEach((error, i) => {
@@ -311,6 +295,7 @@ geotab.addin.ftiAddin = function () {
       });
       elOutputTitle.innerText = 'Errors';
       elOutputDiv.appendChild(table);
+      table.className = 'ftiTable';
       toggleWindowDisplayState(true, true, true);
     } else {
       console.log('No erros reported...');
@@ -344,7 +329,6 @@ geotab.addin.ftiAddin = function () {
     elProviderFile.addEventListener('change', providerFileSelectionChangeEvent, false);
     elProviderFile.addEventListener('focus', providerFileFocusEvent, false);
     elProviderDropdown.addEventListener('change', providerDropdownChangeEvent, false);
-    // elParseButton.addEventListener('click', parseClickEvent, false);
     elImportFile.addEventListener('focus', importFileFocusEvent, false);
     elImportButton.addEventListener('click', importButtonClickEvent, false);
   }
@@ -356,7 +340,6 @@ geotab.addin.ftiAddin = function () {
     elProviderFile.removeEventListener('change', providerFileSelectionChangeEvent, false);
     elProviderFile.removeEventListener('focus', providerFileFocusEvent, false);
     elProviderDropdown.removeEventListener('change', providerDropdownChangeEvent, false);
-    // elParseButton.removeEventListener('click', parseClickEvent, false);
     elImportFile.removeEventListener('focus', importFileFocusEvent, false);
     elImportButton.removeEventListener('click', importButtonClickEvent, false);
   }
