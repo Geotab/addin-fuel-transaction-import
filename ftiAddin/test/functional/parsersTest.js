@@ -26,14 +26,14 @@ describe('Parsers', function(){
     it('String length parsing', function(){
         assert.isTrue(parsers.parseStringLength('This is a long string', 4) === 'This');
     });
-    it('Date parsing', function(){
+    it('Date parsing - should work', function(){
         assert.equal(parsers.parseDate('16/2/2022','DD/M/YYYY', 'America/Los_Angeles'), '2022-02-16T08:00:00.000Z');
     });
-    it('Date parsing', function(){
-        assert.isTrue(parsers.parseDate('16/2/2022','DD/BB/YYYY', 'America/Los_Angeles'), '2022-02-16T08:00:00.000Z');
+    it('Date parsing - not sure', function(){
+        assert.equal(parsers.parseDate('16/2/2022','M/D/YYYY', 'America/Los_Angeles'), null);
     });
-    it('Date parsing', function(){
-        assert.isTrue(parsers.parseDate('16/2/2022','DD-MM-YYYY', 'America/Los_Angeles'), null);
+    it('Date parsing - checking', function(){
+        assert.equal(parsers.parseDate('16/2/2022','garbage', 'America/Los_Angeles'), null);
     });
     // it('Date parsing', function(){
     //     assert.equal(parsers.parseDateValue('16/2/2022 16:23'), '2022-02-16T16:23:00.000Z');

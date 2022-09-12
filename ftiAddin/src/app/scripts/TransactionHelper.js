@@ -47,14 +47,26 @@ function getObjKey(obj, value) {
  * @returns A FuelTransaction entity ready to be imported into the database.
  */
 function parseTransaction(transaction, configuration, mapping, timeZone) {
-    // let transOutput;
+
+    if (transaction === undefined){
+        throw new Error('parseTransaction transaction argument not submitted.');
+    }
+
+    if (configuration === undefined){
+        throw new Error('parseTransaction configuration argument not submitted.');
+    }
+
+    if (mapping === undefined){
+        throw new Error('parseTransaction mapping argument not submitted.');
+    }
+
+    if (timeZone === undefined){
+        throw new Error('parseTransaction timeZone argument not submitted.');
+    }
+
     let entity = {};
     let value;
-    // configuration.unitVolumeLiters, configuration.unitOdoKm, configuration.isCellDateType
-    // configuration.dateFormat, configuration.timeFormat, configuration.currencyCodeMapped;
-
     console.log('Parsing provider: ' + configuration.Name);
-
     let dateFormat = configuration.dateFormat;
     if (configuration.timeFormat){
         dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;

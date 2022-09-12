@@ -178,7 +178,7 @@ geotab.addin.ftiAddin = function () {
   function setOutputDisplay(title, message) {
     elOutputTitle.innerText = title;
     elOutputMessage.innerText = message;
-    //toggleWindowDisplayState(true, true, false);
+    toggleWindowDisplayState(true, true, false);
   }
 
   /**
@@ -252,6 +252,7 @@ geotab.addin.ftiAddin = function () {
       .catch(error => {
         console.log('Preview process error experienced:');
         console.log(error);
+        setOutputDisplay('Unexpected Error', error);
       });
   }
 
