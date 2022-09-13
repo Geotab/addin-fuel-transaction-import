@@ -32,8 +32,17 @@ describe('Parsers', function(){
     it('Date parsing - not sure', function(){
         assert.equal(parsers.parseDate('16/2/2022','M/D/YYYY', 'America/Los_Angeles'), null);
     });
-    it('Date parsing - checking', function(){
+    it('Date parsing - checking 1', function(){
         assert.equal(parsers.parseDate('16/2/2022','garbage', 'America/Los_Angeles'), null);
+    });
+    it('Date parsing - checking 2', function(){
+        assert.equal(parsers.parseDate('16/2/2022 10:00:00','d/m/y', 'America/Los_Angeles'), null);
+    });
+    it('Date parsing - checking 3', function(){
+        assert.equal(parsers.parseDate('16/2/2022 10:00:00','DD/MM/YYYY HH:mm:ss', 'America/Los_Angeles'), '2022-02-16T18:00:00.000Z');
+    });
+    it('Date parsing - minimum character check', function(){
+        assert.equal(parsers.parseDate('220225','YYMMDD', 'America/Los_Angeles'), '2022-02-25T08:00:00.000Z');
     });
     // it('Date parsing', function(){
     //     assert.equal(parsers.parseDateValue('16/2/2022 16:23'), '2022-02-16T16:23:00.000Z');
