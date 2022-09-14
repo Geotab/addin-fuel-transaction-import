@@ -90,6 +90,42 @@ function parseDate(date, format, timeZone){
     }
 }
 
+function parseDateFormat(format) {
+    let output = {
+        "ReturnValue": false,
+        "Problem": ""
+    };
+    let regex = new RegExp('^(?=.*DD)(?=.*MM)(?=.*YYYY).*$');
+    // Must contain - CAPITAL YYYY, MM and DD
+    if (regex.test(format)) {
+        console.log('Contains - CAPITAL YYYY, MM and DD')
+    } else {
+        output.ReturnValue = false;
+        output.Problem = 'Does not contain CAPITAL YYYY, MM and DD';
+        console.log(output.Problem)
+        return output;
+    }
+    // If longer than 11 characters then must contain h and m (any case)
+    if (format.length > 11){
+        regex = new RegExp('^(?=.*[H|h])(?=.*m).*$');
+        if (regex.test(format)) {
+            console.log('Longer than 11 characters then must contain h and m = TRUE')
+        } else {
+            output.ReturnValue = false;
+            output.Problem = 'Longer than 11 characters and does not contain h and m.';
+            console.log(output.Problem)
+            return output;
+        }
+    }
+    // Only characters allowed -  Y, M, D, h, m, s, S or Z
+    // Min number of characters = 6
+    // Max number of characters = 24
+
+    // all rules satisfied so return true
+    output.ReturnValue = true;
+    return output;
+}
+
 /**
  * Gets the headings from the transaction data
  * @param {*} data 
@@ -144,5 +180,6 @@ module.exports = {
     parseDateValue,
     parseDate,
     getHeadings,
-    addBlanckColumn
+    addBlanckColumn,
+    parseDateFormat
 }

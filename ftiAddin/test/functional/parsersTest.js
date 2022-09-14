@@ -44,13 +44,29 @@ describe('Parsers', function(){
     it('Date parsing - minimum character check', function(){
         assert.equal(parsers.parseDate('220225','YYMMDD', 'America/Los_Angeles'), '2022-02-25T08:00:00.000Z');
     });
-    // it('Date parsing', function(){
-    //     assert.equal(parsers.parseDateValue('16/2/2022 16:23'), '2022-02-16T16:23:00.000Z');
-    // });
-    // it('Date parsing', function(){
-    //     assert.equal(parsers.parseDateValue('16/02/2022'), '2022-02-16T00:00:00.000Z');
-    // });
-    // it('Date parsing', function(){
-    //     assert.equal(parsers.parseDateValue('16/2/22'), '2022-02-16T00:00:00.000Z');
-    // });
+    it('Date format parsing', function() {
+        assert.isFalse(parsers.parseDateFormat('DMY').ReturnValue);
+    });
+    it('Date format parsing', function() {
+        assert.isFalse(parsers.parseDateFormat('YDM').ReturnValue);
+    });
+    it('Date format parsing', function() {
+        assert.isFalse(parsers.parseDateFormat('MDY').ReturnValue);
+    });
+    it('Date format parsing', function() {
+        assert.isFalse(parsers.parseDateFormat('DDMMYY').ReturnValue);
+    });
+    it('Date format parsing', function() {
+        assert.isFalse(parsers.parseDateFormat('MMYY').ReturnValue);
+    });
+    it('Date format parsing', function() {
+        assert.isTrue(parsers.parseDateFormat('DDMMYYYY').ReturnValue);
+    });
+    it('Date format parsing', function() {
+        assert.isTrue(parsers.parseDateFormat('MMDDYYYY').ReturnValue);
+    });
+    it('Date format parsing', function() {
+        assert.isTrue(parsers.parseDateFormat('YYYYMMDD').ReturnValue);
+    });
+
 });
