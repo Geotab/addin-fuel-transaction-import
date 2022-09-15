@@ -6,7 +6,7 @@
     "url": "ftiAddin.html",
     "path": "",
     "menuName": {
-      "en": "fuel transaction addin"
+      "en": "FTI 4.0.0 GitHub"
     },
     "icon": "images/icon.svg"
   }],
@@ -14,7 +14,7 @@
   "dev": {
     "root": "ftiAddin",
     "dist": {
-      "host": "https://www.example.com/myaddin/"
+      "host": "https://cdn.jsdelivr.net/gh/brettwgh/ftiAddin@main/ftiAddin/dist/"
     }
   }
 }
