@@ -4,12 +4,12 @@
   "version": "4.0.0",
   "items": [
     {
-      "url": "https://www.example.com/myaddin/ftiAddin.html",
+      "url": "https://cdn.jsdelivr.net/gh/brettwgh/ftiAddin@main/ftiAddin/dist/ftiAddin.html",
       "path": "",
       "menuName": {
-        "en": "fuel transaction addin"
+        "en": "FTI (test)"
       },
-      "icon": "https://www.example.com/myaddin/images/icon.svg"
+      "icon": "https://cdn.jsdelivr.net/gh/brettwgh/ftiAddin@main/ftiAddin/dist/images/icon.svg"
     }
   ]
 }
