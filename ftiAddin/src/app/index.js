@@ -5,12 +5,9 @@
  */
 
 // Allowing babel to work with older versions of IE
-const regeneratorRuntime = require('regenerator-runtime');
+// const regeneratorRuntime = require('regenerator-runtime');
 
 if(!geotab.addin.ftiAddin){
-    
     require('./scripts/main');
-    
 }
-
 require('./styles/main.css');

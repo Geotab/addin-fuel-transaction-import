@@ -92,11 +92,11 @@ function parseDate(date, format, timeZone){
 
 function parseDateFormat(format) {
     let output = {
-        "ReturnValue": false,
-        "Problem": ""
+        'ReturnValue': false,
+        'Problem': ''
     };
     let regex = new RegExp('^(?=.*DD)(?=.*MM)(?=.*YYYY).*$');
-    // Must contain - CAPITAL YYYY, MM and DD
+    // Test1 - Must contain CAPITAL YYYY, MM and DD
     if (regex.test(format)) {
         console.log('Contains - CAPITAL YYYY, MM and DD')
     } else {
@@ -105,7 +105,7 @@ function parseDateFormat(format) {
         console.log(output.Problem)
         return output;
     }
-    // If longer than 11 characters then must contain h and m (any case)
+    // Test2 - If longer than 11 characters then must contain h and m (any case)
     if (format.length > 11){
         regex = new RegExp('^(?=.*[H|h])(?=.*m).*$');
         if (regex.test(format)) {

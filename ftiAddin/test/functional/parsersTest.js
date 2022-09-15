@@ -53,20 +53,40 @@ describe('Parsers', function(){
     it('Date format parsing', function() {
         assert.isFalse(parsers.parseDateFormat('MDY').ReturnValue);
     });
-    it('Date format parsing', function() {
+    it('Date format parsing :- Test1 - Must contain CAPITAL YYYY, MM and DD', function() {
         assert.isFalse(parsers.parseDateFormat('DDMMYY').ReturnValue);
     });
-    it('Date format parsing', function() {
+    it('Date format parsing :- Test1 - Must contain CAPITAL YYYY, MM and DD', function() {
         assert.isFalse(parsers.parseDateFormat('MMYY').ReturnValue);
     });
-    it('Date format parsing', function() {
+    it('Date format parsing :- Test1 - Must contain CAPITAL YYYY, MM and DD', function() {
         assert.isTrue(parsers.parseDateFormat('DDMMYYYY').ReturnValue);
     });
-    it('Date format parsing', function() {
+    it('Date format parsing :- Test1 - Must contain CAPITAL YYYY, MM and DD', function() {
         assert.isTrue(parsers.parseDateFormat('MMDDYYYY').ReturnValue);
     });
-    it('Date format parsing', function() {
+    it('Date format parsing :- Test1 - Must contain CAPITAL YYYY, MM and DD', function() {
         assert.isTrue(parsers.parseDateFormat('YYYYMMDD').ReturnValue);
     });
-
+    it('Date format parsing :- Test1 - Must contain CAPITAL YYYY, MM and DD', function() {
+        assert.isTrue(parsers.parseDateFormat('YYYYMMDD').ReturnValue);
+    });
+    it('Date format parsing :- Test2 - If longer than 11 characters then must contain h and m (any case)', function() {
+        assert.isFalse(parsers.parseDateFormat('YYYY-MM-DD Pz').ReturnValue);
+    });
+    it('Date format parsing :- Test2 - If longer than 11 characters then must contain h and m (any case)', function() {
+        assert.isTrue(parsers.parseDateFormat('MM-DD-YYYYTHH:mm:ss.SSSZ').ReturnValue);
+    });
+    it('Date format parsing :- Test2 - If longer than 11 characters then must contain h and m (any case)', function() {
+        assert.isTrue(parsers.parseDateFormat('MMDDYYYYTh:m:sZ').ReturnValue);
+    });
+    it('Date format parsing :- Test2 - If longer than 11 characters then must contain h and m (any case)', function() {
+        assert.isFalse(parsers.parseDateFormat('YY-MM-DDTYY:mm:ss.SSSZ').ReturnValue);
+    });
+    it('Date format parsing :- Test2 - If longer than 11 characters then must contain h and m (any case)', function() {
+        assert.isFalse(parsers.parseDateFormat('YYMMDDTHH:MM:ss').ReturnValue);
+    });
+    it('Date format parsing :- Test2 - If longer than 11 characters then must contain h and m (any case)', function() {
+        assert.isFalse(parsers.parseDateFormat('YY-MM-DD      ').ReturnValue);
+    });
 });
