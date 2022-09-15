@@ -1,0 +1,15 @@
+{
+  "name": "ftiAddin",
+  "supportEmail": "support@geotab.com",
+  "version": "4.0.0",
+  "items": [
+    {
+      "url": "https://www.example.com/myaddin/ftiAddin.html",
+      "path": "",
+      "menuName": {
+        "en": "fuel transaction addin"
+      },
+      "icon": "https://www.example.com/myaddin/images/icon.svg"
+    }
+  ]
+}
