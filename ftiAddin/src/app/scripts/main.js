@@ -243,7 +243,7 @@ geotab.addin.ftiAddin = function () {
         transactionsJson = results;
         toggleWindowDisplayState(true, true, true);
         if (transactionsJson) {
-          importHelper.importTransactionsAsync(api, transactionsJson, elProgressText, elProgressBar, reportErrors);
+          importHelper.importTransactionsAsync(api, transactionsJson, elProgressText, elProgressBar, importSummaryOutput);
         } else {
           setOutputDisplay('Data Issue', 'No transaction found. Please try again...');
         }
@@ -261,6 +261,14 @@ geotab.addin.ftiAddin = function () {
    */
   function importFileFocusEvent() {
     toggleWindowDisplayState(true, false, false);
+  }
+
+  function importSummaryOutput(importSummary){
+    console.log('Import Summary');
+    console.log(`Imported: ${importSummary.imported}`);
+    console.log(`Skipped: ${importSummary.skipped}`);
+    console.log(`Errors: ${importSummary.errors.count}`);
+    reportErrors(importSummary.errors.failedCalls);
   }
 
   function reportErrors(errors) {
