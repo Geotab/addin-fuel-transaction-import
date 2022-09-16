@@ -53,22 +53,22 @@ describe('Parsers', function(){
     it('Date format parsing', function() {
         assert.isFalse(parsers.parseDateFormat('MDY').ReturnValue);
     });
-    it('Date format parsing :- Test1 - Must contain CAPITAL YYYY, MM and DD', function() {
-        assert.isFalse(parsers.parseDateFormat('DDMMYY').ReturnValue);
+    it('Date format parsing :- Test1 - Must contain CAPITAL YY, MM and DD', function() {
+        assert.isTrue(parsers.parseDateFormat('DDMMYY').ReturnValue);
     });
-    it('Date format parsing :- Test1 - Must contain CAPITAL YYYY, MM and DD', function() {
+    it('Date format parsing :- Test1 - Must contain CAPITAL YY, MM and DD', function() {
         assert.isFalse(parsers.parseDateFormat('MMYY').ReturnValue);
     });
-    it('Date format parsing :- Test1 - Must contain CAPITAL YYYY, MM and DD', function() {
+    it('Date format parsing :- Test1 - Must contain CAPITAL YY, MM and DD', function() {
         assert.isTrue(parsers.parseDateFormat('DDMMYYYY').ReturnValue);
     });
-    it('Date format parsing :- Test1 - Must contain CAPITAL YYYY, MM and DD', function() {
+    it('Date format parsing :- Test1 - Must contain CAPITAL YY, MM and DD', function() {
         assert.isTrue(parsers.parseDateFormat('MMDDYYYY').ReturnValue);
     });
-    it('Date format parsing :- Test1 - Must contain CAPITAL YYYY, MM and DD', function() {
+    it('Date format parsing :- Test1 - Must contain CAPITAL YY, MM and DD', function() {
         assert.isTrue(parsers.parseDateFormat('YYYYMMDD').ReturnValue);
     });
-    it('Date format parsing :- Test1 - Must contain CAPITAL YYYY, MM and DD', function() {
+    it('Date format parsing :- Test1 - Must contain CAPITAL YY, MM and DD', function() {
         assert.isTrue(parsers.parseDateFormat('YYYYMMDD').ReturnValue);
     });
     it('Date format parsing :- Test2 - If longer than 11 characters then must contain h and m (any case)', function() {
@@ -89,4 +89,22 @@ describe('Parsers', function(){
     it('Date format parsing :- Test2 - If longer than 11 characters then must contain h and m (any case)', function() {
         assert.isFalse(parsers.parseDateFormat('YY-MM-DD      ').ReturnValue);
     });
+    it('Date format parsing :- Test3 - Only characters allowed -  Y, M, D, h, m, s, S or Z', function() {
+        assert.isFalse(parsers.parseDateFormat('YY-MM-DD pqrst').ReturnValue);
+    }); 
+    it('Date format parsing :- Test3 - Only characters allowed -  Y, M, D, h, m, s, S or Z', function() {
+        assert.isFalse(parsers.parseDateFormat('ABCEFGIJKLNOPQRUVWX').ReturnValue);
+    }); 
+    it('Date format parsing :- Test3 - Only characters allowed -  Y, M, D, h, m, s, S or Z', function() {
+        assert.isFalse(parsers.parseDateFormat('abcefgijklnopqrtuvwxz').ReturnValue);
+    }); 
+    it('Date format parsing :- Test4 - Min number of characters = 6', function() {
+        assert.isFalse(parsers.parseDateFormat('YMD').ReturnValue);
+    }); 
+    it('Date format parsing :- Test5 - Max number of characters = 24', function() {
+        assert.isFalse(parsers.parseDateFormat('YY-MM-DD AND A WHOLE LOT MORE CHARS').ReturnValue);
+    }); 
+    it('Date format parsing', function() {
+        assert.isTrue(parsers.parseDateFormat('DD/MM/YYYY').ReturnValue);
+    }); 
 });

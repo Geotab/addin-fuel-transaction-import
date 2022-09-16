@@ -1,3 +1,5 @@
+const parsers = require('./Parsers');
+
 /**
  * Configuration file helper module.
  * @module ConfigHelper
@@ -13,7 +15,7 @@
  * - vehicleIdentificationNumber (default = empty string)
  * - description (default = empty string)
  * - comments (default = empty string)
- * 2. dateTime - The UTC date and time of the transaction.
+ * 2. dateTime - The UTC date and time of the transaction. And checks for valid date/time formatting.
  * 3. volume - The volume of fuel purchased in Liters. Default [0].
  * 4. cost - The cost of the fuel transaction. Default [0].
  * 5. currencyCode - The three digit ISO 427 currency code (http://www.xe.com/iso4217.php). Default ['USD'].
@@ -59,10 +61,19 @@ function validateConfiguration(configuration) {
         };
     }
 
-    //dateTime validation
+    //dateTime presence validation
     if (!configuration.data['dateTime']) {
         output.isValid = false;
         output.reason = 'No date and time defined.';
+        return output;
+    }
+
+    //dateTime format validation
+    var dateFormatTestResult = parsers.parseDateFormat(configuration.dateFormat);
+    if(dateFormatTestResult.ReturnValue === false)
+    {
+        output.isValid = false;
+        output.reason = `The date and time defined is incorrectly formatted. Reason: ${dateFormatTestResult.Problem}`;
         return output;
     }
 

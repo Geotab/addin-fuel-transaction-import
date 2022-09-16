@@ -46,12 +46,12 @@ function convertExcelToJsonPromise (api, file) {
 
 
 /**
- * Parses an xhr (XMLHttpRequest) request response.
+ * Parses the request response for JSON (JSON.parse).
  * If successful the data object will contain the imported JSON formatted configuration file.
  * @param {XMLHttpRequest} request The XMLHttpRequest object.
  * @returns An object containing two properties: data and error. The data property contains the JSON formatted configuration data and the error property contains any errors that might have occurred during importing.
  */
- var resultsParser = function (request) {
+ var resultsJsonParser = function (request) {
     var jsonResponse,
         data,
         error;
@@ -82,7 +82,7 @@ function parseTransactions(request) {
     return new Promise((resolve, reject) => {
         console.log('in uploadCompletePromise...');
         console.log(request);
-        var results = resultsParser(request);
+        var results = resultsJsonParser(request);
         console.log(results);
         //var newResult = parsers.addBlanckColumn(result);
         if (results.error) {
