@@ -268,6 +268,19 @@ geotab.addin.ftiAddin = function () {
     console.log(`Imported: ${importSummary.imported}`);
     console.log(`Skipped: ${importSummary.skipped}`);
     console.log(`Errors: ${importSummary.errors.count}`);
+    let p1 = document.createElement('p');
+    let text1 = document.createTextNode('Imported: ' + importSummary.imported);
+    p1.appendChild(text1);
+    let p2 = document.createElement('p');
+    let text2 = document.createTextNode('Skipped: ' + importSummary.skipped);
+    p2.appendChild(text2);
+    let p3 = document.createElement('p');
+    let text3 = document.createTextNode('Errors: ' + importSummary.errors.count);
+    p3.appendChild(text3);
+    elOutputDiv.appendChild(p1);
+    elOutputDiv.appendChild(p2);
+    elOutputDiv.appendChild(p3);
+    elOutputTitle.innerText = 'Import Summary';
     reportErrors(importSummary.errors.failedCalls);
   }
 
@@ -302,7 +315,7 @@ geotab.addin.ftiAddin = function () {
         row.appendChild(cell1);
         tbody.appendChild(row);
       });
-      elOutputTitle.innerText = 'Errors';
+      //elOutputTitle.innerText = 'Errors';
       elOutputDiv.appendChild(table);
       table.className = 'ftiTable';
       toggleWindowDisplayState(true, true, true);
