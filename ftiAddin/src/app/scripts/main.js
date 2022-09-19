@@ -29,6 +29,7 @@ geotab.addin.ftiAddin = function () {
   let elOutputMessage = document.getElementById('outputMessage');
   /** The import button */
   let elImportButton = document.getElementById('importButton');
+  let elResetButton = document.getElementById('restButton');
   /** The import file input element */
   let elImportFile = document.getElementById('importFile');
   /** The provider configuration file */
@@ -44,6 +45,8 @@ geotab.addin.ftiAddin = function () {
   let elProgressDiv = document.getElementById('progressDiv');
   let elProgressText = document.getElementById('progressText');
   let elProgressBar = document.getElementById('progressBar');
+  /** The browser timezone index for later resets. */
+  let selectedTimezoneIndex;
 
   /**
    * Manages the provider file selection change event.
@@ -354,6 +357,15 @@ geotab.addin.ftiAddin = function () {
       }
       elTimeZoneDropdown.appendChild(option);
     });
+    selectedTimezoneIndex = elTimeZoneDropdown.selectedIndex;
+  }
+
+  function resetButtonClickEvent(){
+    elProviderFile.value = null;
+    elProviderDropdown.selectedIndex = 0;
+    elImportFile.value = null;
+    elTimeZoneDropdown.selectedIndex = selectedTimezoneIndex;
+    toggleWindowDisplayState(true, false, false);
   }
 
   /**
@@ -365,6 +377,7 @@ geotab.addin.ftiAddin = function () {
     elProviderDropdown.addEventListener('change', providerDropdownChangeEvent, false);
     elImportFile.addEventListener('focus', importFileFocusEvent, false);
     elImportButton.addEventListener('click', importButtonClickEvent, false);
+    elResetButton.addEventListener('click', resetButtonClickEvent, false);
   }
 
   /**
@@ -376,6 +389,7 @@ geotab.addin.ftiAddin = function () {
     elProviderDropdown.removeEventListener('change', providerDropdownChangeEvent, false);
     elImportFile.removeEventListener('focus', importFileFocusEvent, false);
     elImportButton.removeEventListener('click', importButtonClickEvent, false);
+    elResetButton.addEventListener('click', resetButtonClickEvent, false);
   }
 
   return {
