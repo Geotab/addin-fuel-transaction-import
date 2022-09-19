@@ -17,17 +17,16 @@
 }
 
 .ftiSuccess {
-    font-size: large;
+    font-size: 14px;
     color: green;
 }
 
 .ftiSkipped {
-    font-size: large;
-    color: orange;
+    font-size: 14px;
 }
 
 .ftiFailed {
-    font-size: large;
+    font-size: 14px;
     color: red;
 }
 
@@ -62,17 +61,18 @@
 }
 
 .ftiTable {
-    border-collapse: collapse;
-    margin: 25px 0;
-    font-size: 0.9em;
-    font-family: sans-serif;
+    /* border-collapse: collapse; */
+    /* margin: 25px 0; */
+    /* font-size: 0.9em; */
+    /* font-family: sans-serif; */
     min-width: 400px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    border: 1px solid grey;
+    /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); */
 }
 
 .ftiTable thead tr {
-    background-color: #5293c6;
-    color: #ffffff;
+    background-color: #ecf0ef;
+    /* color: #ffffff; */
     text-align: left;
 }
 
@@ -89,11 +89,11 @@
     background-color: #f3f3f3;
 }
 
-.ftiTable tbody tr:last-of-type {
+/* .ftiTable tbody tr:last-of-type {
     border-bottom: 2px solid;
-}
+} */
 
-.ftiTable tbody tr.active-row {
+/* .ftiTable tbody tr.active-row {
     font-weight: bold;
     color: #009879;
-}
+} */

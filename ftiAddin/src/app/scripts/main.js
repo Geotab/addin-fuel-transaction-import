@@ -268,29 +268,66 @@ geotab.addin.ftiAddin = function () {
     toggleWindowDisplayState(true, false, false);
   }
 
+  /**
+   * Displays the import summary output data
+   * @param {*} importSummary 
+   */
   function importSummaryOutput(importSummary){
     console.log('Import Summary');
     console.log(`Imported: ${importSummary.imported}`);
     console.log(`Skipped: ${importSummary.skipped}`);
     console.log(`Errors: ${importSummary.errors.count}`);
-    let p1 = document.createElement('p');
-    let text1 = document.createTextNode('');
-    p1.appendChild(text1);
-    p1.innerHTML = 'Imported: <strong>' + importSummary.imported + '</strong>';
-    p1.className = 'ftiSuccess'
-    let p2 = document.createElement('p');
-    let text2 = document.createTextNode('');
-    p2.appendChild(text2);
-    p2.innerHTML = 'Skipped: <strong>' + importSummary.skipped + '</strong>';
-    p2.className = 'ftiSkipped'
-    let p3 = document.createElement('p');
-    let text3 = document.createTextNode('');
-    p3.appendChild(text3);
-    p3.innerHTML = 'Errors: <strong>' + importSummary.errors.count + '</strong>';
-    p3.className = 'ftiFailed'
-    elOutputDiv.appendChild(p1);
-    elOutputDiv.appendChild(p2);
-    elOutputDiv.appendChild(p3);
+
+    let table = document.createElement('table');
+    let tbody = document.createElement('tbody');
+    let tr1 = document.createElement('tr');
+    let cell1 = document.createElement('td');
+    cell1.innerHTML = 'Imported';
+    let cellValue1 = document.createElement('td');
+    cellValue1.innerHTML = importSummary.imported;
+    cellValue1.className = 'ftiSuccess';
+    tr1.appendChild(cell1);
+    tr1.appendChild(cellValue1);
+    tbody.appendChild(tr1);
+    let tr2 = document.createElement('tr');
+    let cell2 = document.createElement('td');
+    let cellValue2 = document.createElement('td');
+    cell2.innerHTML = 'Skipped';
+    cellValue2.innerHTML = importSummary.skipped;
+    tr2.appendChild(cell2);
+    tr2.appendChild(cellValue2);
+    tbody.appendChild(tr2);
+    let tr3 = document.createElement('tr');
+    let cell3 = document.createElement('td');
+    let cellValue3 = document.createElement('td');
+    cell3.innerHTML = 'Errors';
+    cellValue3.innerHTML = importSummary.errors.count;
+    cellValue3.className = 'ftiFailed';
+    tr3.appendChild(cell3);
+    tr3.appendChild(cellValue3);
+    tbody.appendChild(tr3);
+    table.appendChild(tbody);
+    elOutputDiv.appendChild(table);
+    // let p1 = document.createElement('p');
+    // let p11 = document.createElement('p');
+    // //let text1 = document.createTextNode('');
+    // //p1.appendChild(text1);
+    // p1.innerHTML = 'Imported: ';
+    // p11.innerHTML = '<strong>' + importSummary.imported + '</strong>';
+    // p11.className = 'ftiSuccess'
+    // let p2 = document.createElement('p');
+    // let text2 = document.createTextNode('');
+    // p2.appendChild(text2);
+    // p2.innerHTML = 'Skipped: <strong>' + importSummary.skipped + '</strong>';
+    // p2.className = 'ftiSkipped'
+    // let p3 = document.createElement('p');
+    // let text3 = document.createTextNode('');
+    // p3.appendChild(text3);
+    // p3.innerHTML = 'Errors: <strong>' + importSummary.errors.count + '</strong>';
+    // p3.className = 'ftiFailed'
+    // elOutputDiv.appendChild(p1);
+    // elOutputDiv.appendChild(p2);
+    // elOutputDiv.appendChild(p3);
     elOutputTitle.textContent = 'Import Summary';
     elOutputMessage.textContent = '';
     reportErrors(importSummary.errors.failedCalls);
@@ -298,7 +335,8 @@ geotab.addin.ftiAddin = function () {
 
   function reportErrors(errors) {
     let title = document.createElement('h2');
-    title.textContent = 'Error Transactions'
+    title.textContent = 'Error List'
+    title.title = 'List of transactions that produced errors.'
     elOutputDiv.appendChild(title);
     if (errors) {
       let table = document.createElement('table');
