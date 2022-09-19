@@ -176,8 +176,10 @@ geotab.addin.ftiAddin = function () {
    * @param {*} message The message
    */
   function setOutputDisplay(title, message) {
-    elOutputTitle.innerText = title;
-    elOutputMessage.innerText = message;
+    // let titleOutput = elOutputDiv.querySelector('h2');
+    // titleOutput = title;
+    elOutputTitle.textContent = title;
+    elOutputMessage.textContent = message;
     toggleWindowDisplayState(true, true, false);
   }
 
@@ -269,22 +271,32 @@ geotab.addin.ftiAddin = function () {
     console.log(`Skipped: ${importSummary.skipped}`);
     console.log(`Errors: ${importSummary.errors.count}`);
     let p1 = document.createElement('p');
-    let text1 = document.createTextNode('Imported: ' + importSummary.imported);
+    let text1 = document.createTextNode('');
     p1.appendChild(text1);
+    p1.innerHTML = 'Imported: <strong>' + importSummary.imported + '</strong>';
+    p1.className = 'ftiSuccess'
     let p2 = document.createElement('p');
-    let text2 = document.createTextNode('Skipped: ' + importSummary.skipped);
+    let text2 = document.createTextNode('');
     p2.appendChild(text2);
+    p2.innerHTML = 'Skipped: <strong>' + importSummary.skipped + '</strong>';
+    p2.className = 'ftiSkipped'
     let p3 = document.createElement('p');
-    let text3 = document.createTextNode('Errors: ' + importSummary.errors.count);
+    let text3 = document.createTextNode('');
     p3.appendChild(text3);
+    p3.innerHTML = 'Errors: <strong>' + importSummary.errors.count + '</strong>';
+    p3.className = 'ftiFailed'
     elOutputDiv.appendChild(p1);
     elOutputDiv.appendChild(p2);
     elOutputDiv.appendChild(p3);
-    elOutputTitle.innerText = 'Import Summary';
+    elOutputTitle.textContent = 'Import Summary';
+    elOutputMessage.textContent = '';
     reportErrors(importSummary.errors.failedCalls);
   }
 
   function reportErrors(errors) {
+    let title = document.createElement('h2');
+    title.textContent = 'Error Transactions'
+    elOutputDiv.appendChild(title);
     if (errors) {
       let table = document.createElement('table');
       let thead = document.createElement('thead');

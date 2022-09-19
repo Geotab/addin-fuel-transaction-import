@@ -23,7 +23,7 @@
         </div>
         <hr style="border-top: 3px solid #5293c6">
       </header>
-      <div id="parentDiv">
+      <div id="parentDiv" style="width: 60%;">
         <h2 class="geotabPageName">Input Criteria</h2>
         <div id="inputDiv">
           <!-- <div id="inputDiv" class="geotabFieldset ftiInputDiv"> -->
@@ -49,20 +49,45 @@
         <div id="importButtonDiv" class="ftiImportButtonDiv">
           <button id="importButton" class="ftiImportButton">Import</button>
         </div>
-        <div id="progressDiv" class="ftiHidden">
-          <h3>Progress</h3>
-          <progress id="progressBar" max="100" value="0" class="ftiProgressBar"></progress>
+        <div id="progressDiv">
+          <!-- <div id="progressDiv" class="ftiHidden"> -->
+          <h2 class="geotabPageName">Progress</h2>
+          <progress id="progressBar" max="100" value="50" class="ftiProgressBar"></progress>
           <p id="progressText"></p>
         </div>
         <!-- <div class="geotabField"> -->
         <div id="outputDiv" class="ftiHidden">
-          <h1 id="outputTitle"></h1>
+          <h2 id="outputTitle" class="geotabPageName">Progress</h2>
           <p id="outputMessage"></p>
         </div>
         <!-- </div> -->
       </div>
+
+      <table class="ftiTable">
+        <thead>
+          <th>Header 1</th>
+          <th>Header 2</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>data</td>
+            <td>data 2</td>
+          </tr>
+          <tr>
+            <td>data</td>
+            <td>data 2</td>
+          </tr>
+          <tr>
+            <td>data</td>
+            <td>data 2</td>
+          </tr>
+        </tbody>
+      </table>
+
     </div>
   </div>
+
+
 
 </body>
 

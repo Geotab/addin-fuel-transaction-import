@@ -16,6 +16,21 @@
     height: 30px;
 }
 
+.ftiSuccess {
+    font-size: large;
+    color: green;
+}
+
+.ftiSkipped {
+    font-size: large;
+    color: orange;
+}
+
+.ftiFailed {
+    font-size: large;
+    color: red;
+}
+
 .ftiFormat {
     position: relative;
     display: block;
@@ -70,7 +85,7 @@
 }
 
 .ftiTable tbody tr:last-of-type {
-    border-bottom: 2px solid #009879;
+    border-bottom: 2px solid;
 }
 
 .ftiTable tbody tr.active-row {
