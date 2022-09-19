@@ -1,3 +1,8 @@
+.ftiAddin {
+    margin-left: 40px;
+    padding-left: 100px;
+}
+
 .ftiHidden {
     display: none;
 }
@@ -60,6 +65,11 @@
     color: darkblue;
 }
 
+.ftiSummaryTable {
+    font-size: 14px;
+    font-weight: bold;
+}
+
 .ftiTable {
     /* border-collapse: collapse; */
     /* margin: 25px 0; */
@@ -88,12 +98,3 @@
 .ftiTable tbody tr:nth-of-type(even) {
     background-color: #f3f3f3;
 }
-
-/* .ftiTable tbody tr:last-of-type {
-    border-bottom: 2px solid;
-} */
-
-/* .ftiTable tbody tr.active-row {
-    font-weight: bold;
-    color: #009879;
-} */

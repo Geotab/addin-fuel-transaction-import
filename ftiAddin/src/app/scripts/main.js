@@ -307,6 +307,7 @@ geotab.addin.ftiAddin = function () {
     tr3.appendChild(cellValue3);
     tbody.appendChild(tr3);
     table.appendChild(tbody);
+    table.className = 'ftiSummaryTable';
     elOutputDiv.appendChild(table);
     // let p1 = document.createElement('p');
     // let p11 = document.createElement('p');
