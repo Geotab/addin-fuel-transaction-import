@@ -107,12 +107,7 @@ function parseTransaction(transaction, configuration, mapping, timeZone) {
                     entity[keyItem] = getProvider(value);
                     break;
                 case 'productType':
-                    //entity[keyItem] = getProductType(value);
-                    if (configuration.data.provider.toLowerCase().includes('wex')) {
-                        entity[keyItem] = productTypeHelper.getWexProductType(value);
-                    } else {
-                        entity[keyItem] = productTypeHelper.getProductType(value);
-                    }
+                    entity[keyItem] = productTypeHelper.getProductType(value);
                     break;
                 case 'cost':
                     entity[keyItem] = parsers.parseFloatValue(value);
@@ -152,39 +147,6 @@ function parseTransaction(transaction, configuration, mapping, timeZone) {
     return entity;
 }
 
-
-/**
- * Parses and gets the product type based on the transaction test value
- * @param {*} input The test value to parse.
- * @returns A valid product type
- */
-function getProductType(input) {
-    if (fuelTransactionProductType.hasOwnProperty(input)) {
-        return input;
-    } else {
-        return Object.keys(fuelTransactionProductType)[12]
-    }
-}
-
-/**
- * The currently valid fuel transaction product types
- */
-var fuelTransactionProductType = {
-    'CNG': 'CNG (Compressed Natural Gas)',
-    'Diesel': 'Diesel fuel',
-    'DieselExhaustFluid': 'Diesel exhaust fluid',
-    'E85': 'E85 (Ethanol 85%)',
-    'Electric': 'Electric',
-    'Hydrogen': 'Hydrogen',
-    'LPG': 'LPG (Liquid Propane Gas)',
-    'Midgrade': 'Mid grade gasoline (88-89 Octane : 92-93 Ron)',
-    'NonFuel': 'A non-fuel purchase',
-    'Premium': 'Premium grade gasoline (90-91 Octane : 94-95 Ron)',
-    'Regular': 'Regular grade gasoline (86-87 Octane : 90-91 Ron)',
-    'Super': '	Super grade gasoline (92-94+ Octane : 96-99+ Ron)',
-    'Unknown': 'Unknown product type'
-}
-
 /**
  * Parses and gets the fuel card provider.
  * @param {*} input The test value.
@@ -220,6 +182,5 @@ var fuelTransactionProviders = {
 module.exports = {
     ParseAndBuildTransactions,
     parseTransaction,
-    fuelTransactionProductType,
     fuelTransactionProviders
 }
