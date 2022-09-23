@@ -1,5 +1,6 @@
 const parsers = require('./Parsers');
 const converters = require('./Converters');
+const productTypeHelper = require('./ProductTypeHelper');
 
 /**
  * Receives the excel transactions and produces the json formated transaction entities.
@@ -14,10 +15,10 @@ function ParseAndBuildTransactions(transactionsExcel, configuration, timeZone) {
         let mapping;
         let entity;
         transactionsExcel.forEach((transaction, i) => {
-            if(i === 0){
+            if (i === 0) {
                 // get the mapping (or header) to be used in the transaction parsing process that follows.
                 mapping = transaction;
-            }else{
+            } else {
                 entity = parseTransaction(transaction, configuration, mapping, timeZone);
                 console.log('parsed transaction entity: ' + entity);
                 transactionsOutput.push(entity);
@@ -36,7 +37,7 @@ function ParseAndBuildTransactions(transactionsExcel, configuration, timeZone) {
  */
 function getObjKey(obj, value) {
     return Object.keys(obj).find(key => obj[key] === value);
-  }
+}
 
 /**
  * Parse each transaction property.
@@ -48,19 +49,19 @@ function getObjKey(obj, value) {
  */
 function parseTransaction(transaction, configuration, mapping, timeZone) {
 
-    if (transaction === undefined){
+    if (transaction === undefined) {
         throw new Error('parseTransaction transaction argument not submitted.');
     }
 
-    if (configuration === undefined){
+    if (configuration === undefined) {
         throw new Error('parseTransaction configuration argument not submitted.');
     }
 
-    if (mapping === undefined){
+    if (mapping === undefined) {
         throw new Error('parseTransaction mapping argument not submitted.');
     }
 
-    if (timeZone === undefined){
+    if (timeZone === undefined) {
         throw new Error('parseTransaction timeZone argument not submitted.');
     }
 
@@ -68,7 +69,7 @@ function parseTransaction(transaction, configuration, mapping, timeZone) {
     let value;
     console.log('Parsing provider: ' + configuration.Name);
     let dateFormat = configuration.dateFormat;
-    if (configuration.timeFormat){
+    if (configuration.timeFormat) {
         dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
     }
     console.log('dateFormat: ' + dateFormat);
@@ -106,7 +107,12 @@ function parseTransaction(transaction, configuration, mapping, timeZone) {
                     entity[keyItem] = getProvider(value);
                     break;
                 case 'productType':
-                    entity[keyItem] = getProductType(value);
+                    //entity[keyItem] = getProductType(value);
+                    if (configuration.data.provider.toLowerCase().includes('wex')) {
+                        entity[keyItem] = productTypeHelper.getWexProductType(value);
+                    } else {
+                        entity[keyItem] = productTypeHelper.getProductType(value);
+                    }
                     break;
                 case 'cost':
                     entity[keyItem] = parsers.parseFloatValue(value);
