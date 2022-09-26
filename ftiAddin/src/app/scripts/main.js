@@ -428,7 +428,7 @@ geotab.addin.ftiAddin = function () {
     elProviderDropdown.removeEventListener('change', providerDropdownChangeEvent, false);
     elImportFile.removeEventListener('focus', importFileFocusEvent, false);
     elImportButton.removeEventListener('click', importButtonClickEvent, false);
-    elResetButton.addEventListener('click', resetButtonClickEvent, false);
+    elResetButton.removeEventListener('click', resetButtonClickEvent, false);
   }
 
   return {
