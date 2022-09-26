@@ -29,7 +29,7 @@ geotab.addin.ftiAddin = function () {
   let elOutputMessage = document.getElementById('outputMessage');
   /** The import button */
   let elImportButton = document.getElementById('importButton');
-  let elResetButton = document.getElementById('restButton');
+  let elResetButton = document.getElementById('resetButton');
   /** The import file input element */
   let elImportFile = document.getElementById('importFile');
   /** The provider configuration file */
