@@ -20,6 +20,39 @@ async function importTransactionsAsync(api, transactions, elProgressText, elprog
             failedCalls: []
         }
     }
+
+    // let promises = [];
+    // Object.entries(transactions).forEach(transaction => {
+    //     let promise = new Promise((resolve, reject) => {
+    //         currentCall = { typeName: 'FuelTransaction', entity: transaction };
+    //         console.log('Executing currentCall: ' + JSON.stringify(currentCall));
+
+    //         api.call('Add', currentCall,
+    //             function (result) {
+    //                 // Successful import
+    //                 elprogressBar.value = (currentCount / transactionCount) * 100;
+    //                 elProgressText.innerText = currentCount + ' transaction/s of ' + transactionCount + ' processed...';
+    //                 currentCount++;
+    //                 importSummary.imported += 1;
+    //                 resolve(null);
+    //             }, function (error) {
+    //                 console.log('ERROR - issue ADDING transaction. Error: ' + error);
+    //                 //failedCalls.push([JSON.stringify(currentCall.entity), error]);
+    //                 elprogressBar.value = (currentCount / transactionCount) * 100;
+    //                 elProgressText.innerText = currentCount + ' transaction/s of ' + transactionCount + ' processed...';
+    //                 currentCount++;
+    //                 if (error.indexOf('Duplicate Data') !== -1) {
+    //                     importSummary.skipped += 1;
+    //                 } else {
+    //                     importSummary.errors.count += 1;
+    //                     importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), error]);
+    //                 }
+    //                 resolve(null);
+    //             });
+    //     });
+    //     promise.catch()
+    // });
+
     const promises = transactions.map(transaction =>
         new Promise((resolve, reject) => {
             currentCall = { typeName: 'FuelTransaction', entity: transaction };
@@ -34,22 +67,46 @@ async function importTransactionsAsync(api, transactions, elProgressText, elprog
                     importSummary.imported += 1;
                     resolve(null);
                 }, function (error) {
-                    console.log('ERROR - issue ADDING transaction. Error: ' + error);
-                    //failedCalls.push([JSON.stringify(currentCall.entity), error]);
+                    if (error instanceof Object) {
+                        //MyGeotab API call error object
+                        console.log('message: ' + error.message);
+                        console.log('name: ' + error.name);
+                        console.log('isAuthenticationException: ' + error.isAuthenticationException);
+                        console.log('isDBInitializingException: ' + error.isDBInitializingException);
+                        console.log('isServerException: ' + error.isDBInitializingException);
+                        if (error.name.includes('DuplicateException')) {
+                            importSummary.skipped += 1;
+                        } else {
+                            importSummary.errors.count += 1;
+                            importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), error]);
+                        }
+                    }
+                    else if (typeof(error) === 'string') {
+                        // string error instance
+                        console.log('string error instance, value: ' + error);
+                        if (error.includes('DuplicateException')) {
+                            importSummary.skipped += 1;
+                        } else {
+                            importSummary.errors.count += 1;
+                            importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), error]);
+                        }
+                    }
                     elprogressBar.value = (currentCount / transactionCount) * 100;
                     elProgressText.innerText = currentCount + ' transaction/s of ' + transactionCount + ' processed...';
                     currentCount++;
-                    if (error.includes('Duplicate Data')) {
-                        importSummary.skipped += 1;
-                    } else {
-                        importSummary.errors.count += 1;
-                        importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), error]);
-                    }
                     resolve(null);
                 });
         }));
-    await Promise.all(promises)
-    callback(importSummary);
+
+    Promise.allSettled(promises)
+        .then(() => {
+            console.log('all settled...');
+            callback(importSummary);
+        })
+        .catch(err => {
+            console.log(`Unexpected error in ImportHelper promise.all catch: ${err}`);
+            callback(importSummary);
+        });
 }
 
 module.exports = {

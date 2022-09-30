@@ -202,6 +202,8 @@ geotab.addin.ftiAddin = function () {
    */
   async function importButtonClickEvent() {
     
+    toggleWindowDisplayState(true, false, false);
+    
     getImportFile();
 
     // Check initial state.

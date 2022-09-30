@@ -14,7 +14,7 @@
   "dev": {
     "root": "ftiAddin",
     "dist": {
-      "host": "https://cdn.jsdelivr.net/gh/brettwgh/ftiAddin@main/ftiAddin/dist/"
+      "host": "https://addintest.geotab.com/AddIns/Geotab/fuelTransactionImport/"
     }
   }
 }
