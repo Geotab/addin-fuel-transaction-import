@@ -20,39 +20,7 @@ async function importTransactionsAsync(api, transactions, elProgressText, elprog
             failedCalls: []
         }
     }
-
-    // let promises = [];
-    // Object.entries(transactions).forEach(transaction => {
-    //     let promise = new Promise((resolve, reject) => {
-    //         currentCall = { typeName: 'FuelTransaction', entity: transaction };
-    //         console.log('Executing currentCall: ' + JSON.stringify(currentCall));
-
-    //         api.call('Add', currentCall,
-    //             function (result) {
-    //                 // Successful import
-    //                 elprogressBar.value = (currentCount / transactionCount) * 100;
-    //                 elProgressText.innerText = currentCount + ' transaction/s of ' + transactionCount + ' processed...';
-    //                 currentCount++;
-    //                 importSummary.imported += 1;
-    //                 resolve(null);
-    //             }, function (error) {
-    //                 console.log('ERROR - issue ADDING transaction. Error: ' + error);
-    //                 //failedCalls.push([JSON.stringify(currentCall.entity), error]);
-    //                 elprogressBar.value = (currentCount / transactionCount) * 100;
-    //                 elProgressText.innerText = currentCount + ' transaction/s of ' + transactionCount + ' processed...';
-    //                 currentCount++;
-    //                 if (error.indexOf('Duplicate Data') !== -1) {
-    //                     importSummary.skipped += 1;
-    //                 } else {
-    //                     importSummary.errors.count += 1;
-    //                     importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), error]);
-    //                 }
-    //                 resolve(null);
-    //             });
-    //     });
-    //     promise.catch()
-    // });
-
+ 
     const promises = transactions.map(transaction =>
         new Promise((resolve, reject) => {
             currentCall = { typeName: 'FuelTransaction', entity: transaction };

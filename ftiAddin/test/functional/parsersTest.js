@@ -107,4 +107,11 @@ describe('Parsers', function(){
     it('Date format parsing', function() {
         assert.isTrue(parsers.parseDateFormat('DD/MM/YYYY').ReturnValue);
     }); 
+    it('Location parsing', function(){
+        myTestValue = parsers.parseLocation('6.08279037,46.1454582', ',');
+        assert.isNotNull(myTestValue);
+        assert.isTrue(myTestValue[0].y === 6.08279037);
+        assert.isTrue(myTestValue[0].x === 46.1454582);
+        assert.isTrue(Array.isArray(myTestValue));
+    })
 });

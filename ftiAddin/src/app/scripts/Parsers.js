@@ -201,6 +201,17 @@ function getHeadings(data) {
         return transactions;
     };
 
+    function parseLocation(locationInput, splitChar){
+        var splitVal = locationInput.split(splitChar);
+        var output = [];
+        var coords = {
+            y: parseFloat(splitVal[0]),
+            x: parseFloat(splitVal[1])
+        }
+        output.push(coords);
+        return output;
+    }
+
 module.exports = {
     parseStringValue,
     parseStringLength,
@@ -209,5 +220,6 @@ module.exports = {
     parseDate,
     getHeadings,
     addBlanckColumn,
-    parseDateFormat
+    parseDateFormat,
+    parseLocation
 }

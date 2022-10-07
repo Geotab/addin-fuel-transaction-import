@@ -83,8 +83,12 @@ function parseTransaction(transaction, configuration, mapping, timeZone) {
         // set the new value.
         let falseKey = getObjKey(mapping, keyItem)
         value = transaction[falseKey];
+        console.log('current key item: ' + keyItem + ', value: ' + value);
         if (value) {
             switch (keyItem) {
+                case 'location':
+                    entity[keyItem] = parsers.parseLocation(value, ',');
+                    break;
                 case 'licencePlate':
                     entity[keyItem] = parsers.parseStringLength(value, 255).toUpperCase().replace(/\s/g, '');
                     break;
