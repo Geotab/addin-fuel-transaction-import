@@ -42,7 +42,7 @@ function getObjKey(obj, value) {
 /**
  * Parse each transaction property.
  * @param {*} transaction The transaction to parse.
- * @param {*} configuration The configuration settings for this instance.
+ * @param {*} configuration The configuration settings for this instance. From the json config file. Shows each transaction property and it's relative mapping like "cardNumber": "ColumnA", "comments": "ColumnB" etc.
  * @param {*} mapping The mapping object (or transaction header mappings) e.g. "ColumnA": "cardNumber" - indicates the excel column mapped to the fuel transaction property.
  * @param {String} timeZone The currently selected time zone.
  * @returns A FuelTransaction entity ready to be imported into the database.
@@ -67,7 +67,6 @@ function parseTransaction(transaction, configuration, mapping, timeZone) {
 
     let entity = {};
     let value;
-    let dateValue;
     console.log('Parsing provider: ' + configuration.Name);
     let dateFormat = configuration.dateFormat;
     if (configuration.timeFormat) {
@@ -89,7 +88,6 @@ function parseTransaction(transaction, configuration, mapping, timeZone) {
             switch (keyItem) {
                 case 'dateTime':
                     entity[keyItem] = parsers.parseDate(value, configuration.dateFormat, timeZone);
-                    //entity[keyItem] = parsers.parseDateValue(value);
                     break;
                 case 'location':
                     entity[keyItem] = parsers.parseLocation(value, ',');

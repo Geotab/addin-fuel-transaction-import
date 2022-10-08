@@ -20,9 +20,6 @@ describe('Parsers', function(){
     it('Float parsing', function(){
         assert.equal(parsers.parseFloatValue('test'), 0);
     });
-    // it('Date parsing', function(){
-    //     assert.equal(parsers.parseDateValue('2/15/2022'), '2022-02-15T00:00:00.000Z');
-    // });
     it('String length parsing', function(){
         assert.isTrue(parsers.parseStringLength('This is a long string', 4) === 'This');
     });

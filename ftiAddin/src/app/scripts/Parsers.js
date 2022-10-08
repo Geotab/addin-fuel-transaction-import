@@ -42,37 +42,6 @@ var parseFloatValue = function (float) {
 };
 
 /**
- * Parses date values to ISO format 8601 (UTC I believe).
- * The timezone is always zero UTC offset, as denoted by the suffix Z
- * @param {*} date The date value to parse
- * @returns The ISO format date
- */
-var parseDateValue = function (date) {
-    var fromStringDateUtc;
-    var fromStringDate = new Date(date);
-    var fromOADate = function (oaDateValue) {
-        var oaDate = new Date(Date.UTC(1899, 11, 30));
-        var millisecondsOfaDay = 24 * 60 * 60 * 1000;
-        var result = new Date();
-        result.setTime((oaDateValue * millisecondsOfaDay) + Date.parse(oaDate));
-        return result;
-    };
-
-    // date in iso format
-    if (date.indexOf('T') > -1) {
-        return fromStringDate.toISOString();
-    }
-
-    // date in non oaDate format
-    fromStringDateUtc = new Date(Date.UTC(fromStringDate.getFullYear(), fromStringDate.getMonth(), fromStringDate.getDate(), fromStringDate.getHours(), fromStringDate.getMinutes(), fromStringDate.getMilliseconds()));
-    if (!isNaN(fromStringDateUtc.getTime())) {
-        return fromStringDateUtc.toISOString();
-    }
-
-    return fromOADate(parseFloatValue(date)).toISOString();
-};
-
-/**
  * input - date and format. the date must be checked against the format and ensured it is a valid date.
  * @param {*} date 
  * @param {*} format 
@@ -216,7 +185,6 @@ module.exports = {
     parseStringValue,
     parseStringLength,
     parseFloatValue,
-    parseDateValue,
     parseDate,
     getHeadings,
     addBlanckColumn,
