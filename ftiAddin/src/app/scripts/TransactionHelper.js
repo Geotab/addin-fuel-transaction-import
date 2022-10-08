@@ -67,6 +67,7 @@ function parseTransaction(transaction, configuration, mapping, timeZone) {
 
     let entity = {};
     let value;
+    let dateValue;
     console.log('Parsing provider: ' + configuration.Name);
     let dateFormat = configuration.dateFormat;
     if (configuration.timeFormat) {
@@ -81,11 +82,15 @@ function parseTransaction(transaction, configuration, mapping, timeZone) {
         // reset value prior to setting the new value to be safe.
         value = undefined;
         // set the new value.
-        let falseKey = getObjKey(mapping, keyItem)
+        let falseKey = getObjKey(mapping, keyItem);
         value = transaction[falseKey];
         console.log('current key item: ' + keyItem + ', value: ' + value);
         if (value) {
             switch (keyItem) {
+                case 'dateTime':
+                    entity[keyItem] = parsers.parseDate(value, configuration.dateFormat, timeZone);
+                    //entity[keyItem] = parsers.parseDateValue(value);
+                    break;
                 case 'location':
                     entity[keyItem] = parsers.parseLocation(value, ',');
                     break;
@@ -115,10 +120,6 @@ function parseTransaction(transaction, configuration, mapping, timeZone) {
                     break;
                 case 'cost':
                     entity[keyItem] = parsers.parseFloatValue(value);
-                    break;
-                case 'dateTime':
-                    entity[keyItem] = parsers.parseDate(value, configuration.dateFormat, timeZone);
-                    //entity[keyItem] = parsers.parseDateValue(value);
                     break;
                 case 'odometer':
                     if (configuration.unitOdoKm === 'N') {

@@ -42,12 +42,24 @@ describe('Transaction parsing tests', () => {
     });
     it('test multiple transactions', () => {
         return transactionHelper.ParseAndBuildTransactions(transactionsExcelMock, configurationMock.providers[0], 'europe/berlin')
-        .then(results => {
-            assert.isTrue(results[0].cardNumber === 'ABC1');
-            assert.isTrue(results[1].provider === 'Allstar');
-            assert.isTrue(results[2].serialNumber === 'G7D020FC5C50');
-            assert.isTrue(results[3].vehicleIdentificationNumber === 'SHSRE5780CU007020');
-            assert.isTrue(results[4].dateTime === null);
-        });
+            .then(results => {
+                assert.isTrue(results[0].cardNumber === 'ABC1');
+                assert.isTrue(results[1].provider === 'Allstar');
+                assert.isTrue(results[2].serialNumber === 'G7D020FC5C50');
+                assert.isTrue(results[3].vehicleIdentificationNumber === 'SHSRE5780CU007020');
+                assert.isTrue(results[4].dateTime === null);
+            });
+    });
+    it('test location and dateTime', () => {
+        entity = transactionHelper.parseTransaction(transactionsExcelMock[6], configurationMock.providers[5], transactionsExcelMock[0], 'europe/berlin');
+        assert.isTrue(entity.location[0].x === 46.1454582);
+        assert.isTrue(entity.location[0].y === 6.08279037);
+        assert.isTrue(entity.cardNumber === 'CARDNO');
+        assert.isTrue(entity.comments === 'comments');
+        assert.isTrue(entity.description === 'description');
+        assert.isTrue(entity.driverName === 'driverName');
+        assert.isTrue(entity.externalReference === 'external reference');
+        assert.isTrue(entity.providerProductDescription === 'providerProductDescription');
+        assert.isTrue(entity.sourceData === 'sourceData');
     });
 });

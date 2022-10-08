@@ -18,7 +18,9 @@
     "ColumnP": "dateTime",
     "ColumnQ": "odometer",
     "ColumnR": "productType",
-    "ColumnS": "volume"
+    "ColumnS": "volume",
+    "ColumnT": "confidence",
+    "ColumnU": "location"
   },
   {
     "ColumnA": "ABC1",
@@ -80,5 +82,28 @@
     "ColumnP": "3/27/2020",
     "ColumnQ": "100452",
     "ColumnS": "55,36"
+  },
+  {
+    "ColumnA": "CARDNO",
+    "ColumnB": "comments",
+    "ColumnC": "description",
+    "ColumnD": "driverName",
+    "ColumnE": "external reference",
+    "ColumnF": "licencePlate",
+    "ColumnG": "provider",
+    "ColumnH": "providerProductDescription",
+    "ColumnI": "serialNumber",
+    "ColumnJ": "siteName",
+    "ColumnK": "sourceData",
+    "ColumnL": "vehicleIdentificationNumber",
+    "ColumnN": 10.45,
+    "ColumnO": "ZAR",
+    "ColumnP": "25/02/2022",
+    "ColumnQ": 10251,
+    "ColumnR": "Diesel",
+    "ColumnS": "volume",
+    "ColumnT": "confidence",
+    "ColumnU": "6.08279037,46.1454582",
+    "ColumnV": "11:20:34"
   }
 ]

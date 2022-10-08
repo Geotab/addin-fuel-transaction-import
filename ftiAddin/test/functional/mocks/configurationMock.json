@@ -146,6 +146,38 @@
         "productType": "ColumnR",
         "volume": "ColumnS"
       }
-    }
+    },
+    {
+        "Name": "Test6",
+        "unitVolumeLiters": "",
+        "unitOdoKm": "",
+        "isCellDateType": "",
+        "dateFormat": "DD/MM/YYYY",
+        "timeFormat": "HH:mm:ss",
+        "currencyCodeMapped": "",
+        "data": {
+          "cardNumber": "ColumnA",
+          "comments": "ColumnB",
+          "description": "ColumnC",
+          "driverName": "ColumnD",
+          "externalReference": "ColumnE",
+          "licencePlate": "ColumnF",
+          "provider": "ColumnG",
+          "providerProductDescription": "ColumnH",
+          "serialNumber": "ColumnI",
+          "sourceData": "ColumnK",
+          "vehicleIdentificationNumber": "ColumnL",
+          "cost": "ColumnN",
+          "currencyCode": "ColumnO",
+          "dateTime": [
+            "ColumnP",
+            "ColumnV"
+          ],
+          "odometer": "ColumnQ",
+          "productType": "ColumnR",
+          "volume": "ColumnS",
+          "location": "ColumnU"
+        }
+      }
   ]
 }
