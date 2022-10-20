@@ -59,6 +59,39 @@ function parseDate(date, format, timeZone){
     }
 }
 
+function parseDateNew(configuration, transaction, timeZone) {
+    let isDateAndTimeSplit = false;
+    let myDate = '';
+    let dateTime = configuration.data.dateTime;
+
+    if(configuration.timeFormat.length > 0){
+        // date and time are split into two columns.
+    } else {
+        // date or date and time is/are contained in a single column.
+    }
+
+    if(Array.isArray(dateTime)){
+        isDateAndTimeSplit = true;
+        dateTime.forEach((value, index) => {
+            if(myDate.length > 0){
+                myDate += ' ';
+            }
+            myDate += transaction[value];
+        });
+    }
+
+    let dateFormat = configuration.dateFormat;
+    if(isDateAndTimeSplit){
+        dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
+    }
+
+    if(moment.tz(myDate, dateFormat, timeZone).isValid()){
+        return moment.tz(myDate, dateFormat, timeZone).toISOString();
+    } else {
+        return null;
+    }
+}
+
 /**
  * Parses the date format string submitted in the configuration file. e.g. YYYYMMDD or MM-DD-YYYY HH:mm:ss etc.
  * @param {*} format The format to parse
@@ -189,5 +222,6 @@ module.exports = {
     getHeadings,
     addBlanckColumn,
     parseDateFormat,
-    parseLocation
+    parseLocation,
+    parseDateNew
 }

@@ -1,5 +1,7 @@
 const assert = require('chai').assert;
-const parsers = require('../../src/app/scripts/Parsers')
+const parsers = require('../../src/app/scripts/Parsers');
+const transactionsExcelMock = require('./mocks/transactionsExcelMock.json');
+const configurationMock = require('./mocks/configurationMock.json');
 
 describe('Parsers', function(){
     it('String parsing', function(){
@@ -111,4 +113,8 @@ describe('Parsers', function(){
         assert.isTrue(myTestValue[0].x === 46.1454582);
         assert.isTrue(Array.isArray(myTestValue));
     })
+    it('new date parser test', function() {
+        var myTestValue = parsers.parseDateNew(configurationMock.providers[5], transactionsExcelMock[6], 'europe/zurich');
+        assert.isNotNull(myTestValue);
+    });
 });

@@ -36,6 +36,7 @@ function validateConfiguration(configuration) {
         return output;
     }
 
+    // date and time validation
     // dateFormat is required
     if (!configuration.dateFormat) {
         output.isValid = false;
