@@ -47,6 +47,9 @@ geotab.addin.ftiAddin = function () {
   let elProgressBar = document.getElementById('progressBar');
   /** The browser timezone index for later resets. */
   let selectedTimezoneIndex;
+  const TableElementId = 'ErrorTable';
+  const ErrorListTitleId = 'ErrorListTitle';
+  const TableImportSummaryElementId = 'ImportSummaryTable';
 
   /**
    * Manages the provider file selection change event.
@@ -169,8 +172,13 @@ geotab.addin.ftiAddin = function () {
    */
   function toggleWindowDisplayState(input = true, output = false, progress = false) {
     input ? elInputDiv.classList.remove('ftiHidden') : elInputDiv.classList.add('ftiHidden');
-    output ? elOutputDiv.classList.remove('ftiHidden') : elOutputDiv.classList.add('ftiHidden');
     progress ? elProgressDiv.classList.remove('ftiHidden') : elProgressDiv.classList.add('ftiHidden');
+    if (output) {
+        elOutputDiv.classList.remove('ftiHidden');
+      } else { 
+        elOutputDiv.classList.add('ftiHidden');
+        cleanOutputDiv();
+    }
   }
 
   /**
@@ -179,11 +187,28 @@ geotab.addin.ftiAddin = function () {
    * @param {*} message The message
    */
   function setOutputDisplay(title, message) {
-    // let titleOutput = elOutputDiv.querySelector('h2');
-    // titleOutput = title;
     elOutputTitle.textContent = title;
     elOutputMessage.textContent = message;
     toggleWindowDisplayState(true, true, false);
+  }
+
+  /**
+   * Cleans the OutputDiv of any additional elements and resets the title an message.
+   */
+  function cleanOutputDiv()
+  {
+    let elErrorTable = document.getElementById(TableElementId);
+    if(elErrorTable) {
+      elErrorTable.parentNode.removeChild(elErrorTable);
+    }
+    let elErrorListTitle = document.getElementById(ErrorListTitleId);
+    if(elErrorListTitle) {
+      elErrorListTitle.parentNode.removeChild(elErrorListTitle);
+    }
+    let elImportSummaryTable = document.getElementById(TableImportSummaryElementId);
+    if (elImportSummaryTable) {
+      elImportSummaryTable.parentNode.removeChild(elImportSummaryTable);
+    }
   }
 
   /**
@@ -308,6 +333,7 @@ geotab.addin.ftiAddin = function () {
     tr3.appendChild(cell3);
     tr3.appendChild(cellValue3);
     tbody.appendChild(tr3);
+    table.id = TableImportSummaryElementId;
     table.appendChild(tbody);
     table.className = 'ftiSummaryTable';
     elOutputDiv.appendChild(table);
@@ -338,6 +364,7 @@ geotab.addin.ftiAddin = function () {
 
   function reportErrors(errors) {
     let title = document.createElement('h2');
+    title.id = ErrorListTitleId;
     title.textContent = 'Error List'
     title.title = 'List of transactions that produced errors.'
     elOutputDiv.appendChild(title);
@@ -345,7 +372,7 @@ geotab.addin.ftiAddin = function () {
       let table = document.createElement('table');
       let thead = document.createElement('thead');
       let tbody = document.createElement('tbody');
-      table.id = 'myTable';
+      table.id = TableElementId;
 
       table.appendChild(thead);
 
