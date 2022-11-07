@@ -9,8 +9,16 @@ describe('Transaction parsing tests', () => {
     it('test transaction parsing - all should pass - 1', () => {
         entity = transactionHelper.parseTransaction(transactionsExcelMock[1], configurationMock.providers[0], transactionsExcelMock[0], 'europe/berlin');
         assert.isTrue(entity.cardNumber === 'ABC1');
+        assert.isTrue(entity.comments === 'comments');
+        assert.isTrue(entity.description === 'description');
+        assert.isTrue(entity.driverName === 'driverName');
+        assert.isTrue(entity.externalReference === 'externalReference');
         assert.isTrue(entity.licencePlate === 'LICPLATE');
+        assert.isTrue(entity.providerProductDescription === 'providerProductDescription');
         assert.isTrue(entity.serialNumber === 'G7D020FC5C50');
+        assert.isTrue(entity.siteName === 'siteName');
+        assert.isTrue(entity.vehicleIdentificationNumber === 'vehicleIdentificationNumber'.toUpperCase());
+        assert.isTrue(entity.sourceData === 'sourceData');
         assert.isTrue(entity.cost === 124.56);
         assert.isTrue(entity.currencyCode === 'CHF');
         assert.isTrue(entity.dateTime === null);
@@ -18,6 +26,7 @@ describe('Transaction parsing tests', () => {
         assert.isTrue(entity.productType === 'Regular');
         assert.isUndefined(entity.provider);
         assert.isTrue(entity.volume === 50);
+        
     });
     it('test transaction parsing - all should pass - 2', () => {
         entity = transactionHelper.parseTransaction(transactionsExcelMock[2], configurationMock.providers[0], transactionsExcelMock[0], 'europe/berlin');

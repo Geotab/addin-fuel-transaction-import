@@ -66,6 +66,7 @@ function parseTransaction(transaction, configuration, mapping, timeZone) {
     }
 
     let entity = {};
+    /** The configuration data property value which will be the column or columns e.g. ColumnL or an array of columns */
     let value;
     console.log('Parsing provider: ' + configuration.Name);
     let dateFormat = configuration.dateFormat;
@@ -74,8 +75,8 @@ function parseTransaction(transaction, configuration, mapping, timeZone) {
     }
     console.log('dateFormat: ' + dateFormat);
 
-    // loop through the data properties of the transaction object
-    // key = property
+    // loop through the 'data' properties of the transaction object
+    // keyItem = the specific data property e.g. cardNumber, description, dateTime, location etc.
     Object.keys(configuration.data).forEach(keyItem => {
         console.log(keyItem, configuration.data[keyItem]);
         // reset value prior to setting the new value to be safe.
@@ -95,8 +96,11 @@ function parseTransaction(transaction, configuration, mapping, timeZone) {
                 case 'licencePlate':
                     entity[keyItem] = parsers.parseStringLength(value, 255).toUpperCase().replace(/\s/g, '');
                     break;
-                case 'driverName':
-                case 'externalReference':
+                // case 'driverName':
+                // case 'siteName':
+                // case 'cardNumber':
+                // case 'externalReference':
+                // case 'providerProductDescription':
                 case 'comments':
                     entity[keyItem] = parsers.parseStringValue(parsers.parseStringLength(value, 1024));
                     break;
@@ -134,6 +138,7 @@ function parseTransaction(transaction, configuration, mapping, timeZone) {
                     entity[keyItem] = parsers.parseFloatValue(value);
                     break;
                 default:
+                    // handles any unhandled values and parses the result to string.
                     entity[keyItem] = parsers.parseStringValue(value);
                     break;
             }
