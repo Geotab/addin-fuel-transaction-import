@@ -269,7 +269,7 @@ geotab.addin.ftiAddin = function () {
       })
       .then(result => {
         // parse and get the json transaction.
-        return transactionHelper.ParseAndBuildTransactions(transactionsExcel, configuration, elTimeZoneDropdown.value);
+        return transactionHelper.ParseAndBuildTransactions(transactionsExcel, configuration, elTimeZoneDropdown.value, api);
       })
       .then((results) => {
         transactionsJson = results;

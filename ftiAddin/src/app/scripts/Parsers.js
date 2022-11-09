@@ -52,6 +52,7 @@ function parseDate(date, format, timeZone){
     // parses and returns the date if valid otherwise reports a moment invalid date type.
     // let myDate = moment(date, format);
     // let myDate = moment.tz(date, format, timeZone).format();
+    console.log(`parseDate input date: ${date}`);
     if(moment.tz(date, format, timeZone).isValid()){
         return moment.tz(date, format, timeZone).toISOString();
     } else {
@@ -61,32 +62,33 @@ function parseDate(date, format, timeZone){
 
 function parseDateNew(configuration, transaction, timeZone) {
     let isDateAndTimeSplit = false;
-    let myDate = '';
-    let dateTime = configuration.data.dateTime;
+    let date;
+    let time;
+    let dateTime;
+    // let dateTime = configuration.data.dateTime;
 
     if(configuration.timeFormat.length > 0){
         // date and time are split into two columns.
+        isDateAndTimeSplit = true;
+        date = transaction[configuration.data.dateTime[0]];
+        time  = transaction[configuration.data.dateTime[1]];
+        dateTime = date.split(' ')[0] + ' ' + time;
     } else {
         // date or date and time is/are contained in a single column.
-    }
-
-    if(Array.isArray(dateTime)){
-        isDateAndTimeSplit = true;
-        dateTime.forEach((value, index) => {
-            if(myDate.length > 0){
-                myDate += ' ';
-            }
-            myDate += transaction[value];
-        });
+        dateTime = transaction[configuration.data.dateTime[0]];
     }
 
     let dateFormat = configuration.dateFormat;
     if(isDateAndTimeSplit){
-        dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
+        if (configuration.isCellDateType == 'Y') {
+            dateFormat = 'MM/DD/YYYY' + ' ' + configuration.timeFormat;
+        } else {
+            dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
+        }
     }
 
-    if(moment.tz(myDate, dateFormat, timeZone).isValid()){
-        return moment.tz(myDate, dateFormat, timeZone).toISOString();
+    if(moment.tz(dateTime, dateFormat, timeZone).isValid()){
+        return moment.tz(dateTime, dateFormat, timeZone).toISOString();
     } else {
         return null;
     }

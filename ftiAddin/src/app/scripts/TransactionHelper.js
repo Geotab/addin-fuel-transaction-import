@@ -1,15 +1,17 @@
 const parsers = require('./Parsers');
 const converters = require('./Converters');
 const productTypeHelper = require('./ProductTypeHelper');
+const myGeotabHelper = require('./MyGeotabHelper');
 
 /**
  * Receives the excel transactions and produces the json formated transaction entities.
  * @param {*} transactionsExcel The transactions in excel format.
  * @param {*} configuration The currently selected fuel provider configuration.
  * @param {String} timeZone The currently selected time zone.
+ * @param {*} api The MyGeotab API service.
  * @returns The formatted transactions as an array of json objects.
  */
-function ParseAndBuildTransactions(transactionsExcel, configuration, timeZone) {
+function ParseAndBuildTransactions(transactionsExcel, configuration, timeZone, api) {
     return new Promise((resolve, reject) => {
         let transactionsOutput = [];
         let mapping;
@@ -45,9 +47,10 @@ function getObjKey(obj, value) {
  * @param {*} configuration The configuration settings for this instance. From the json config file. Shows each transaction property and it's relative mapping like "cardNumber": "ColumnA", "comments": "ColumnB" etc.
  * @param {*} mapping The mapping object (or transaction header mappings) e.g. "ColumnA": "cardNumber" - indicates the excel column mapped to the fuel transaction property.
  * @param {String} timeZone The currently selected time zone.
+ * @param {*} api The MyGeotab API service.
  * @returns A FuelTransaction entity ready to be imported into the database.
  */
-function parseTransaction(transaction, configuration, mapping, timeZone) {
+function parseTransaction(transaction, configuration, mapping, timeZone, api) {
 
     if (transaction === undefined) {
         throw new Error('parseTransaction transaction argument not submitted.');
@@ -69,11 +72,11 @@ function parseTransaction(transaction, configuration, mapping, timeZone) {
     /** The configuration data property value which will be the column or columns e.g. ColumnL or an array of columns */
     let value;
     console.log('Parsing provider: ' + configuration.Name);
-    let dateFormat = configuration.dateFormat;
-    if (configuration.timeFormat) {
-        dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
-    }
-    console.log('dateFormat: ' + dateFormat);
+    // let dateFormat = configuration.dateFormat;
+    // if (configuration.timeFormat) {
+    //     dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
+    // }
+    // console.log('dateFormat: ' + dateFormat);
 
     // loop through the 'data' properties of the transaction object
     // keyItem = the specific data property e.g. cardNumber, description, dateTime, location etc.
@@ -84,11 +87,21 @@ function parseTransaction(transaction, configuration, mapping, timeZone) {
         // set the new value.
         let falseKey = getObjKey(mapping, keyItem);
         value = transaction[falseKey];
+        if(keyItem === 'dateTime')
+        {
+            value = 'dateTime';
+        }
         console.log('current key item: ' + keyItem + ', value: ' + value);
         if (value) {
             switch (keyItem) {
+                case 'address':
+                    //entity[keyItem] = myGeotabHelper.GetCoordinates(api, value);
+                    var addresses = myGeotabHelper.GetCoordinates(api, value);
+                    console.log(addresses);
+                    break;
                 case 'dateTime':
-                    entity[keyItem] = parsers.parseDate(value, configuration.dateFormat, timeZone);
+                    // entity[keyItem] = parsers.parseDate(value, configuration.dateFormat, timeZone);
+                    entity[keyItem] = parsers.parseDateNew(configuration, transaction, timeZone);
                     break;
                 case 'location':
                     entity[keyItem] = parsers.parseLocation(value, ',');
@@ -96,11 +109,6 @@ function parseTransaction(transaction, configuration, mapping, timeZone) {
                 case 'licencePlate':
                     entity[keyItem] = parsers.parseStringLength(value, 255).toUpperCase().replace(/\s/g, '');
                     break;
-                // case 'driverName':
-                // case 'siteName':
-                // case 'cardNumber':
-                // case 'externalReference':
-                // case 'providerProductDescription':
                 case 'comments':
                     entity[keyItem] = parsers.parseStringValue(parsers.parseStringLength(value, 1024));
                     break;
