@@ -4,12 +4,15 @@
  * @param {*} addresses The formatted addresses in an array of String(s).
  * @returns The array of Coordinate(s) for the address or null if it cannot be found.
  */
-function GetCoordinates(api, addresses)
-{
-    api.call('GetCoordinates', {
-        'addresses': addresses 
-    }, function (result) {
-        return result;
+let GetCoordinates = (api, addresses) => {
+    return new Promise((resolve, reject) => {
+        api.call('GetCoordinates', {
+            'addresses': [addresses] 
+        }, function (result) {
+            resolve(result);
+        }, function (error) {
+            reject(error);
+        });
     });
 }
 

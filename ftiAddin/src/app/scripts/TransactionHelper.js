@@ -21,7 +21,7 @@ function ParseAndBuildTransactions(transactionsExcel, configuration, timeZone, a
                 // get the mapping (or header) to be used in the transaction parsing process that follows.
                 mapping = transaction;
             } else {
-                entity = parseTransaction(transaction, configuration, mapping, timeZone);
+                entity = parseTransaction(transaction, configuration, mapping, timeZone, api);
                 console.log('parsed transaction entity: ' + entity);
                 transactionsOutput.push(entity);
             }
@@ -38,7 +38,7 @@ function ParseAndBuildTransactions(transactionsExcel, configuration, timeZone, a
  * @returns The key related to the value submitted.
  */
 function getObjKey(obj, value) {
-    return Object.keys(obj).find(key => obj[key] === value);
+    return Object.keys(obj).find(key => obj[key].toLowerCase() === value.toLowerCase());
 }
 
 /**
@@ -80,7 +80,7 @@ function parseTransaction(transaction, configuration, mapping, timeZone, api) {
 
     // loop through the 'data' properties of the transaction object
     // keyItem = the specific data property e.g. cardNumber, description, dateTime, location etc.
-    Object.keys(configuration.data).forEach(keyItem => {
+    Object.keys(configuration.data).forEach(async keyItem => {
         console.log(keyItem, configuration.data[keyItem]);
         // reset value prior to setting the new value to be safe.
         value = undefined;
@@ -95,9 +95,8 @@ function parseTransaction(transaction, configuration, mapping, timeZone, api) {
         if (value) {
             switch (keyItem) {
                 case 'address':
-                    //entity[keyItem] = myGeotabHelper.GetCoordinates(api, value);
-                    var addresses = myGeotabHelper.GetCoordinates(api, value);
-                    console.log(addresses);
+                    var result = await myGeotabHelper.GetCoordinates(api, value);
+                    entity[keyItem] = result;
                     break;
                 case 'dateTime':
                     // entity[keyItem] = parsers.parseDate(value, configuration.dateFormat, timeZone);
