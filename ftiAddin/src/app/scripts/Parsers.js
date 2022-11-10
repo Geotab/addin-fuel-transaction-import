@@ -85,6 +85,10 @@ function parseDateNew(configuration, transaction, timeZone) {
         } else {
             dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
         }
+    } else {
+        if (configuration.isCellDateType == 'Y') {
+            dateFormat = 'MM/DD/YYYY';
+        }
     }
 
     if(moment.tz(dateTime, dateFormat, timeZone).isValid()){
