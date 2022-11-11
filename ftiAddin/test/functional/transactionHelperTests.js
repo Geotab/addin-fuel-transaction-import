@@ -6,8 +6,8 @@ const { expect } = require('chai');
 
 describe('Transaction parsing tests', () => {
     let entity;
-    it('test transaction parsing - all should pass - 1', () => {
-        entity = transactionHelper.parseTransaction(transactionsExcelMock[1], configurationMock.providers[0], transactionsExcelMock[0], 'europe/berlin');
+    it('test transaction parsing - all should pass - 1', async () => {
+        entity = await transactionHelper.parseTransactionAsync(transactionsExcelMock[1], configurationMock.providers[0], transactionsExcelMock[0], 'europe/berlin');
         assert.isTrue(entity.cardNumber === 'ABC1');
         assert.isTrue(entity.comments === 'comments');
         assert.isTrue(entity.description === 'description');
@@ -28,8 +28,8 @@ describe('Transaction parsing tests', () => {
         assert.isTrue(entity.volume === 50);
         
     });
-    it('test transaction parsing - all should pass - 2', () => {
-        entity = transactionHelper.parseTransaction(transactionsExcelMock[2], configurationMock.providers[0], transactionsExcelMock[0], 'europe/berlin');
+    it('test transaction parsing - all should pass - 2', async () => {
+        entity = await transactionHelper.parseTransactionAsync(transactionsExcelMock[2], configurationMock.providers[0], transactionsExcelMock[0], 'europe/berlin');
         assert.isTrue(entity.cardNumber === 'CDE1');
         assert.isTrue(entity.comments.length === 1024);
         assert.isTrue(entity.description.length === 255);
@@ -45,12 +45,12 @@ describe('Transaction parsing tests', () => {
         assert.isTrue(entity.provider === 'Allstar');
         assert.isTrue(entity.volume === 10.236);
     });
-    it('test transaction parsing - all should pass - 3', () => {
-        entity = transactionHelper.parseTransaction(transactionsExcelMock[4], configurationMock.providers[0], transactionsExcelMock[0], 'europe/berlin');
+    it('test transaction parsing - all should pass - 3', async () => {
+        entity = await transactionHelper.parseTransactionAsync(transactionsExcelMock[4], configurationMock.providers[0], transactionsExcelMock[0], 'europe/berlin');
         assert.isTrue(entity.dateTime === null);
     });
-    it('test multiple transactions', () => {
-        return transactionHelper.ParseAndBuildTransactions(transactionsExcelMock, configurationMock.providers[0], 'europe/berlin')
+    it('test multiple transactions', async () => {
+        return await transactionHelper.ParseAndBuildTransactionsAsync(transactionsExcelMock, configurationMock.providers[0], 'europe/berlin')
             .then(results => {
                 assert.isTrue(results[0].cardNumber === 'ABC1');
                 assert.isTrue(results[1].provider === 'Allstar');
@@ -59,8 +59,8 @@ describe('Transaction parsing tests', () => {
                 assert.isTrue(results[4].dateTime === '2020-03-26T23:00:00.000Z');
             });
     });
-    it('test location and dateTime', () => {
-        entity = transactionHelper.parseTransaction(transactionsExcelMock[6], configurationMock.providers[5], transactionsExcelMock[0], 'europe/berlin');
+    it('test location and dateTime', async () => {
+        entity = await transactionHelper.parseTransactionAsync(transactionsExcelMock[6], configurationMock.providers[5], transactionsExcelMock[0], 'europe/berlin');
         assert.isTrue(entity.location[0].x === 46.1454582);
         assert.isTrue(entity.location[0].y === 6.08279037);
         assert.isTrue(entity.cardNumber === 'CARDNO');

@@ -87,7 +87,7 @@ function parseDateNew(configuration, transaction, timeZone) {
         }
     } else {
         if (configuration.isCellDateType == 'Y') {
-            dateFormat = 'MM/DD/YYYY';
+            dateFormat = 'MM/DD/YYYY HH:mm:ss';
         }
     }
 
