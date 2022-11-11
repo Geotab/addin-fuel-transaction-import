@@ -5,27 +5,28 @@ const myGeotabHelper = require('./MyGeotabHelper');
 
 /**
  * Receives the excel transactions and produces the json formated transaction entities.
- * @param {*} transactionsExcel The transactions in excel format.
+ * @param {Array} transactionsExcel The transactions in excel format.
  * @param {*} configuration The currently selected fuel provider configuration.
  * @param {String} timeZone The currently selected time zone.
  * @param {*} api The MyGeotab API service.
  * @returns The formatted transactions as an array of json objects.
  */
-function ParseAndBuildTransactions(transactionsExcel, configuration, timeZone, api) {
-    return new Promise((resolve, reject) => {
+function ParseAndBuildTransactionsAsync(transactionsExcel, configuration, timeZone, api) {
+    return new Promise(async (resolve, reject) => {
         let transactionsOutput = [];
         let mapping;
         let entity;
-        transactionsExcel.forEach((transaction, i) => {
+        for (var i = 0; i < transactionsExcel.length; i++) {
+            var transaction = transactionsExcel[i];
             if (i === 0) {
                 // get the mapping (or header) to be used in the transaction parsing process that follows.
                 mapping = transaction;
             } else {
-                entity = parseTransaction(transaction, configuration, mapping, timeZone, api);
+                entity = await parseTransactionAsync(transaction, configuration, mapping, timeZone, api);
                 console.log('parsed transaction entity: ' + entity);
                 transactionsOutput.push(entity);
             }
-        });
+        }
         console.log('transactionsOutput: ' + JSON.stringify(transactionsOutput));
         resolve(transactionsOutput)
     });
@@ -50,7 +51,7 @@ function getObjKey(obj, value) {
  * @param {*} api The MyGeotab API service.
  * @returns A FuelTransaction entity ready to be imported into the database.
  */
-function parseTransaction(transaction, configuration, mapping, timeZone, api) {
+async function parseTransactionAsync(transaction, configuration, mapping, timeZone, api) {
 
     if (transaction === undefined) {
         throw new Error('parseTransaction transaction argument not submitted.');
@@ -72,92 +73,92 @@ function parseTransaction(transaction, configuration, mapping, timeZone, api) {
     /** The configuration data property value which will be the column or columns e.g. ColumnL or an array of columns */
     let value;
     console.log('Parsing provider: ' + configuration.Name);
-    // let dateFormat = configuration.dateFormat;
-    // if (configuration.timeFormat) {
-    //     dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
-    // }
-    // console.log('dateFormat: ' + dateFormat);
-
-    // loop through the 'data' properties of the transaction object
-    // keyItem = the specific data property e.g. cardNumber, description, dateTime, location etc.
-    Object.keys(configuration.data).forEach(async keyItem => {
-        console.log(keyItem, configuration.data[keyItem]);
-        // reset value prior to setting the new value to be safe.
+    let configDataKeys = Object.keys(configuration.data);
+    for (var i = 0; i < configDataKeys.length; i++)
+    {
+        let configDataItem = configDataKeys[i];
+        console.log('configDataItem: ' + configDataItem);
+        console.log('configuration data: ' + configuration.data[configDataItem]);
         value = undefined;
         // set the new value.
-        let falseKey = getObjKey(mapping, keyItem);
+        let falseKey = getObjKey(mapping, configDataItem);
         value = transaction[falseKey];
-        if(keyItem === 'dateTime')
+        console.log('value: ' + value);
+        if(configDataItem === 'dateTime')
         {
             value = 'dateTime';
         }
-        console.log('current key item: ' + keyItem + ', value: ' + value);
+        console.log('current key item: ' + configDataItem + ', value: ' + value);
         if (value) {
-            switch (keyItem) {
+            switch (configDataItem) {
                 case 'address':
-                    var result = await myGeotabHelper.GetCoordinates(api, value);
-                    entity[keyItem] = result;
+                    var coords = await myGeotabHelper.GetCoordinates(api, value);
+                    if(coords){
+                        if (Array.isArray(coords)){
+                            entity.location = coords[0];
+                        }
+                    }
                     break;
                 case 'dateTime':
-                    // entity[keyItem] = parsers.parseDate(value, configuration.dateFormat, timeZone);
-                    entity[keyItem] = parsers.parseDateNew(configuration, transaction, timeZone);
+                    // entity[configDataItem] = parsers.parseDate(value, configuration.dateFormat, timeZone);
+                    entity[configDataItem] = parsers.parseDateNew(configuration, transaction, timeZone);
                     break;
                 case 'location':
-                    entity[keyItem] = parsers.parseLocation(value, ',');
+                    entity[configDataItem] = parsers.parseLocation(value, ',');
                     break;
                 case 'licencePlate':
-                    entity[keyItem] = parsers.parseStringLength(value, 255).toUpperCase().replace(/\s/g, '');
+                    entity[configDataItem] = parsers.parseStringLength(value, 255).toUpperCase().replace(/\s/g, '');
                     break;
                 case 'comments':
-                    entity[keyItem] = parsers.parseStringValue(parsers.parseStringLength(value, 1024));
+                    entity[configDataItem] = parsers.parseStringValue(parsers.parseStringLength(value, 1024));
                     break;
                 case 'description':
-                    entity[keyItem] = parsers.parseStringValue(parsers.parseStringLength(value, 255));
+                    entity[configDataItem] = parsers.parseStringValue(parsers.parseStringLength(value, 255));
                     break;
                 case 'currencyCode':
-                    entity[keyItem] = value.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
+                    entity[configDataItem] = value.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
                     break;
                 case 'serialNumber':
                 case 'vehicleIdentificationNumber':
-                    entity[keyItem] = value.toUpperCase().replace(/\s/g, '');
+                    entity[configDataItem] = value.toUpperCase().replace(/\s/g, '');
                     break;
                 case 'provider':
-                    entity[keyItem] = getProvider(value);
+                    entity[configDataItem] = getProvider(value);
                     break;
                 case 'productType':
-                    entity[keyItem] = productTypeHelper.getProductType(value);
+                    entity[configDataItem] = productTypeHelper.getProductType(value);
                     break;
                 case 'cost':
-                    entity[keyItem] = parsers.parseFloatValue(value);
+                    entity[configDataItem] = parsers.parseFloatValue(value);
                     break;
                 case 'odometer':
                     if (configuration.unitOdoKm === 'N') {
                         // value in miles so convert to kilometres.
                         value = converters.milesToKm(value);
                     }
-                    entity[keyItem] = parsers.parseFloatValue(value);
+                    entity[configDataItem] = parsers.parseFloatValue(value);
                     break;
                 case 'volume':
                     if (configuration.unitVolumeLiters === 'N') {
                         // value in miles so convert to kilometres.
                         value = converters.gallonsToLitres(value);
                     }
-                    entity[keyItem] = parsers.parseFloatValue(value);
+                    entity[configDataItem] = parsers.parseFloatValue(value);
                     break;
                 default:
                     // handles any unhandled values and parses the result to string.
-                    entity[keyItem] = parsers.parseStringValue(value);
+                    entity[configDataItem] = parsers.parseStringValue(value);
                     break;
             }
         } else {
             // if currencyCode does not exist the global value should be assigned.
-            if (keyItem === 'currencyCode') {
-                entity[keyItem] = configuration.currencyCodeMapped.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
+            if (configDataItem === 'currencyCode') {
+                entity[configDataItem] = configuration.currencyCodeMapped.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
             }
             console.log('value is null or undefined...');
         }
-    });
 
+    }
     console.log('parseTransaction output for entity: ', JSON.stringify(entity));
     return entity;
 }
@@ -195,7 +196,7 @@ var fuelTransactionProviders = {
 }
 
 module.exports = {
-    ParseAndBuildTransactions,
-    parseTransaction,
+    ParseAndBuildTransactionsAsync,
+    parseTransactionAsync,
     fuelTransactionProviders
 }
