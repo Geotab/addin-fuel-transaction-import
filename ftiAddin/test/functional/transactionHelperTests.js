@@ -61,8 +61,8 @@ describe('Transaction parsing tests', () => {
     });
     it('test location and dateTime', async () => {
         entity = await transactionHelper.parseTransactionAsync(transactionsExcelMock[6], configurationMock.providers[5], transactionsExcelMock[0], 'europe/berlin');
-        assert.isTrue(entity.location[0].x === 46.1454582);
-        assert.isTrue(entity.location[0].y === 6.08279037);
+        assert.isTrue(entity.location.x === 46.1454582);
+        assert.isTrue(entity.location.y === 6.08279037);
         assert.isTrue(entity.cardNumber === 'CARDNO');
         assert.isTrue(entity.comments === 'comments');
         assert.isTrue(entity.description === 'description');

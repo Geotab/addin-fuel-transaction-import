@@ -112,7 +112,10 @@
     "ColumnR": "Diesel",
     "ColumnS": "volume",
     "ColumnT": "confidence",
-    "ColumnU": "6.08279037,46.1454582",
+    "ColumnM": 6.08279037,
+    "ColumnU": 46.1454582,
     "ColumnV": "11:20:34"
+
+
   }
 ]

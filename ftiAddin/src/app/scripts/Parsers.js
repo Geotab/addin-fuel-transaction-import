@@ -1,4 +1,4 @@
-  const moment = require('moment-timezone');
+const moment = require('moment-timezone');
   
 /**
  * Parses string values and returns a zero length string empty values.
@@ -20,9 +20,9 @@ var parseStringValue = function (s) {
 
 /**
  * Parses the length of a string and if it is greater than the length it is truncated to that length. 
- * @param {*} string The string to parse.
- * @param {*} length The length to check.
- * @returns 
+ * @param {string} string The string to parse.
+ * @param {number} length The length to check.
+ * @returns The truncated string.
  */
 function parseStringLength(string, length){
     if(string.length > length){
@@ -60,6 +60,13 @@ function parseDate(date, format, timeZone){
     }
 }
 
+/**
+ * 
+ * @param {object} configuration The JSON configuration input.
+ * @param {object} transaction The JSON transaction input.
+ * @param {object} timeZone The moment tz timezone.
+ * @returns A validated date formatted in UTC or null if not found.
+ */
 function parseDateNew(configuration, transaction, timeZone) {
     let isDateAndTimeSplit = false;
     let date;
@@ -100,7 +107,7 @@ function parseDateNew(configuration, transaction, timeZone) {
 
 /**
  * Parses the date format string submitted in the configuration file. e.g. YYYYMMDD or MM-DD-YYYY HH:mm:ss etc.
- * @param {*} format The format to parse
+ * @param {String} format The format to parse
  * @returns An object containing a boolean (ReturnValue) indicating a good structure (true) or a poorly formatted date (false) and a reason (Problem) if the date is poorly formatted.
  */
 function parseDateFormat(format) {
@@ -164,7 +171,7 @@ function parseDateFormat(format) {
 
 /**
  * Gets the headings from the transaction data
- * @param {*} data 
+ * @param {object} data The JSON configuration data object section.
  * @returns 
  */
 function getHeadings(data) {
@@ -209,16 +216,33 @@ function getHeadings(data) {
         return transactions;
     };
 
-    function parseLocation(locationInput, splitChar){
-        var splitVal = locationInput.split(splitChar);
-        var output = [];
-        var coords = {
-            y: parseFloat(splitVal[0]),
-            x: parseFloat(splitVal[1])
+// function parseLocation(locationInput, splitChar){
+//     var splitVal = locationInput.split(splitChar);
+//     var output = [];
+//     var coords = {
+//         y: parseFloat(splitVal[0]),
+//         x: parseFloat(splitVal[1])
+//     }
+//     output.push(coords);
+//     return output;
+// }
+
+/**
+ * Gets the location coordinates from the transaction based on the configuration data settings.
+ * @param {object} configuration The JSON configuration input.
+ * @param {object} transaction The JSON transaction input.
+ * @returns A JSON object containing the geographical location coordinates. X indicates longitude and y latitude. null is returned if no validate location data is found.
+ */
+function parseLocation(configuration, transaction){
+    let output = null;
+    if (Array.isArray(configuration.data.location) && (configuration.data.location.length === 2)) {
+        output = {
+            'y': transaction[configuration.data.location[0]],
+            'x': transaction[configuration.data.location[1]]
         }
-        output.push(coords);
-        return output;
     }
+    return output;
+}
 
 module.exports = {
     parseStringValue,

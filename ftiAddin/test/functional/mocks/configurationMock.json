@@ -12,7 +12,6 @@
         "cardNumber": "ColumnA",
         "comments": "ColumnB",
         "description": "ColumnC",
-        "driver": "ColumnM",
         "driverName": "ColumnD",
         "externalReference": "ColumnE",
         "licencePlate": "ColumnF",
@@ -30,7 +29,10 @@
         "odometer": "ColumnQ",
         "productType": "ColumnR",
         "volume": "ColumnS",
-        "address": "ColumnT"
+        "location":[
+          "ColumnM",
+          "ColumnU"
+        ]
       }
     },
 	{
@@ -179,7 +181,10 @@
           "odometer": "ColumnQ",
           "productType": "ColumnR",
           "volume": "ColumnS",
-          "location": "ColumnU"
+          "location": [
+            "ColumnM",
+            "ColumnU"
+          ]
         }
       }
   ]

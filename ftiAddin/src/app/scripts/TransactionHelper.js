@@ -104,7 +104,8 @@ async function parseTransactionAsync(transaction, configuration, mapping, timeZo
                     entity[configDataItem] = parsers.parseDateNew(configuration, transaction, timeZone);
                     break;
                 case 'location':
-                    entity[configDataItem] = parsers.parseLocation(value, ',');
+                    // entity[configDataItem] = parsers.parseLocation(value, ',');
+                    entity[configDataItem] = parsers.parseLocation(configuration, transaction);
                     break;
                 case 'licencePlate':
                     entity[configDataItem] = parsers.parseStringLength(value, 255).toUpperCase().replace(/\s/g, '');
