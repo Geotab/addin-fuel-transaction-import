@@ -115,7 +115,27 @@
     "ColumnM": 6.08279037,
     "ColumnU": 46.1454582,
     "ColumnV": "11:20:34"
-
-
+  },
+  {
+    "ColumnA": "CARDNO",
+    "ColumnB": "comments",
+    "ColumnC": "description",
+    "ColumnD": "driverName",
+    "ColumnE": "external reference",
+    "ColumnF": "licencePlate",
+    "ColumnG": "provider",
+    "ColumnH": "providerProductDescription",
+    "ColumnI": "serialNumber",
+    "ColumnJ": "siteName",
+    "ColumnK": "sourceData",
+    "ColumnL": "vehicleIdentificationNumber",
+    "ColumnN": 10.45,
+    "ColumnO": "ZAR",
+    "ColumnP": "25022022",
+    "ColumnQ": 10251,
+    "ColumnR": "Diesel",
+    "ColumnS": "volume",
+    "ColumnT": "confidence",
+    "ColumnV": "11:20:34"
   }
 ]

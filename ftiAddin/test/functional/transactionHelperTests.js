@@ -71,4 +71,8 @@ describe('Transaction parsing tests', () => {
         assert.isTrue(entity.providerProductDescription === 'providerProductDescription');
         assert.isTrue(entity.sourceData === 'sourceData');
     });
+    it('test non-date formatted dateTime', async () => {
+        entity = await transactionHelper.parseTransactionAsync(transactionsExcelMock[7], configurationMock.providers[1], transactionsExcelMock[0], 'europe/berlin');
+        assert.isTrue(entity.dateTime === '2022-02-24T23:00:00.000Z');
+    });
 });
