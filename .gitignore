@@ -4,3 +4,4 @@ utils
 launch.json
 .vscode
 temp
+dist/
