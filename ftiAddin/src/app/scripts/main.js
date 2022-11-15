@@ -226,6 +226,10 @@ geotab.addin.ftiAddin = function () {
    */
   async function importButtonClickEvent() {
 
+    // disable the button during execution
+    setControlState(false);
+    //elImportButton.disabled = true;
+
     toggleWindowDisplayState(true, false, false);
     
     getImportFile();
@@ -274,12 +278,29 @@ geotab.addin.ftiAddin = function () {
         } else {
           setOutputDisplay('Data Issue', 'No transaction found. Please try again...');
         }
+      }).then(() => {
+        // elImportButton.disabled = false;
+        setControlState(true);
       })
       .catch(error => {
         console.log('Preview process error experienced:');
         console.log(error);
         setOutputDisplay('Unexpected Error', error);
+        setControlState(true);
+        // elImportButton.disabled = false;
       });
+  }
+
+  /**
+   * Sets the state of the controls on the page. Moves the state between enabled and disabled.
+   * @param {boolean} isEnabled 
+   */
+  function setControlState(isEnabled){
+    elImportButton.disabled = !isEnabled;
+    elResetButton.disabled = !isEnabled;
+    elProviderFile.disabled = !isEnabled;
+    elProviderDropdown.disabled = !isEnabled;
+    elImportFile.disabled = !isEnabled;
   }
 
   /**
