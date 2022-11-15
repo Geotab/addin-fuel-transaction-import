@@ -236,10 +236,12 @@ geotab.addin.ftiAddin = function () {
       return;
     }
 
+    setOutputDisplay('File Conversion', 'File conversion in progress...');
     // Execute the parsing/import process - starts with the excel process
     excelHelper.convertExcelToJsonPromise(api, importFile)
       .then(request => {
-        // return the parsed transaction results to the next step.
+    setOutputDisplay('Parsing', 'Transaction parsing & configuration validation in progress...');
+    // return the parsed transaction results to the next step.
         return excelHelper.parseTransactions(request);;
       })
       .then(results => {
@@ -260,6 +262,7 @@ geotab.addin.ftiAddin = function () {
         configHelper.parseConfigDefaults(configuration);
       })
       .then(result => {
+        setOutputDisplay('Parsing', 'Parsing & building transactions in progress...');
         // parse and get the json transaction.
         return transactionHelper.ParseAndBuildTransactionsAsync(transactionsExcel, configuration, elTimeZoneDropdown.value, api);
       })
@@ -330,7 +333,9 @@ geotab.addin.ftiAddin = function () {
     elOutputDiv.appendChild(table);
     elOutputTitle.textContent = 'Import Summary';
     elOutputMessage.textContent = '';
-    reportErrors(importSummary.errors.failedCalls);
+    if (importSummary.errors.failedCalls.length > 0) {
+      reportErrors(importSummary.errors.failedCalls);
+    }
   }
 
   function reportErrors(errors) {
