@@ -71,7 +71,6 @@ geotab.addin.ftiAddin = function () {
   function providerFileFocusEvent() {
     console.log('providerFile focus event');
     toggleWindowDisplayState(true, false, false);
-    //initialiseProviderDropdown('None selected');
   }
 
   /**
@@ -226,7 +225,7 @@ geotab.addin.ftiAddin = function () {
    * The import button click event.
    */
   async function importButtonClickEvent() {
-    
+
     toggleWindowDisplayState(true, false, false);
     
     getImportFile();
@@ -259,13 +258,6 @@ geotab.addin.ftiAddin = function () {
         }
         // parse the configuration defaults
         configHelper.parseConfigDefaults(configuration);
-        //console.log(configuration);
-        // setOutputDisplay('Ready for Import', 'The config and import files have been set up ready for the import operation. Hit the Import button to execute the import process.');
-        //console.log(result);
-        // console.log('results: ' + results.data[0]['ColumnA']);      
-        // console.log('results: ' + results.data[1]['ColumnA']);      
-        // var headings = parsers.getHeadings(results.data);
-        // console.log(headings);
       })
       .then(result => {
         // parse and get the json transaction.
@@ -279,7 +271,6 @@ geotab.addin.ftiAddin = function () {
         } else {
           setOutputDisplay('Data Issue', 'No transaction found. Please try again...');
         }
-        // setOutputDisplay('Ready for Import', 'The config and import files have been set up ready for the import operation. Hit the Import button to execute the import process.');
       })
       .catch(error => {
         console.log('Preview process error experienced:');
@@ -337,26 +328,6 @@ geotab.addin.ftiAddin = function () {
     table.appendChild(tbody);
     table.className = 'ftiSummaryTable';
     elOutputDiv.appendChild(table);
-    // let p1 = document.createElement('p');
-    // let p11 = document.createElement('p');
-    // //let text1 = document.createTextNode('');
-    // //p1.appendChild(text1);
-    // p1.innerHTML = 'Imported: ';
-    // p11.innerHTML = '<strong>' + importSummary.imported + '</strong>';
-    // p11.className = 'ftiSuccess'
-    // let p2 = document.createElement('p');
-    // let text2 = document.createTextNode('');
-    // p2.appendChild(text2);
-    // p2.innerHTML = 'Skipped: <strong>' + importSummary.skipped + '</strong>';
-    // p2.className = 'ftiSkipped'
-    // let p3 = document.createElement('p');
-    // let text3 = document.createTextNode('');
-    // p3.appendChild(text3);
-    // p3.innerHTML = 'Errors: <strong>' + importSummary.errors.count + '</strong>';
-    // p3.className = 'ftiFailed'
-    // elOutputDiv.appendChild(p1);
-    // elOutputDiv.appendChild(p2);
-    // elOutputDiv.appendChild(p3);
     elOutputTitle.textContent = 'Import Summary';
     elOutputMessage.textContent = '';
     reportErrors(importSummary.errors.failedCalls);
@@ -389,7 +360,6 @@ geotab.addin.ftiAddin = function () {
 
       errors.forEach((error, i) => {
         let row = document.createElement('tr');
-        // let cell = document.createElement('td')
         let cell = document.createElement('td')
         cell.innerHTML = error[0];
         let cell1 = document.createElement('td')
@@ -398,7 +368,6 @@ geotab.addin.ftiAddin = function () {
         row.appendChild(cell1);
         tbody.appendChild(row);
       });
-      //elOutputTitle.innerText = 'Errors';
       elOutputDiv.appendChild(table);
       table.className = 'ftiTable';
       toggleWindowDisplayState(true, true, true);
