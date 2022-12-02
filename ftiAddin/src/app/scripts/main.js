@@ -9,6 +9,7 @@ geotab.addin.ftiAddin = function () {
   const importHelper = require('./ImportHelper');
   const transactionHelper = require('./TransactionHelper');
   const moment = require('moment-timezone');
+  const XLSX = require('xlsx');
 
   let api;
   /** The root container. */
@@ -38,8 +39,8 @@ geotab.addin.ftiAddin = function () {
   let configuration;
   /** The excel file containing the transactions to be imported */
   let importFile;
-  /** The excel transaction */
-  let transactionsExcel;
+  /** The excel transactions that have been converted to Json */
+  let transactionsExcelToJson;
   /** The json transactions */
   let transactionsJson;
   let elProgressDiv = document.getElementById('progressDiv');
@@ -145,7 +146,7 @@ geotab.addin.ftiAddin = function () {
   }
 
   /**
-   * Sets the providerConfiguration variable to an array of the providerName supplied.
+   * Sets the configuration variable to an array of the providerName supplied.
    * @param {string} providerName The provider name.
    */
   function setProviderConfigurationVariable(providerName) {
@@ -212,13 +213,101 @@ geotab.addin.ftiAddin = function () {
 
   /**
    * Initialises the global importFile variable.
+   * todo: set this on file input change
    */
   function getImportFile() {
     if (elImportFile) {
-      importFile = elImportFile.files[0];
+      const newLocal = importFile = elImportFile.files[0];
     } else {
       setOutputDisplay('No import file selected', 'Please select an import file prior to this operation.');
     }
+  }
+
+  var uploadProgress = function (e) {
+      if (e.lengthComputable) {
+          var percentComplete = Math.round(e.loaded * 100 / e.total);
+          if (percentComplete < 100) {
+              //toggleAlert(elAlertInfo, 'Parsing: transferring file ' + percentComplete.toString() + '%');
+              setOutputDisplay('Excel convert progress', 'Parsing: transferring file ' + percentComplete.toString() + '%');
+          } else {
+              //toggleAlert(elAlertInfo, 'Parsing: converting csv to fuel transactions');
+              setOutputDisplay('Excel convert progress', 'Parsing: converting csv to fuel transactions');
+          }
+      }
+  };
+
+  /**
+   * Converts the excel file to binary format and then uses the XLSX library to convert the file into JSON format.
+   * @param {File} excelFile The excel file to import.
+   * @returns A promise resolved true when the excel transaction file has been converted to a JSON object.
+   */
+  function convertExcelToJsonAsync(excelFile) {
+    return new Promise((resolve, reject) => {
+      let reader = new FileReader();
+  
+      reader.onload = (event) => {
+        var data = event.target.result;
+        var workbook = XLSX.read(data, {
+          type: 'binary',
+          cellDates: true
+        });
+        // workbook.SheetNames.forEach(sheet => {
+        //   let jsonObject = XLSX.utils.sheet_to_json(
+        //     workbook.Sheets[sheet], { 
+        //       skipHeader: false
+        //     }
+        //   );
+          let jsonObject = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+            // let jsonObject = XLSX.utils.sheet_to_json(
+            //   workbook.Sheets[workbook.SheetNames[0]], { 
+            //     header: 1,
+            //     skipHeader: false
+            //   });
+          // let rowObject = XLSX.utils.sheet_to_row_object_array(
+          //   workbook.Sheets[sheet]
+          // );
+          // let jsonObject = JSON.stringify(rowObject);
+          console.log(jsonObject)
+          resolve(jsonObject);
+        };
+  
+      reader.onerror = reject;
+  
+      reader.readAsBinaryString(excelFile);
+    })
+  }
+
+  /**
+   * Import
+   * The import button click event.
+   */
+  async function importTransactions() {
+
+    getImportFile();
+
+    // Check initial state.
+    if (!importFile) {
+      setOutputDisplay('File Not Found', 'Please select an import file.');
+      return;
+    }
+
+    let transactionsLocal;
+    convertExcelToJsonAsync(importFile)
+    .then(results => {
+      transactionsLocal = results;
+    })
+    .then(() => {
+      // validate the configuration data
+      var result = configHelper.validateConfiguration(configuration);
+      console.log('validation result, isValid: ' + result.isValid);
+      console.log('validation result, reason: ' + result.reason);
+      if (result.isValid === false) {
+        setOutputDisplay('Configuration File Validation Problem', result.reason)
+        return;
+      }
+      // parse the configuration defaults
+      configHelper.parseConfigDefaults(configuration);
+    })
   }
 
   /**
@@ -227,7 +316,7 @@ geotab.addin.ftiAddin = function () {
   async function importButtonClickEvent() {
 
     // disable the button during execution
-    setControlState(false);
+    //setControlState(false);
     //elImportButton.disabled = true;
 
     toggleWindowDisplayState(true, false, false);
@@ -242,16 +331,21 @@ geotab.addin.ftiAddin = function () {
 
     setOutputDisplay('File Conversion', 'File conversion in progress...');
     // Execute the parsing/import process - starts with the excel process
-    excelHelper.convertExcelToJsonPromise(api, importFile)
-      .then(request => {
-    setOutputDisplay('Parsing', 'Transaction parsing & configuration validation in progress...');
-    // return the parsed transaction results to the next step.
+    convertExcelToJsonAsync(importFile)
+    .then(fileResult => {
+      console.log('getfiledata completed. fileResult:' + fileResult);
+      excelHelper.convertExcelToJsonPromise(api, importFile, uploadProgress)
+    })
+    .then(request => {
+        setOutputDisplay('Parsing', 'Transaction parsing & configuration validation in progress...');
+        // return the parsed transaction results to the next step.
+        // todo: this can be removed with the new json converter
         return excelHelper.parseTransactions(request);;
       })
       .then(results => {
         // set the excel transactions variable to the results.
-        transactionsExcel = results;
-        console.log('transactionsExcel: ' + JSON.stringify(transactionsExcel));
+        transactionsExcelToJson = results;
+        console.log('transactionsExcel: ' + JSON.stringify(transactionsExcelToJson));
       })
       .then(() => {
         // validate the configuration data
@@ -268,7 +362,7 @@ geotab.addin.ftiAddin = function () {
       .then(result => {
         setOutputDisplay('Parsing', 'Parsing & building transactions in progress...');
         // parse and get the json transaction.
-        return transactionHelper.ParseAndBuildTransactionsAsync(transactionsExcel, configuration, elTimeZoneDropdown.value, api);
+        return transactionHelper.ParseAndBuildTransactionsAsync(transactionsExcelToJson, configuration, elTimeZoneDropdown.value, api);
       })
       .then((results) => {
         transactionsJson = results;
@@ -439,7 +533,8 @@ geotab.addin.ftiAddin = function () {
     elProviderFile.addEventListener('focus', providerFileFocusEvent, false);
     elProviderDropdown.addEventListener('change', providerDropdownChangeEvent, false);
     elImportFile.addEventListener('focus', importFileFocusEvent, false);
-    elImportButton.addEventListener('click', importButtonClickEvent, false);
+    // elImportButton.addEventListener('click', importButtonClickEvent, false);
+    elImportButton.addEventListener('click', importTransactions, false);
     elResetButton.addEventListener('click', resetButtonClickEvent, false);
   }
 
@@ -451,7 +546,8 @@ geotab.addin.ftiAddin = function () {
     elProviderFile.removeEventListener('focus', providerFileFocusEvent, false);
     elProviderDropdown.removeEventListener('change', providerDropdownChangeEvent, false);
     elImportFile.removeEventListener('focus', importFileFocusEvent, false);
-    elImportButton.removeEventListener('click', importButtonClickEvent, false);
+    // elImportButton.removeEventListener('click', importButtonClickEvent, false);
+    elImportButton.removeEventListener('click', importTransactions, false);
     elResetButton.removeEventListener('click', resetButtonClickEvent, false);
   }
 

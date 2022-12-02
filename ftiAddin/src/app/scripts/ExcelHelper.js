@@ -6,7 +6,7 @@ const parsers = require('./Parsers');
  * @param {GeotabApi} The Geotab api.
  * @param {File} The file object.
  */
-function convertExcelToJsonPromise (api, file) {
+function convertExcelToJsonPromise (api, file, uploadProgress) {
     return new Promise((resolve, reject) => {
 
         api.getSession(function (credentials) {
@@ -29,6 +29,7 @@ function convertExcelToJsonPromise (api, file) {
                 fd.append('fileToUpload', file);
 
                 // upload completed
+                xhr.upload.addEventListener('progress', uploadProgress, false);
                 xhr.addEventListener('load', resolve, false);
                 xhr.addEventListener('error', reject, false);
                 xhr.addEventListener('abort', reject, false);
