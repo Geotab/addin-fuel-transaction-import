@@ -39,8 +39,8 @@ geotab.addin.ftiAddin = function () {
   let configuration;
   /** The excel file containing the transactions to be imported */
   let importFile;
-  /** The excel transactions that have been converted to Json */
-  let transactionsExcelToJson;
+  /** The raw/unparsed excel transactions that have been converted to Json */
+  let transactionsRaw;
   /** The json transactions */
   let transactionsJson;
   let elProgressDiv = document.getElementById('progressDiv');
@@ -251,22 +251,9 @@ geotab.addin.ftiAddin = function () {
           type: 'binary',
           cellDates: true
         });
-        // workbook.SheetNames.forEach(sheet => {
-        //   let jsonObject = XLSX.utils.sheet_to_json(
-        //     workbook.Sheets[sheet], { 
-        //       skipHeader: false
-        //     }
-        //   );
-          let jsonObject = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-            // let jsonObject = XLSX.utils.sheet_to_json(
-            //   workbook.Sheets[workbook.SheetNames[0]], { 
-            //     header: 1,
-            //     skipHeader: false
-            //   });
-          // let rowObject = XLSX.utils.sheet_to_row_object_array(
-          //   workbook.Sheets[sheet]
-          // );
-          // let jsonObject = JSON.stringify(rowObject);
+        let jsonObject = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {
+            'header': 'A'
+          });
           console.log(jsonObject)
           resolve(jsonObject);
         };
@@ -308,6 +295,11 @@ geotab.addin.ftiAddin = function () {
       // parse the configuration defaults
       configHelper.parseConfigDefaults(configuration);
     })
+    .then(result => {
+      setOutputDisplay('Parsing', 'Parsing & building transactions in progress...');
+      // parse and get the json transaction.
+      return transactionHelper.ParseAndBuildTransactionsAsync(transactionsLocal, configuration, elTimeZoneDropdown.value, api);
+    })
   }
 
   /**
@@ -344,8 +336,8 @@ geotab.addin.ftiAddin = function () {
       })
       .then(results => {
         // set the excel transactions variable to the results.
-        transactionsExcelToJson = results;
-        console.log('transactionsExcel: ' + JSON.stringify(transactionsExcelToJson));
+        transactionsRaw = results;
+        console.log('transactionsExcel: ' + JSON.stringify(transactionsRaw));
       })
       .then(() => {
         // validate the configuration data
@@ -362,7 +354,7 @@ geotab.addin.ftiAddin = function () {
       .then(result => {
         setOutputDisplay('Parsing', 'Parsing & building transactions in progress...');
         // parse and get the json transaction.
-        return transactionHelper.ParseAndBuildTransactionsAsync(transactionsExcelToJson, configuration, elTimeZoneDropdown.value, api);
+        return transactionHelper.ParseAndBuildTransactionsAsync(transactionsRaw, configuration, elTimeZoneDropdown.value, api);
       })
       .then((results) => {
         transactionsJson = results;

@@ -4,25 +4,23 @@ const productTypeHelper = require('./ProductTypeHelper');
 const myGeotabHelper = require('./MyGeotabHelper');
 
 /**
- * Receives the excel transactions and produces the json formated transaction entities.
- * @param {Array} transactionsExcel The transactions in excel format.
- * @param {*} configuration The currently selected fuel provider configuration.
- * @param {String} timeZone The currently selected time zone.
- * @param {*} api The MyGeotab API service.
- * @returns The formatted transactions as an array of json objects.
+ * Transforms the transaction from raw/unparsed excel format (JSON) and produces the final parsed transactions.
+ * @param {JSON} transactionsRaw The raw/unparsed transactions (imported from excel).
+ * @param {JSON} configuration The fuel provider configuration.
+ * @param {String} timeZone The time zone.
+ * @param {Object} api The MyGeotab API service.
+ * @returns The final parsed and ready for import transaction.
  */
-function ParseAndBuildTransactionsAsync(transactionsExcel, configuration, timeZone, api) {
+function ParseAndBuildTransactionsAsync(transactionsRaw, configuration, timeZone, api) {
     return new Promise(async (resolve, reject) => {
         let transactionsOutput = [];
-        let mapping;
         let entity;
-        for (var i = 0; i < transactionsExcel.length; i++) {
-            var transaction = transactionsExcel[i];
+        for (var i = 0; i < transactionsRaw.length; i++) {
+            var transaction = transactionsRaw[i];
             if (i === 0) {
-                // get the mapping (or header) to be used in the transaction parsing process that follows.
-                mapping = transaction;
+                // ignore the first row as it is the header...
             } else {
-                entity = await parseTransactionAsync(transaction, configuration, mapping, timeZone, api);
+                entity = await parseTransactionAsync(transaction, configuration, timeZone, api);
                 console.log('parsed transaction entity: ' + entity);
                 transactionsOutput.push(entity);
             }
@@ -43,17 +41,34 @@ function getObjKey(obj, value) {
 }
 
 /**
- * Parse each transaction property.
- * @param {*} transaction The transaction to parse.
- * @param {*} configuration The configuration settings for this instance. From the json config file. Shows each transaction property and it's relative mapping like "cardNumber": "ColumnA", "comments": "ColumnB" etc.
- * @param {*} mapping The mapping object (or transaction header mappings) e.g. "ColumnA": "cardNumber" - indicates the excel column mapped to the fuel transaction property.
+ * Gets the suffix column text letter from the string source.
+ * @param {string} sourceString 
+ * @param {string} prefixString
+ * @returns The string suffix following the prefixString argument.
+ */
+function GetColumnText(sourceString, prefixString)
+{
+    let output = '';
+    if (sourceString) {
+        let targetIndex = prefixString.length;
+        if (targetIndex !== -1) {
+            output = sourceString.substring(targetIndex, sourceString.length);
+        }
+    }
+    return output;
+}
+
+/**
+ * Parses a single raw transaction to produce a single FuelTransaction entity.
+ * @param {JSON} transactionRaw The raw transaction to parse.
+ * @param {JSON} configuration The configuration for this instance. Shows each transaction property and it's relative mapping like "cardNumber": "ColumnA", "comments": "ColumnB" etc.
  * @param {String} timeZone The currently selected time zone.
- * @param {*} api The MyGeotab API service.
+ * @param {Object} api The MyGeotab API service.
  * @returns A FuelTransaction entity ready to be imported into the database.
  */
-async function parseTransactionAsync(transaction, configuration, mapping, timeZone, api) {
+async function parseTransactionAsync(transactionRaw, configuration, timeZone, api) {
 
-    if (transaction === undefined) {
+    if (transactionRaw === undefined) {
         throw new Error('parseTransaction transaction argument not submitted.');
     }
 
@@ -61,100 +76,119 @@ async function parseTransactionAsync(transaction, configuration, mapping, timeZo
         throw new Error('parseTransaction configuration argument not submitted.');
     }
 
-    if (mapping === undefined) {
-        throw new Error('parseTransaction mapping argument not submitted.');
-    }
-
     if (timeZone === undefined) {
         throw new Error('parseTransaction timeZone argument not submitted.');
     }
 
+    //let mapping = configuration.data;
     let entity = {};
     /** The configuration data property value which will be the column or columns e.g. ColumnL or an array of columns */
-    let value;
+    let value = [];
+    let columnHeaderChar = [];
+    let prefixString = 'Column';
     console.log('Parsing provider: ' + configuration.Name);
-    let configDataKeys = Object.keys(configuration.data);
-    for (var i = 0; i < configDataKeys.length; i++)
+    let configKeys = Object.keys(configuration.data);
+    for (var i = 0; i < configKeys.length; i++)
     {
-        let configDataItem = configDataKeys[i];
-        console.log('configDataItem: ' + configDataItem);
-        console.log('configuration data: ' + configuration.data[configDataItem]);
-        value = undefined;
+        let key = configKeys[i];
+        let keyValue = configuration.data[key];
+        console.log('key: ' + key);
+        console.log('key value: ' + keyValue);
+        value = [];
         // set the new value.
-        let falseKey = getObjKey(mapping, configDataItem);
-        value = transaction[falseKey];
-        console.log('value: ' + value);
-        if(configDataItem === 'dateTime')
+        //let falseKey = getObjKey(transactionRaw, key);
+        if (Array.isArray(keyValue))
         {
-            value = 'dateTime';
+            columnHeaderChar[0] = GetColumnText(keyValue[0], prefixString);
+            columnHeaderChar[1] = GetColumnText(keyValue[1], prefixString);
+            console.log('columnHeaderChar[0]: ' + columnHeaderChar[0]);
+            console.log('columnHeaderChar[1]: ' + columnHeaderChar[1]);
+            value[0] = transactionRaw[columnHeaderChar[0]];
+            value[1] = transactionRaw[columnHeaderChar[1]];
+            console.log('value[0]: ' + value[0]);
+            console.log('value[1]: ' + value[1]);
         }
-        console.log('current key item: ' + configDataItem + ', value: ' + value);
-        if (value) {
-            switch (configDataItem) {
+        else
+        {
+            columnHeaderChar[0] = GetColumnText(keyValue, prefixString);
+            console.log('columnHeaderChar[0]: ' + columnHeaderChar[0]);
+            value[0] = transactionRaw[columnHeaderChar[0]];
+            console.log('value[0]: ' + value[0]);
+        }
+
+
+        // if(key === 'dateTime')
+        // {
+        //     value = 'dateTime';
+        // }
+        //console.log('current key item: ' + key + ', value: ' + value);
+
+        if (value[0]) {
+            switch (key) {
                 case 'address':
-                    var coords = await myGeotabHelper.GetCoordinates(api, value);
-                    if(coords){
-                        if (Array.isArray(coords)){
-                            entity.location = coords[0];
-                        }
-                    }
+                    // var coords = await myGeotabHelper.GetCoordinates(api, value);
+                    // if(coords){
+                    //     if (Array.isArray(coords)){
+                    //         entity.location = coords[0];
+                    //     }
+                    // }
                     break;
                 case 'dateTime':
                     // entity[configDataItem] = parsers.parseDate(value, configuration.dateFormat, timeZone);
-                    entity[configDataItem] = parsers.parseDateNew(configuration, transaction, timeZone);
+                    // entity[key] = parsers.parseDateNew(configuration, transactionRaw, timeZone);
                     break;
                 case 'location':
                     // entity[configDataItem] = parsers.parseLocation(value, ',');
-                    entity[configDataItem] = parsers.parseLocation(configuration, transaction);
+                    // entity[key] = parsers.parseLocation(configuration, transactionRaw);
                     break;
                 case 'licencePlate':
-                    entity[configDataItem] = parsers.parseStringLength(value, 255).toUpperCase().replace(/\s/g, '');
+                    entity[key] = parsers.parseStringLength(value[0], 255).toUpperCase().replace(/\s/g, '');
                     break;
                 case 'comments':
-                    entity[configDataItem] = parsers.parseStringValue(parsers.parseStringLength(value, 1024));
+                    entity[key] = parsers.parseStringValue(parsers.parseStringLength(value[0], 1024));
                     break;
                 case 'description':
-                    entity[configDataItem] = parsers.parseStringValue(parsers.parseStringLength(value, 255));
+                    entity[key] = parsers.parseStringValue(parsers.parseStringLength(value[0], 255));
                     break;
                 case 'currencyCode':
-                    entity[configDataItem] = value.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
+                    entity[key] = value[0].trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
                     break;
                 case 'serialNumber':
                 case 'vehicleIdentificationNumber':
-                    entity[configDataItem] = value.toUpperCase().replace(/\s/g, '');
+                    entity[key] = value[0].toUpperCase().replace(/\s/g, '');
                     break;
                 case 'provider':
-                    entity[configDataItem] = getProvider(value);
+                    entity[key] = getProvider(value[0]);
                     break;
                 case 'productType':
-                    entity[configDataItem] = productTypeHelper.getProductType(value);
+                    entity[key] = productTypeHelper.getProductType(value[0]);
                     break;
                 case 'cost':
-                    entity[configDataItem] = parsers.parseFloatValue(value);
+                    entity[key] = parsers.parseFloatValue(value[0]);
                     break;
                 case 'odometer':
                     if (configuration.unitOdoKm === 'N') {
                         // value in miles so convert to kilometres.
-                        value = converters.milesToKm(value);
+                        value[0] = converters.milesToKm(value[0]);
                     }
-                    entity[configDataItem] = parsers.parseFloatValue(value);
+                    entity[key] = parsers.parseFloatValue(value[0]);
                     break;
                 case 'volume':
                     if (configuration.unitVolumeLiters === 'N') {
                         // value in miles so convert to kilometres.
-                        value = converters.gallonsToLitres(value);
+                        value[0] = converters.gallonsToLitres(value[0]);
                     }
-                    entity[configDataItem] = parsers.parseFloatValue(value);
+                    entity[key] = parsers.parseFloatValue(value[0]);
                     break;
                 default:
                     // handles any unhandled values and parses the result to string.
-                    entity[configDataItem] = parsers.parseStringValue(value);
+                    entity[key] = parsers.parseStringValue(value[0]);
                     break;
             }
         } else {
             // if currencyCode does not exist the global value should be assigned.
-            if (configDataItem === 'currencyCode') {
-                entity[configDataItem] = configuration.currencyCodeMapped.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
+            if (key === 'currencyCode') {
+                entity[key] = configuration.currencyCodeMapped.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
             }
             console.log('value is null or undefined...');
         }
