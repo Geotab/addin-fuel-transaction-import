@@ -135,7 +135,7 @@ async function parseTransactionAsync(transactionRaw, configuration, timeZone, ap
                     break;
                 case 'dateTime':
                     // entity[configDataItem] = parsers.parseDate(value, configuration.dateFormat, timeZone);
-                    //entity[key] = parsers.parseDateNew(configuration, transactionRaw, timeZone);
+                    //entity[key] = parsers.parseDateNew(configuration, value, timeZone);
                     break;
                 case 'location':
                     // entity[configDataItem] = parsers.parseLocation(value, ',');

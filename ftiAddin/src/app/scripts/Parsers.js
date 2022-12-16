@@ -67,7 +67,7 @@ function parseDate(date, format, timeZone){
  * @param {object} timeZone The moment tz timezone.
  * @returns A validated date formatted in UTC or null if not found.
  */
-function parseDateNew(configuration, transaction, timeZone) {
+function parseDateNew(configuration, dateInput, timeZone) {
     let isDateAndTimeSplit = false;
     let date;
     let time;
@@ -77,12 +77,12 @@ function parseDateNew(configuration, transaction, timeZone) {
     if(configuration.timeFormat.length > 0){
         // date and time are split into two columns.
         isDateAndTimeSplit = true;
-        date = transaction[configuration.data.dateTime[0]];
-        time  = transaction[configuration.data.dateTime[1]];
-        dateTime = date.split(' ')[0] + ' ' + time;
+        date = dateInput[0];
+        time  = dateInput[1];
+        dateTime = date.toISOString().split('T')[0] + ' ' + time.toISOString().split('T')[1];
     } else {
         // date or date and time is/are contained in a single column.
-        dateTime = transaction[configuration.data.dateTime[0]];
+        dateTime = dateInput[0];
     }
 
     let dateFormat = configuration.dateFormat;
@@ -215,17 +215,6 @@ function getHeadings(data) {
         }
         return transactions;
     };
-
-// function parseLocation(locationInput, splitChar){
-//     var splitVal = locationInput.split(splitChar);
-//     var output = [];
-//     var coords = {
-//         y: parseFloat(splitVal[0]),
-//         x: parseFloat(splitVal[1])
-//     }
-//     output.push(coords);
-//     return output;
-// }
 
 /**
  * Gets the location coordinates from the transaction based on the configuration data settings.
