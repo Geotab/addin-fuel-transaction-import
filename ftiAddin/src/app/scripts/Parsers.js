@@ -233,12 +233,12 @@ function getHeadings(data) {
  * @param {object} transaction The JSON transaction input.
  * @returns A JSON object containing the geographical location coordinates. X indicates longitude and y latitude. null is returned if no validate location data is found.
  */
-function parseLocation(configuration, transaction){
+function parseLocation(value){
     let output = null;
-    if (Array.isArray(configuration.data.location) && (configuration.data.location.length === 2)) {
+    if (Array.isArray(value) && (value.length === 2)) {
         output = {
-            'y': transaction[configuration.data.location[0]],
-            'x': transaction[configuration.data.location[1]]
+            'x': value[0],
+            'y': value[1]
         }
     }
     return output;

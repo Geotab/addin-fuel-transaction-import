@@ -126,20 +126,20 @@ async function parseTransactionAsync(transactionRaw, configuration, timeZone, ap
         if (value[0]) {
             switch (key) {
                 case 'address':
-                    // var coords = await myGeotabHelper.GetCoordinates(api, value);
-                    // if(coords){
-                    //     if (Array.isArray(coords)){
-                    //         entity.location = coords[0];
-                    //     }
-                    // }
+                    var coords = await myGeotabHelper.GetCoordinates(api, value[0]);
+                    if(coords){
+                        if (Array.isArray(coords)){
+                            entity.location = coords[0];
+                        }
+                    }
                     break;
                 case 'dateTime':
                     // entity[configDataItem] = parsers.parseDate(value, configuration.dateFormat, timeZone);
-                    // entity[key] = parsers.parseDateNew(configuration, transactionRaw, timeZone);
+                    //entity[key] = parsers.parseDateNew(configuration, transactionRaw, timeZone);
                     break;
                 case 'location':
                     // entity[configDataItem] = parsers.parseLocation(value, ',');
-                    // entity[key] = parsers.parseLocation(configuration, transactionRaw);
+                    entity[key] = parsers.parseLocation(value);
                     break;
                 case 'licencePlate':
                     entity[key] = parsers.parseStringLength(value[0], 255).toUpperCase().replace(/\s/g, '');
