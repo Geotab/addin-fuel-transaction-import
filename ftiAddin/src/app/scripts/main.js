@@ -295,11 +295,30 @@ geotab.addin.ftiAddin = function () {
       // parse the configuration defaults
       configHelper.parseConfigDefaults(configuration);
     })
-    .then(result => {
+    .then(() => {
       setOutputDisplay('Parsing', 'Parsing & building transactions in progress...');
       // parse and get the json transaction.
       return transactionHelper.ParseAndBuildTransactionsAsync(transactionsLocal, configuration, elTimeZoneDropdown.value, api);
     })
+    .then((results) => {
+      transactionsJson = results;
+      toggleWindowDisplayState(true, true, true);
+      if (transactionsJson) {
+        importHelper.importTransactionsAsync(api, transactionsJson, elProgressText, elProgressBar, importSummaryOutput);
+      } else {
+        setOutputDisplay('Data Issue', 'No transaction found. Please try again...');
+      }
+    }).then(() => {
+      // elImportButton.disabled = false;
+      setControlState(true);
+    })
+    .catch(error => {
+      console.log('Preview process error experienced:');
+      console.log(error);
+      setOutputDisplay('Unexpected Error', error);
+      setControlState(true);
+      // elImportButton.disabled = false;
+    });
   }
 
   /**

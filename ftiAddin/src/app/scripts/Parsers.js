@@ -57,6 +57,8 @@ function parseDate(configuration, inputDate, timeZone) {
         // date and time are split into two columns.
         date = inputDate[0] + ' ' + inputDate[1];
         dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
+        // If date and time are split cell date type can't be set.
+        configuration.isCellDateType = 'N';
     } else {
         // date or date and time is/are contained in a single column.
         date = inputDate[0];
@@ -65,7 +67,7 @@ function parseDate(configuration, inputDate, timeZone) {
 
     if (configuration.isCellDateType === 'Y') {
         // ISO 8601 format is a UTC and therefore does not require time zone calculation.
-        if (isIsoDate(date)) {
+        if ((isIsoDate(date))||(typeof date === 'object')) {
             return date;
         }
     } else {
