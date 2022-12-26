@@ -22,6 +22,11 @@ describe('Date Parsing', function(){
         assert.equal(parsers.parseDate(configurationMockDates.providers[4], transactionsMockDates[4].dateTime, 'Europe/Berlin'), '2020-05-24T22:00:00.000Z');
         assert.equal(parsers.parseDate(configurationMockDates.providers[5], transactionsMockDates[5].dateTime, 'Europe/London'), '2020-05-25T19:29:00.000Z');
     });
+    it('Date parsing - not date formatted - date and time split', function(){
+        assert.equal(parsers.parseDate(configurationMockDates.providers[9], transactionsMockDates[9].dateTime, 'Europe/Berlin'), '2020-02-23T11:54:00.000Z');
+        assert.equal(parsers.parseDate(configurationMockDates.providers[10], transactionsMockDates[10].dateTime, 'Europe/Berlin'), '2020-02-23T11:54:00.000Z');
+        assert.equal(parsers.parseDate(configurationMockDates.providers[11], transactionsMockDates[11].dateTime, 'Europe/Berlin'), '2020-02-23T11:54:00.000Z');
+    });
     it('Date parsing - date formatted - single cell', function(){
         assert.equal(parsers.parseDate(configurationMockDates.providers[6], transactionsMockDates[6].dateTime, 'Europe/Berlin'), '2020-02-22T23:00:00.000Z');
         assert.equal(parsers.parseDate(configurationMockDates.providers[7], transactionsMockDates[7].dateTime, 'Europe/Berlin'), '2020-07-23T22:00:00.000Z');

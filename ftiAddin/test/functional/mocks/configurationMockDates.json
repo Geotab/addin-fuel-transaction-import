@@ -1,39 +1,45 @@
 {
     "providers": [
       {
-        "Name": "ProviderDate1",
+        "Name": "ProviderDate0",
         "isCellDateType": "N",
         "dateFormat": "DD/MM/YYYY",
         "timeFormat": ""
       },
       {
-        "Name": "ProviderDate2",
+        "Name": "ProviderDate1",
         "isCellDateType": "N",
         "dateFormat": "DD/MM/YYYY HH:mm",
         "timeFormat": ""      
       },
       {
-        "Name": "ProviderDate3",
+        "Name": "ProviderDate2",
         "isCellDateType": "N",
         "dateFormat": "DD-MM-YYYY",
         "timeFormat": ""      
       },
       {
-        "Name": "ProviderDate4",
+        "Name": "ProviderDate3",
         "isCellDateType": "N",
         "dateFormat": "DD-MM-YYYY HH:mm",
         "timeFormat": ""      
       },
       {
-        "Name": "ProviderDate5",
+        "Name": "ProviderDate4",
         "isCellDateType": "N",
         "dateFormat": "DD.MM.YYYY",
         "timeFormat": ""      
       },
       {
-        "Name": "ProviderDate6",
+        "Name": "ProviderDate5",
         "isCellDateType": "N",
         "dateFormat": "DD.MM.YYYY HH:mm",
+        "timeFormat": ""      
+      },
+      {
+        "Name": "ProviderDate6",
+        "isCellDateType": "Y",
+        "dateFormat": "YYYYMMDDTHH:mm:ss.sssZ",
         "timeFormat": ""      
       },
       {
@@ -50,9 +56,21 @@
       },
       {
         "Name": "ProviderDate9",
-        "isCellDateType": "Y",
-        "dateFormat": "YYYYMMDDTHH:mm:ss.sssZ",
-        "timeFormat": ""      
+        "isCellDateType": "N",
+        "dateFormat": "DDMMYYYY",
+        "timeFormat": "HHmm"    
+      },
+      {
+        "Name": "ProviderDate10",
+        "isCellDateType": "N",
+        "dateFormat": "MMDDYYYY",
+        "timeFormat": "HHmm"    
+      },
+      {
+        "Name": "ProviderDate10",
+        "isCellDateType": "N",
+        "dateFormat": "YYYYMMDD",
+        "timeFormat": "HHmm"    
       }
     ]
   }

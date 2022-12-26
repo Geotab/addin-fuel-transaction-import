@@ -61,18 +61,20 @@ var parseFloatValue = function (float) {
 // }
 
 function parseDate(configuration, inputDate, timeZone) {
-    let isDateAndTimeSplit = false;
+    // let isDateAndTimeSplit = false;
     let date;
-    let time;
+    // let time;
+    let dateFormat;
 
     if (configuration.timeFormat.length > 0) {
         // date and time are split into two columns.
-        isDateAndTimeSplit = true;
-        date = inputDate[0];
-        time = inputDate[1];
+        // isDateAndTimeSplit = true;
+        date = inputDate[0] + ' ' + inputDate[1];
+        dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
     } else {
         // date or date and time is/are contained in a single column.
         date = inputDate[0];
+        dateFormat = configuration.dateFormat;
     }
 
     if (configuration.isCellDateType === 'Y') {
@@ -81,88 +83,18 @@ function parseDate(configuration, inputDate, timeZone) {
             return date;
         }
     } else {
-        if (moment.tz(date, configuration.dateFormat, timeZone).isValid()) {
-            return moment.tz(date, configuration.dateFormat, timeZone).toISOString();
+        if (moment.tz(date, dateFormat, timeZone).isValid()) {
+            return moment.tz(date, dateFormat, timeZone).toISOString();
         } else {
             return null;
         }
     }
-
-    // if (Object.prototype.toString.call(parseDate) === '[object Date]') {
-    //     return parseDate.toISOString();
-    // } else {
-    //     return GetISOFormattedDateString(parseDate);
-    // }
-    // if(moment.tz(parseDate, dateFormat, timeZone).isValid()){
-    //     return moment.tz(parseDate, dateFormat, timeZone).toISOString();
-    // } else {
-    //     return null;
-    // }
 }
 
 function isIsoDate(str) {
     if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(str)) return false;
     const d = new Date(str);
     return d instanceof Date && !isNaN(d) && d.toISOString() === str; // valid date 
-}
-
-function GetISOFormattedDateString(stringDate) {
-    let output = null;
-    if ((typeof stringDate) === 'string') {
-        const date = new Date(stringDate);
-        try {
-            output = date.toISOString();
-        }
-        catch (error) {
-            console.error(`GetISOFormattedDateString with value ${stringDate} returned an error.`);
-        }
-    }
-    return output;
-}
-
-/**
- * 
- * @param {object} configuration The JSON configuration input.
- * @param {object} transaction The JSON transaction input.
- * @param {object} timeZone The moment tz timezone.
- * @returns A validated date formatted in UTC or null if not found.
- */
-function parseDateNew(configuration, dateInput, timeZone) {
-    let isDateAndTimeSplit = false;
-    let date;
-    let time;
-    let dateTime;
-    // let dateTime = configuration.data.dateTime;
-
-    if (configuration.timeFormat.length > 0) {
-        // date and time are split into two columns.
-        isDateAndTimeSplit = true;
-        date = dateInput[0];
-        time = dateInput[1];
-        dateTime = date.toISOString().split('T')[0] + ' ' + time.toISOString().split('T')[1];
-    } else {
-        // date or date and time is/are contained in a single column.
-        dateTime = dateInput[0];
-    }
-
-    let dateFormat = configuration.dateFormat;
-    if (isDateAndTimeSplit) {
-        if (configuration.isCellDateType == 'Y') {
-            dateFormat = 'MM/DD/YYYY' + ' ' + configuration.timeFormat;
-        } else {
-            dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
-        }
-    } else {
-        if (configuration.isCellDateType == 'Y') {
-            dateFormat = 'MM/DD/YYYY HH:mm:ss';
-        }
-    }
-
-    if (moment.tz(dateTime, dateFormat, timeZone).isValid()) {
-        return moment.tz(dateTime, dateFormat, timeZone).toISOString();
-    } else {
-        return null;
-    }
 }
 
 /**
@@ -302,6 +234,5 @@ module.exports = {
     getHeadings,
     addBlanckColumn,
     parseDateFormat,
-    parseLocation,
-    parseDateNew
+    parseLocation
 }
