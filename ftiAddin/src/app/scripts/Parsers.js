@@ -48,16 +48,59 @@ var parseFloatValue = function (float) {
  * @param {String} timeZone The currently selected time zone.
  * @returns if a valid date then it is returned otherwise null if an invalid date.
  */
-function parseDate(date, format, timeZone){
-    // parses and returns the date if valid otherwise reports a moment invalid date type.
-    // let myDate = moment(date, format);
-    // let myDate = moment.tz(date, format, timeZone).format();
-    console.log(`parseDate input date: ${date}`);
-    if(moment.tz(date, format, timeZone).isValid()){
-        return moment.tz(date, format, timeZone).toISOString();
+// function parseDate(date, format, timeZone){
+//     // parses and returns the date if valid otherwise reports a moment invalid date type.
+//     // let myDate = moment(date, format);
+//     // let myDate = moment.tz(date, format, timeZone).format();
+//     console.log(`parseDate input date: ${date}`);
+//     if(moment.tz(date, format, timeZone).isValid()){
+//         return moment.tz(date, format, timeZone).toISOString();
+//     } else {
+//         return null;
+//     }
+// }
+
+function parseDate(configuration, inputDate, timeZone) {
+    let isDateAndTimeSplit = false;
+    let date;
+    let time;
+    let parseDate;
+
+    if(configuration.timeFormat.length > 0){
+        // date and time are split into two columns.
+        isDateAndTimeSplit = true;
+        date = inputDate[0];
+        time  = inputDate[1];
+        //dateTime = date.toISOString().split('T')[0] + ' ' + time.toISOString().split('T')[1];
     } else {
-        return null;
+        // date or date and time is/are contained in a single column.
+        parseDate = inputDate[0];
     }
+
+    if (Object.prototype.toString.call(parseDate) === '[object Date]') {
+        return parseDate.toISOString();
+    } else {
+        return GetISOFormattedDateString(parseDate);
+    }
+    // if(moment.tz(parseDate, dateFormat, timeZone).isValid()){
+    //     return moment.tz(parseDate, dateFormat, timeZone).toISOString();
+    // } else {
+    //     return null;
+    // }
+}
+
+function GetISOFormattedDateString(stringDate) {
+    let output = null;
+    if ((typeof stringDate) === 'string') {
+        const date = new Date(stringDate);
+        try {
+            output = date.toISOString();
+        }
+        catch (error) {
+            console.error(`GetISOFormattedDateString with value ${stringDate} returned an error.`);
+        }
+    }
+    return output;
 }
 
 /**

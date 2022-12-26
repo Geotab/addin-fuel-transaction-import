@@ -136,6 +136,9 @@ async function parseTransactionAsync(transactionRaw, configuration, timeZone, ap
                 case 'dateTime':
                     // entity[configDataItem] = parsers.parseDate(value, configuration.dateFormat, timeZone);
                     //entity[key] = parsers.parseDateNew(configuration, value, timeZone);
+                    var date = parsers.parseDate(configuration, value, timeZone);
+                    console.log('Parsed dateTime: ' + date);
+                    entity[key] = date;
                     break;
                 case 'location':
                     // entity[configDataItem] = parsers.parseLocation(value, ',');
