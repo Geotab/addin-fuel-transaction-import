@@ -1,5 +1,5 @@
 const moment = require('moment-timezone');
-  
+
 /**
  * Parses string values and returns a zero length string empty values.
  * @param {*} s The string to parse.
@@ -24,8 +24,8 @@ var parseStringValue = function (s) {
  * @param {number} length The length to check.
  * @returns The truncated string.
  */
-function parseStringLength(string, length){
-    if(string.length > length){
+function parseStringLength(string, length) {
+    if (string.length > length) {
         return string.substring(0, length);
     }
     return string;
@@ -64,29 +64,46 @@ function parseDate(configuration, inputDate, timeZone) {
     let isDateAndTimeSplit = false;
     let date;
     let time;
-    let parseDate;
 
-    if(configuration.timeFormat.length > 0){
+    if (configuration.timeFormat.length > 0) {
         // date and time are split into two columns.
         isDateAndTimeSplit = true;
         date = inputDate[0];
-        time  = inputDate[1];
-        //dateTime = date.toISOString().split('T')[0] + ' ' + time.toISOString().split('T')[1];
+        time = inputDate[1];
     } else {
         // date or date and time is/are contained in a single column.
-        parseDate = inputDate[0];
+        date = inputDate[0];
     }
 
-    if (Object.prototype.toString.call(parseDate) === '[object Date]') {
-        return parseDate.toISOString();
+    if (configuration.isCellDateType === 'Y') {
+        // ISO 8601 format is a UTC and therefore does not require time zone calculation.
+        if (isIsoDate(date)) {
+            return date;
+        }
     } else {
-        return GetISOFormattedDateString(parseDate);
+        if (moment.tz(date, configuration.dateFormat, timeZone).isValid()) {
+            return moment.tz(date, configuration.dateFormat, timeZone).toISOString();
+        } else {
+            return null;
+        }
     }
+
+    // if (Object.prototype.toString.call(parseDate) === '[object Date]') {
+    //     return parseDate.toISOString();
+    // } else {
+    //     return GetISOFormattedDateString(parseDate);
+    // }
     // if(moment.tz(parseDate, dateFormat, timeZone).isValid()){
     //     return moment.tz(parseDate, dateFormat, timeZone).toISOString();
     // } else {
     //     return null;
     // }
+}
+
+function isIsoDate(str) {
+    if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(str)) return false;
+    const d = new Date(str);
+    return d instanceof Date && !isNaN(d) && d.toISOString() === str; // valid date 
 }
 
 function GetISOFormattedDateString(stringDate) {
@@ -117,11 +134,11 @@ function parseDateNew(configuration, dateInput, timeZone) {
     let dateTime;
     // let dateTime = configuration.data.dateTime;
 
-    if(configuration.timeFormat.length > 0){
+    if (configuration.timeFormat.length > 0) {
         // date and time are split into two columns.
         isDateAndTimeSplit = true;
         date = dateInput[0];
-        time  = dateInput[1];
+        time = dateInput[1];
         dateTime = date.toISOString().split('T')[0] + ' ' + time.toISOString().split('T')[1];
     } else {
         // date or date and time is/are contained in a single column.
@@ -129,7 +146,7 @@ function parseDateNew(configuration, dateInput, timeZone) {
     }
 
     let dateFormat = configuration.dateFormat;
-    if(isDateAndTimeSplit){
+    if (isDateAndTimeSplit) {
         if (configuration.isCellDateType == 'Y') {
             dateFormat = 'MM/DD/YYYY' + ' ' + configuration.timeFormat;
         } else {
@@ -141,7 +158,7 @@ function parseDateNew(configuration, dateInput, timeZone) {
         }
     }
 
-    if(moment.tz(dateTime, dateFormat, timeZone).isValid()){
+    if (moment.tz(dateTime, dateFormat, timeZone).isValid()) {
         return moment.tz(dateTime, dateFormat, timeZone).toISOString();
     } else {
         return null;
@@ -170,7 +187,7 @@ function parseDateFormat(format) {
     }
 
     // Test2 - If longer than 11 characters then must contain h and m (any case)
-    if (format.length > 11){
+    if (format.length > 11) {
         regex = new RegExp('^(?=.*[H|h])(?=.*m).*$');
         if (regex.test(format)) {
             console.log('Longer than 11 characters then must contain h and m = TRUE')
@@ -193,14 +210,14 @@ function parseDateFormat(format) {
     }
 
     // Test4 - Min number of characters = 6
-    if(format.length < 6){
+    if (format.length < 6) {
         output.ReturnValue = false;
         output.Problem = 'Shorter than 6 characters.';
         console.log(output.Problem)
         return output;
     }
     // Test5 - Max number of characters = 24
-    if(format.length > 24){
+    if (format.length > 24) {
         output.ReturnValue = false;
         output.Problem = 'Greater than 24 characters.';
         console.log(output.Problem)
@@ -236,28 +253,28 @@ function getHeadings(data) {
  * @param {*} transactions An object containing the fuel transaction data (and error data which is irrelevant to this process).
  * @returns 
  */
-        var addBlanckColumn = function (transactions) {
-        for (var i = 0; i < transactions.data.length; i++) {
-            // get Headers object as master to compare, because header cannot 
-            // be empty
-            var keysHeader = Object.keys(transactions.data[0]);
-            var keysTempTransaction = Object.keys(transactions.data[i]);
+var addBlanckColumn = function (transactions) {
+    for (var i = 0; i < transactions.data.length; i++) {
+        // get Headers object as master to compare, because header cannot 
+        // be empty
+        var keysHeader = Object.keys(transactions.data[0]);
+        var keysTempTransaction = Object.keys(transactions.data[i]);
 
-            var z = 0;
-            var tempVar = z;
-            for (z; z < keysHeader.length; z++) {
-                // Compare the column header with the transaction column
-                // if not match I add column with key equal to Header name
-                // and value=null
-                if (keysHeader[z] != keysTempTransaction[tempVar]) {
-                    transactions.data[i][keysHeader[z]] = '';
-                    keysTempTransaction = Object.keys(transactions.data[i]);
-                }
-                else { tempVar++; }
+        var z = 0;
+        var tempVar = z;
+        for (z; z < keysHeader.length; z++) {
+            // Compare the column header with the transaction column
+            // if not match I add column with key equal to Header name
+            // and value=null
+            if (keysHeader[z] != keysTempTransaction[tempVar]) {
+                transactions.data[i][keysHeader[z]] = '';
+                keysTempTransaction = Object.keys(transactions.data[i]);
             }
+            else { tempVar++; }
         }
-        return transactions;
-    };
+    }
+    return transactions;
+};
 
 /**
  * Gets the location coordinates from the transaction based on the configuration data settings.
@@ -265,7 +282,7 @@ function getHeadings(data) {
  * @param {object} transaction The JSON transaction input.
  * @returns A JSON object containing the geographical location coordinates. X indicates longitude and y latitude. null is returned if no validate location data is found.
  */
-function parseLocation(value){
+function parseLocation(value) {
     let output = null;
     if (Array.isArray(value) && (value.length === 2)) {
         output = {
@@ -280,6 +297,7 @@ module.exports = {
     parseStringValue,
     parseStringLength,
     parseFloatValue,
+    isIsoDate,
     parseDate,
     getHeadings,
     addBlanckColumn,

@@ -2,38 +2,56 @@
     "providers": [
       {
         "Name": "ProviderDate1",
-        "isCellDateType": "Y",
+        "isCellDateType": "N",
         "dateFormat": "DD/MM/YYYY",
         "timeFormat": ""
       },
       {
         "Name": "ProviderDate2",
-        "isCellDateType": "Y",
+        "isCellDateType": "N",
         "dateFormat": "DD/MM/YYYY HH:mm",
         "timeFormat": ""      
       },
       {
         "Name": "ProviderDate3",
-        "isCellDateType": "Y",
+        "isCellDateType": "N",
         "dateFormat": "DD-MM-YYYY",
         "timeFormat": ""      
       },
       {
         "Name": "ProviderDate4",
-        "isCellDateType": "Y",
+        "isCellDateType": "N",
         "dateFormat": "DD-MM-YYYY HH:mm",
         "timeFormat": ""      
       },
       {
         "Name": "ProviderDate5",
-        "isCellDateType": "Y",
+        "isCellDateType": "N",
         "dateFormat": "DD.MM.YYYY",
         "timeFormat": ""      
       },
       {
         "Name": "ProviderDate6",
-        "isCellDateType": "Y",
+        "isCellDateType": "N",
         "dateFormat": "DD.MM.YYYY HH:mm",
+        "timeFormat": ""      
+      },
+      {
+        "Name": "ProviderDate7",
+        "isCellDateType": "Y",
+        "dateFormat": "YYYYMMDDTHH:mm:ss.sssZ",
+        "timeFormat": ""      
+      },
+      {
+        "Name": "ProviderDate8",
+        "isCellDateType": "Y",
+        "dateFormat": "YYYYMMDDTHH:mm:ss.sssZ",
+        "timeFormat": ""      
+      },
+      {
+        "Name": "ProviderDate9",
+        "isCellDateType": "Y",
+        "dateFormat": "YYYYMMDDTHH:mm:ss.sssZ",
         "timeFormat": ""      
       }
     ]
