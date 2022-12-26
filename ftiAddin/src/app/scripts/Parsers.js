@@ -42,33 +42,19 @@ var parseFloatValue = function (float) {
 };
 
 /**
- * input - date and format. the date must be checked against the format and ensured it is a valid date.
- * @param {*} date 
- * @param {*} format 
- * @param {String} timeZone The currently selected time zone.
- * @returns if a valid date then it is returned otherwise null if an invalid date.
+ * Parses the input date and produces an ISO 8601 formatted result where possible.
+ * If the date is not an ISO formatted input date (not a valid date format) an attempt is made to apply the time zone to the result.
+ * @param {JSON} configuration The JSON configuration.
+ * @param {Array} inputDate The input date array.
+ * @param {string} timeZone The time zone required.
+ * @returns An ISO 8601 (GMT time zone) formatted date.
  */
-// function parseDate(date, format, timeZone){
-//     // parses and returns the date if valid otherwise reports a moment invalid date type.
-//     // let myDate = moment(date, format);
-//     // let myDate = moment.tz(date, format, timeZone).format();
-//     console.log(`parseDate input date: ${date}`);
-//     if(moment.tz(date, format, timeZone).isValid()){
-//         return moment.tz(date, format, timeZone).toISOString();
-//     } else {
-//         return null;
-//     }
-// }
-
 function parseDate(configuration, inputDate, timeZone) {
-    // let isDateAndTimeSplit = false;
     let date;
-    // let time;
     let dateFormat;
 
     if (configuration.timeFormat.length > 0) {
         // date and time are split into two columns.
-        // isDateAndTimeSplit = true;
         date = inputDate[0] + ' ' + inputDate[1];
         dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
     } else {
@@ -91,6 +77,11 @@ function parseDate(configuration, inputDate, timeZone) {
     }
 }
 
+/**
+ * Checks whether the input string is an ISO 8601 formatted date value.
+ * @param {String} str The input test string.
+ * @returns True if the input string is a valid ISO date and False otherwise.
+ */
 function isIsoDate(str) {
     if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(str)) return false;
     const d = new Date(str);
