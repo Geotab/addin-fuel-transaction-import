@@ -21,11 +21,11 @@ function ParseAndBuildTransactionsAsync(transactionsRaw, configuration, timeZone
                 // ignore the first row as it is the header...
             } else {
                 entity = await parseTransactionAsync(transaction, configuration, timeZone, api);
-                console.log('parsed transaction entity: ' + entity);
+                // console.log('parsed transaction entity: ' + entity);
                 transactionsOutput.push(entity);
             }
         }
-        console.log('transactionsOutput: ' + JSON.stringify(transactionsOutput));
+        // console.log('transactionsOutput: ' + JSON.stringify(transactionsOutput));
         resolve(transactionsOutput)
     });
 }
@@ -92,36 +92,29 @@ async function parseTransactionAsync(transactionRaw, configuration, timeZone, ap
     {
         let key = configKeys[i];
         let keyValue = configuration.data[key];
-        console.log('key: ' + key);
-        console.log('key value: ' + keyValue);
+        // console.log('key: ' + key);
+        // console.log('key value: ' + keyValue);
         value = [];
-        // set the new value.
-        //let falseKey = getObjKey(transactionRaw, key);
+
+        // Formats the value Array based on whether it has multiple elements or not.
         if (Array.isArray(keyValue))
         {
             columnHeaderChar[0] = GetColumnText(keyValue[0], prefixString);
             columnHeaderChar[1] = GetColumnText(keyValue[1], prefixString);
-            console.log('columnHeaderChar[0]: ' + columnHeaderChar[0]);
-            console.log('columnHeaderChar[1]: ' + columnHeaderChar[1]);
             value[0] = transactionRaw[columnHeaderChar[0]];
             value[1] = transactionRaw[columnHeaderChar[1]];
-            console.log('value[0]: ' + value[0]);
-            console.log('value[1]: ' + value[1]);
+            // console.log('columnHeaderChar[0]: ' + columnHeaderChar[0]);
+            // console.log('columnHeaderChar[1]: ' + columnHeaderChar[1]);
+            // console.log('value[0]: ' + value[0]);
+            // console.log('value[1]: ' + value[1]);
         }
         else
         {
             columnHeaderChar[0] = GetColumnText(keyValue, prefixString);
-            console.log('columnHeaderChar[0]: ' + columnHeaderChar[0]);
             value[0] = transactionRaw[columnHeaderChar[0]];
-            console.log('value[0]: ' + value[0]);
+            // console.log('columnHeaderChar[0]: ' + columnHeaderChar[0]);
+            // console.log('value[0]: ' + value[0]);
         }
-
-
-        // if(key === 'dateTime')
-        // {
-        //     value = 'dateTime';
-        // }
-        //console.log('current key item: ' + key + ', value: ' + value);
 
         if (value[0]) {
             switch (key) {
@@ -134,14 +127,9 @@ async function parseTransactionAsync(transactionRaw, configuration, timeZone, ap
                     }
                     break;
                 case 'dateTime':
-                    // entity[configDataItem] = parsers.parseDate(value, configuration.dateFormat, timeZone);
-                    //entity[key] = parsers.parseDateNew(configuration, value, timeZone);
-                    var date = parsers.parseDate(configuration, value, timeZone);
-                    console.log('Parsed dateTime: ' + date);
-                    entity[key] = date;
+                    entity[key] = parsers.parseDate(configuration, value, timeZone);
                     break;
                 case 'location':
-                    // entity[configDataItem] = parsers.parseLocation(value, ',');
                     entity[key] = parsers.parseLocation(value);
                     break;
                 case 'licencePlate':
@@ -193,11 +181,11 @@ async function parseTransactionAsync(transactionRaw, configuration, timeZone, ap
             if (key === 'currencyCode') {
                 entity[key] = configuration.currencyCodeMapped.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
             }
-            console.log('value is null or undefined...');
+            // console.log('value is null or undefined...');
         }
 
     }
-    console.log('parseTransaction output for entity: ', JSON.stringify(entity));
+    // console.log('parseTransaction output for entity: ', JSON.stringify(entity));
     return entity;
 }
 
