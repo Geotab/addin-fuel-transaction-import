@@ -9,7 +9,7 @@ const myGeotabHelper = require('./MyGeotabHelper');
  * @param {JSON} configuration The fuel provider configuration.
  * @param {String} timeZone The time zone.
  * @param {Object} api The MyGeotab API service.
- * @returns The final parsed and ready for import transaction.
+ * @returns The final parsed and ready for import transactions.
  */
 function ParseAndBuildTransactionsAsync(transactionsRaw, configuration, timeZone, api) {
     return new Promise(async (resolve, reject) => {
