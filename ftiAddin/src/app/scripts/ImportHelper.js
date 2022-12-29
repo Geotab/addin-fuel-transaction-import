@@ -58,11 +58,12 @@ async function postFuelTransCallBatchesAsync(api, transactions, elProgressText, 
     let transactionCount = transactions.length;
     let transactionChunks = [];
     for (let i = 0; i < transactions.length; i += batchSize) {
-        await sleep(pauseLengthMs);
         const transBatch = transactions.slice(i, i + batchSize);
         transactionChunks.push(postFuelTransCallsPromise(api, transBatch, importSummary));
         elprogressBar.value = (batchSize / transactionCount) * 100;
         elProgressText.innerText = batchSize + ' transaction/s of ' + transactionCount + ' processed...';
+        console.log('importSummary.imported: ' + importSummary.imported);
+        await sleep(pauseLengthMs);
     };
     elprogressBar.value = (transactionCount / transactionCount) * 100;
     elProgressText.innerText = transactionCount + ' transaction/s of ' + transactionCount + ' processed...';
@@ -88,7 +89,8 @@ function postFuelTransCallsPromise(api, transactions, importSummary) {
                     function (result) {
                         // Successful import
                         importSummary.imported += 1;
-                        resolve(null);
+                        console.log('importSummary.imported: ' + importSummary.imported);
+                        resolve();
                     }, function (error) {
                         if (error instanceof Object) {
                             //MyGeotab API call error object
@@ -114,11 +116,11 @@ function postFuelTransCallsPromise(api, transactions, importSummary) {
                                 importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), error]);
                             }
                         }
-                        // resolve(null);
+                        resolve();
                     });
 
             }));
-            resolve(null);
+            resolve();
     });
 }
 
