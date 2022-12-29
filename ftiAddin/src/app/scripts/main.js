@@ -278,6 +278,7 @@ geotab.addin.ftiAddin = function () {
       return;
     }
 
+    elImportButton.disabled = true;
     let transactionsLocal;
     convertExcelToJsonAsync(importFile)
     .then(results => {
@@ -303,17 +304,13 @@ geotab.addin.ftiAddin = function () {
     .then((results) => {
       transactionsJson = results;
       toggleWindowDisplayState(true, true, true);
-      return importHelper.importTransactionsBatchPromise(api, transactionsJson, elProgressText, elProgressBar, 1000, 5000);
-
-      // toggleWindowDisplayState(true, true, true);
-      // if (transactionsJson) {
-      //   //importHelper.importTransactionsAsync(api, transactionsJson, elProgressText, elProgressBar, importSummaryOutput);
-      //   importHelper.importTransactionsBatchAsync(api, transactionsJson, elProgressText, elProgressBar, 500, 2000);
-      // } else {
-      //   setOutputDisplay('Data Issue', 'No transaction found. Please try again...');
-      // }
+      if (transactionsJson) {
+        return importHelper.importTransactionsPromise(api, transactionsJson, elProgressText, elProgressBar, 500, 2000);
+      } else {
+        setOutputDisplay('Data Issue', 'No transaction found. Please try again...');
+      }
     }).then((summary) => {
-      // elImportButton.disabled = false;
+      elImportButton.disabled = false;
       if (summary) {
         console.log(summary);
         importSummaryOutput(summary);
@@ -325,7 +322,7 @@ geotab.addin.ftiAddin = function () {
       console.log(error);
       setOutputDisplay('Unexpected Error', error);
       setControlState(true);
-      // elImportButton.disabled = false;
+      elImportButton.disabled = false;
     });
   }
 
