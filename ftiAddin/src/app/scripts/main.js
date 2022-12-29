@@ -172,12 +172,17 @@ geotab.addin.ftiAddin = function () {
    */
   function toggleWindowDisplayState(input = true, output = false, progress = false) {
     input ? elInputDiv.classList.remove('ftiHidden') : elInputDiv.classList.add('ftiHidden');
-    progress ? elProgressDiv.classList.remove('ftiHidden') : elProgressDiv.classList.add('ftiHidden');
+    if(progress) {
+      elProgressDiv.classList.remove('ftiHidden')
+    } else {
+      elProgressDiv.classList.add('ftiHidden');
+      resetProgressDiv();
+    }
     if (output) {
         elOutputDiv.classList.remove('ftiHidden');
-      } else { 
+    } else { 
         elOutputDiv.classList.add('ftiHidden');
-        cleanOutputDiv();
+        resetOutputDiv();
     }
   }
 
@@ -193,9 +198,17 @@ geotab.addin.ftiAddin = function () {
   }
 
   /**
-   * Cleans the OutputDiv of any additional elements and resets the title an message.
+   * Resets the progressDiv and elements
    */
-  function cleanOutputDiv()
+  function resetProgressDiv()
+  {
+    elProgressBar.value = 0;
+  }
+
+  /**
+   * Resets the OutputDiv of any additional elements and resets the title and message.
+   */
+  function resetOutputDiv()
   {
     let elErrorTable = document.getElementById(TableElementId);
     if(elErrorTable) {
@@ -222,19 +235,6 @@ geotab.addin.ftiAddin = function () {
       setOutputDisplay('No import file selected', 'Please select an import file prior to this operation.');
     }
   }
-
-  var uploadProgress = function (e) {
-      if (e.lengthComputable) {
-          var percentComplete = Math.round(e.loaded * 100 / e.total);
-          if (percentComplete < 100) {
-              //toggleAlert(elAlertInfo, 'Parsing: transferring file ' + percentComplete.toString() + '%');
-              setOutputDisplay('Excel convert progress', 'Parsing: transferring file ' + percentComplete.toString() + '%');
-          } else {
-              //toggleAlert(elAlertInfo, 'Parsing: converting csv to fuel transactions');
-              setOutputDisplay('Excel convert progress', 'Parsing: converting csv to fuel transactions');
-          }
-      }
-  };
 
   /**
    * Converts the excel file to binary format and then uses the XLSX library to convert the file into JSON format.
@@ -270,6 +270,9 @@ geotab.addin.ftiAddin = function () {
    */
   async function importTransactions() {
 
+    // set initial window state.
+    toggleWindowDisplayState(true, false, false);
+
     getImportFile();
 
     // Check initial state.
@@ -297,7 +300,6 @@ geotab.addin.ftiAddin = function () {
       configHelper.parseConfigDefaults(configuration);
     })
     .then(() => {
-      setOutputDisplay('Parsing', 'Parsing & building transactions in progress...');
       // parse and get the json transaction.
       return transactionHelper.ParseAndBuildTransactionsAsync(transactionsLocal, configuration, elTimeZoneDropdown.value, api);
     })
@@ -324,81 +326,6 @@ geotab.addin.ftiAddin = function () {
       setControlState(true);
       elImportButton.disabled = false;
     });
-  }
-
-  /**
-   * The import button click event.
-   */
-  async function importButtonClickEvent() {
-
-    // disable the button during execution
-    //setControlState(false);
-    //elImportButton.disabled = true;
-
-    toggleWindowDisplayState(true, false, false);
-    
-    getImportFile();
-
-    // Check initial state.
-    if (!importFile) {
-      setOutputDisplay('File Not Found', 'Please select an import file.');
-      return;
-    }
-
-    setOutputDisplay('File Conversion', 'File conversion in progress...');
-    // Execute the parsing/import process - starts with the excel process
-    convertExcelToJsonAsync(importFile)
-    .then(fileResult => {
-      console.log('getfiledata completed. fileResult:' + fileResult);
-      excelHelper.convertExcelToJsonPromise(api, importFile, uploadProgress)
-    })
-    .then(request => {
-        setOutputDisplay('Parsing', 'Transaction parsing & configuration validation in progress...');
-        // return the parsed transaction results to the next step.
-        // todo: this can be removed with the new json converter
-        return excelHelper.parseTransactions(request);;
-      })
-      .then(results => {
-        // set the excel transactions variable to the results.
-        transactionsRaw = results;
-        console.log('transactionsExcel: ' + JSON.stringify(transactionsRaw));
-      })
-      .then(() => {
-        // validate the configuration data
-        var result = configHelper.validateConfiguration(configuration);
-        console.log('validation result, isValid: ' + result.isValid);
-        console.log('validation result, reason: ' + result.reason);
-        if (result.isValid === false) {
-          setOutputDisplay('Configuration File Validation Problem', result.reason)
-          return;
-        }
-        // parse the configuration defaults
-        configHelper.parseConfigDefaults(configuration);
-      })
-      .then(result => {
-        setOutputDisplay('Parsing', 'Parsing & building transactions in progress...');
-        // parse and get the json transaction.
-        return transactionHelper.ParseAndBuildTransactionsAsync(transactionsRaw, configuration, elTimeZoneDropdown.value, api);
-      })
-      .then((results) => {
-        transactionsJson = results;
-        toggleWindowDisplayState(true, true, true);
-        if (transactionsJson) {
-          importHelper.importTransactionsAsync(api, transactionsJson, elProgressText, elProgressBar, importSummaryOutput);
-        } else {
-          setOutputDisplay('Data Issue', 'No transaction found. Please try again...');
-        }
-      }).then(() => {
-        // elImportButton.disabled = false;
-        setControlState(true);
-      })
-      .catch(error => {
-        console.log('Preview process error experienced:');
-        console.log(error);
-        setOutputDisplay('Unexpected Error', error);
-        setControlState(true);
-        // elImportButton.disabled = false;
-      });
   }
 
   /**
