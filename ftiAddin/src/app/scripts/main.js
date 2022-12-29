@@ -5,7 +5,6 @@ geotab.addin.ftiAddin = function () {
   'use strict';
 
   const configHelper = require('./ConfigHelper');
-  const excelHelper = require('./ExcelHelper');
   const importHelper = require('./ImportHelper');
   const transactionHelper = require('./TransactionHelper');
   const moment = require('moment-timezone');
