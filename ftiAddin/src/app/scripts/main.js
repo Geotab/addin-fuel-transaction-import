@@ -221,6 +221,8 @@ geotab.addin.ftiAddin = function () {
     if (elImportSummaryTable) {
       elImportSummaryTable.parentNode.removeChild(elImportSummaryTable);
     }
+    elOutputTitle.textContent = '';
+    elOutputMessage.textContent = '';
   }
 
   /**
@@ -263,7 +265,7 @@ geotab.addin.ftiAddin = function () {
     })
   }
 
-  /**
+   /**
    * Import
    * The import button click event.
    */
@@ -280,7 +282,9 @@ geotab.addin.ftiAddin = function () {
       return;
     }
 
-    elImportButton.disabled = true;
+    // disable form controls
+    setControlState(false);
+
     let transactionsLocal;
     convertExcelToJsonAsync(importFile)
     .then(results => {
@@ -306,12 +310,11 @@ geotab.addin.ftiAddin = function () {
       transactionsJson = results;
       toggleWindowDisplayState(true, true, true);
       if (transactionsJson) {
-        return importHelper.importTransactionsPromise(api, transactionsJson, elProgressText, elProgressBar, 500, 2000);
+        return importHelper.importTransactionsPromise(api, transactionsJson, elProgressText, elProgressBar, 250, 1000);
       } else {
         setOutputDisplay('Data Issue', 'No transaction found. Please try again...');
       }
     }).then((summary) => {
-      elImportButton.disabled = false;
       if (summary) {
         console.log(summary);
         importSummaryOutput(summary);
@@ -323,13 +326,12 @@ geotab.addin.ftiAddin = function () {
       console.log(error);
       setOutputDisplay('Unexpected Error', error);
       setControlState(true);
-      elImportButton.disabled = false;
     });
   }
 
   /**
    * Sets the state of the controls on the page. Moves the state between enabled and disabled.
-   * @param {boolean} isEnabled 
+   * @param {boolean} isEnabled True to enable controls and vice versa.
    */
   function setControlState(isEnabled){
     elImportButton.disabled = !isEnabled;
@@ -337,6 +339,7 @@ geotab.addin.ftiAddin = function () {
     elProviderFile.disabled = !isEnabled;
     elProviderDropdown.disabled = !isEnabled;
     elImportFile.disabled = !isEnabled;
+    elTimeZoneDropdown.disabled = !isEnabled;
   }
 
   /**
@@ -475,7 +478,6 @@ geotab.addin.ftiAddin = function () {
     elProviderFile.addEventListener('focus', providerFileFocusEvent, false);
     elProviderDropdown.addEventListener('change', providerDropdownChangeEvent, false);
     elImportFile.addEventListener('focus', importFileFocusEvent, false);
-    // elImportButton.addEventListener('click', importButtonClickEvent, false);
     elImportButton.addEventListener('click', importTransactions, false);
     elResetButton.addEventListener('click', resetButtonClickEvent, false);
   }
@@ -488,7 +490,6 @@ geotab.addin.ftiAddin = function () {
     elProviderFile.removeEventListener('focus', providerFileFocusEvent, false);
     elProviderDropdown.removeEventListener('change', providerDropdownChangeEvent, false);
     elImportFile.removeEventListener('focus', importFileFocusEvent, false);
-    // elImportButton.removeEventListener('click', importButtonClickEvent, false);
     elImportButton.removeEventListener('click', importTransactions, false);
     elResetButton.removeEventListener('click', resetButtonClickEvent, false);
   }
