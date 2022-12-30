@@ -20,7 +20,8 @@ function importTransactionsPromise(api, transactions, elProgressText, elprogress
             }
         }
 
-        postFuelTransCallBatchesAsync(api, transactions, elProgressText, elprogressBar, batchSize, pauseLengthMs, importSummary)
+        postFuelTransCallBatchesNewAsync(api, transactions, elProgressText, elprogressBar, batchSize, pauseLengthMs, importSummary)
+        //postFuelTransCallBatchesAsync(api, transactions, elProgressText, elprogressBar, batchSize, pauseLengthMs, importSummary)
         .then( _ => {
             console.log('After ExecutePromises...');
             console.log('importSummary: ' + importSummary);
@@ -63,10 +64,56 @@ async function postFuelTransCallBatchesAsync(api, transactions, elProgressText, 
         elprogressBar.value = (batchSize / transactionCount) * 100;
         elProgressText.innerText = batchSize + ' transaction/s of ' + transactionCount + ' processed...';
         console.log('importSummary.imported: ' + importSummary.imported);
+        //await updateProgress(batchSize, transactionCount, batchSize, transactionCount, elProgressText, elprogressBar);
         await sleep(pauseLengthMs);
     };
     elprogressBar.value = (transactionCount / transactionCount) * 100;
     elProgressText.innerText = transactionCount + ' transaction/s of ' + transactionCount + ' processed...';
+    //await updateProgress(transactionCount, transactionCount, transactionCount, transactionCount, elProgressText, elprogressBar);
+}
+
+/**
+ * Fuel transaction batch manager (New).
+ * @param {Object} api The Geotab api.
+ * @param {Array} transactions An Array of JSON transactions to be inserted.
+ * @param {string} elProgressText The progress text reference.
+ * @param {Object} elprogressBar The progress bar reference.
+ * @param {number} batchSize The number of transaction calls to add per iteration.
+ * @param {number} pauseLengthMs Time in milliseconds to pause between transaction call add iterations.
+ * @param {JSON} importSummary The import summary.
+ */
+async function postFuelTransCallBatchesNewAsync(api, transactions, elProgressText, elprogressBar, batchSize, pauseLengthMs, importSummary) {
+    let transactionCount = transactions.length;
+    let transactionChunks = [];
+
+    // batchsize = 500
+    let i = 0;
+    let endPoint = 0;
+    for (transaction in transactions)
+    {
+        if (i % batchSize === 0)
+        {
+            endPoint = i + batchSize;
+            if (endPoint > transactionCount) {
+                endPoint = transactionCount;
+            }
+            console.log('endPoint: ' + endPoint);
+            const transBatch = transactions.slice(i, endPoint);
+            transactionChunks.push(postFuelTransCallsPromise(api, transBatch, importSummary));
+            await updateProgress(endPoint, transactionCount, endPoint, transactionCount, elProgressText, elprogressBar);
+            await Promise.allSettled(transactionChunks);
+            await sleep(pauseLengthMs);
+        }
+        i++;
+    }
+}
+
+async function updateProgress(dividend, divisor, numberCompleted, total, elProgressText, elprogressBar) {
+    return new Promise(resolve => {
+        elprogressBar.value = (dividend / divisor) * 100;
+        elProgressText.innerText = numberCompleted + ' transaction/s of ' + total + ' processed...';
+        resolve();
+    });
 }
 
 /**
