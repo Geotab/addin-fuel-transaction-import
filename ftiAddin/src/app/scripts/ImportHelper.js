@@ -21,7 +21,6 @@ function importTransactionsPromise(api, transactions, elProgressText, elprogress
         }
 
         postFuelTransCallBatchesNewAsync(api, transactions, elProgressText, elprogressBar, batchSize, pauseLengthMs, importSummary)
-        //postFuelTransCallBatchesAsync(api, transactions, elProgressText, elprogressBar, batchSize, pauseLengthMs, importSummary)
         .then( _ => {
             console.log('After ExecutePromises...');
             console.log('importSummary: ' + importSummary);
@@ -45,7 +44,8 @@ async function sleep(ms) {
 }
 
 /**
- * Fuel transaction batch manager.
+ * Fuel transaction batch manager. 
+ * Note: this works nicely but the progress bar does not work with this implementation.
  * @param {Object} api The Geotab api.
  * @param {Array} transactions An Array of JSON transactions to be inserted.
  * @param {string} elProgressText The progress text reference.
