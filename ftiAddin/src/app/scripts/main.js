@@ -536,9 +536,9 @@ geotab.addin.ftiAddin = function () {
     focus: function (freshApi, freshState) {
 
       // getting the current user to display in the UI
-      freshApi.getSession(session => {
-        elAddin.querySelector('#ftiAddin-user').textContent = session.userName;
-      });
+      // freshApi.getSession(session => {
+      //   elAddin.querySelector('#ftiAddin-user').textContent = session.userName;
+      // });
 
       loadTimeZoneList();
 
