@@ -63,6 +63,7 @@ geotab.addin.ftiAddin = function () {
       configurationFile = await getJsonObjectFromFileAsync(file);
       populateProviderDropdown(configurationFile);
     }
+    clearImportFile(elImportFile, importFile);
   };
 
   /**
@@ -231,7 +232,7 @@ geotab.addin.ftiAddin = function () {
    */
   function getImportFile() {
     if (elImportFile) {
-      const newLocal = importFile = elImportFile.files[0];
+      importFile = elImportFile.files[0];
     } else {
       setOutputDisplay('No import file selected', 'Please select an import file prior to this operation.');
     }
@@ -572,3 +573,11 @@ geotab.addin.ftiAddin = function () {
     }
   };
 };
+
+/**
+ *  clears the import file previously set.
+ * */ 
+function clearImportFile(elImportFile, importFile) {
+  elImportFile.value = '';
+  importFile = null;
+}
