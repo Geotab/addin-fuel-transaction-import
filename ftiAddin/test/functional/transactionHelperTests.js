@@ -1,6 +1,7 @@
 const transactionHelper = require('../../src/app/scripts/TransactionHelper');
 const assert = require('chai').assert;
 const transactionsExcelMock = require('./mocks/transactionsExcelMock.json');
+const transactionsExcelErrorMock = require('./mocks/transactionsExcelErrorMock.json');
 const configurationMock = require('./mocks/configurationMock.json');
 const { expect } = require('chai');
 
@@ -45,12 +46,8 @@ describe('Transaction parsing tests', () => {
         assert.isTrue(entity.provider === 'Allstar');
         assert.isTrue(entity.volume === 10.236);
     });
-    // it('test transaction parsing - all should pass - 3', async () => {
-    //     entity = await transactionHelper.parseTransactionAsync(transactionsExcelMock[4], configurationMock.providers[0], transactionsExcelMock[0], 'europe/berlin');
-    //     assert.isTrue(entity.dateTime === null);
-    // });
     it('test multiple transactions', async () => {
-        return await transactionHelper.ParseAndBuildTransactionsAsync(transactionsExcelMock, configurationMock.providers[0], 'europe/berlin', null)
+        return await transactionHelper.ParseAndBuildTransactionsAsync(transactionsExcelMock.slice(0,6), configurationMock.providers[0], 'europe/berlin', null)
             .then(results => {
                 assert.isTrue(results[0].cardNumber === 'ABC1');
                 assert.isTrue(results[1].provider === 'Allstar');
@@ -70,5 +67,22 @@ describe('Transaction parsing tests', () => {
         assert.isTrue(entity.externalReference === 'external reference');
         assert.isTrue(entity.providerProductDescription === 'providerProductDescription');
         assert.isTrue(entity.sourceData === 'sourceData');
+    });
+    it('test location', async () => {
+        return transactionHelper.parseTransactionAsync(transactionsExcelMock[7], configurationMock.providers[5], 'europe/berlin', null)
+        .then()
+        .catch( error => {
+            assert.isTrue(error.name == 'InputError');
+            //assert.isTrue(error.message.includes('s.trim is not a function'));
+            assert.isNotNull(error.entity);
+        });
+    });
+    it('Exception Tests (TransactionHelper)', async () => {
+        return transactionHelper.parseTransactionAsync(transactionsExcelErrorMock[1], configurationMock.providers[0], 'europe/berlin', null)
+        .then()
+        .catch( error => {
+            assert.isTrue(error.name == 'InputError');
+            assert.isNotNull(error.entity);
+        });
     });
 });

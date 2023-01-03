@@ -191,8 +191,8 @@ geotab.addin.ftiAddin = function () {
    * @param {*} message The message
    */
   function setOutputDisplay(title, message) {
-    elOutputTitle.textContent = title;
-    elOutputMessage.textContent = message;
+    elOutputTitle.innerHTML = title;
+    elOutputMessage.innerHTML = message;
     toggleWindowDisplayState(true, true, false);
   }
 
@@ -312,7 +312,7 @@ geotab.addin.ftiAddin = function () {
       if (transactionsJson) {
         return importHelper.importTransactionsPromise(api, transactionsJson, elProgressText, elProgressBar, 250, 1000);
       } else {
-        setOutputDisplay('Data Issue', 'No transaction found. Please try again...');
+        setOutputDisplay('Data Issue', 'No transactions found. Please try again...');
       }
     }).then((summary) => {
       if (summary) {
@@ -322,10 +322,18 @@ geotab.addin.ftiAddin = function () {
       setControlState(true);
     })
     .catch(error => {
-      console.log('Preview process error experienced:');
-      console.log(error);
-      setOutputDisplay('Unexpected Error', error);
-      setControlState(true);
+      if (error.name === 'InputError')
+      {
+        let suggestion = 'Please correct the error in the input file (import file) and try again.';
+        let message = 'Entry containing the error: ' + JSON.stringify(error.entity) + '<br><br>' + suggestion;
+        setOutputDisplay('Input Error', message);
+        setControlState(true);
+      } else {
+        console.log('Preview process error experienced:');
+        console.log(error);
+        setOutputDisplay('Unexpected Error', error);
+        setControlState(true);
+      }
     });
   }
 

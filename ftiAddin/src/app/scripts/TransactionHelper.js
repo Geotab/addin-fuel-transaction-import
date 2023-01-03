@@ -20,9 +20,14 @@ function ParseAndBuildTransactionsAsync(transactionsRaw, configuration, timeZone
             if (i === 0) {
                 // ignore the first row as it is the header...
             } else {
-                entity = await parseTransactionAsync(transaction, configuration, timeZone, api);
-                // console.log('parsed transaction entity: ' + entity);
-                transactionsOutput.push(entity);
+                try {
+                    entity = await parseTransactionAsync(transaction, configuration, timeZone, api);
+                    // console.log('parsed transaction entity: ' + entity);
+                    transactionsOutput.push(entity);
+                }
+                catch(error) {
+                    reject(error);
+                }
             }
         }
         // console.log('transactionsOutput: ' + JSON.stringify(transactionsOutput));
@@ -80,114 +85,132 @@ async function parseTransactionAsync(transactionRaw, configuration, timeZone, ap
         throw new Error('parseTransaction timeZone argument not submitted.');
     }
 
-    //let mapping = configuration.data;
-    let entity = {};
-    /** The configuration data property value which will be the column or columns e.g. ColumnL or an array of columns */
-    let value = [];
-    let columnHeaderChar = [];
-    let prefixString = 'Column';
-    console.log('Parsing provider: ' + configuration.Name);
-    let configKeys = Object.keys(configuration.data);
-    for (var i = 0; i < configKeys.length; i++)
-    {
-        let key = configKeys[i];
-        let keyValue = configuration.data[key];
-        // console.log('key: ' + key);
-        // console.log('key value: ' + keyValue);
-        value = [];
-
-        // Formats the value Array based on whether it has multiple elements or not.
-        if (Array.isArray(keyValue))
+    try {
+        //let mapping = configuration.data;
+        let entity = {};
+        /** The configuration data property value which will be the column or columns e.g. ColumnL or an array of columns */
+        let value = [];
+        let columnHeaderChar = [];
+        let prefixString = 'Column';
+        console.log('Parsing provider: ' + configuration.Name);
+        let configKeys = Object.keys(configuration.data);
+        for (var i = 0; i < configKeys.length; i++)
         {
-            columnHeaderChar[0] = GetColumnText(keyValue[0], prefixString);
-            columnHeaderChar[1] = GetColumnText(keyValue[1], prefixString);
-            value[0] = transactionRaw[columnHeaderChar[0]];
-            value[1] = transactionRaw[columnHeaderChar[1]];
-            // console.log('columnHeaderChar[0]: ' + columnHeaderChar[0]);
-            // console.log('columnHeaderChar[1]: ' + columnHeaderChar[1]);
-            // console.log('value[0]: ' + value[0]);
-            // console.log('value[1]: ' + value[1]);
-        }
-        else
-        {
-            columnHeaderChar[0] = GetColumnText(keyValue, prefixString);
-            value[0] = transactionRaw[columnHeaderChar[0]];
-            // console.log('columnHeaderChar[0]: ' + columnHeaderChar[0]);
-            // console.log('value[0]: ' + value[0]);
-        }
+            let key = configKeys[i];
+            let keyValue = configuration.data[key];
+            // console.log('key: ' + key);
+            // console.log('key value: ' + keyValue);
+            value = [];
 
-        if (value[0]) {
-            switch (key) {
-                case 'address':
-                    var coords = await myGeotabHelper.GetCoordinates(api, value[0]);
-                    if(coords){
-                        if (Array.isArray(coords)){
-                            entity.location = coords[0];
+            // Formats the value Array based on whether it has multiple elements or not.
+            if (Array.isArray(keyValue))
+            {
+                columnHeaderChar[0] = GetColumnText(keyValue[0], prefixString);
+                columnHeaderChar[1] = GetColumnText(keyValue[1], prefixString);
+                value[0] = transactionRaw[columnHeaderChar[0]];
+                value[1] = transactionRaw[columnHeaderChar[1]];
+                // console.log('columnHeaderChar[0]: ' + columnHeaderChar[0]);
+                // console.log('columnHeaderChar[1]: ' + columnHeaderChar[1]);
+                // console.log('value[0]: ' + value[0]);
+                // console.log('value[1]: ' + value[1]);
+            }
+            else
+            {
+                columnHeaderChar[0] = GetColumnText(keyValue, prefixString);
+                value[0] = transactionRaw[columnHeaderChar[0]];
+                // console.log('columnHeaderChar[0]: ' + columnHeaderChar[0]);
+                // console.log('value[0]: ' + value[0]);
+            }
+
+            if (value[0]) {
+                switch (key) {
+                    case 'address':
+                        var coords = await myGeotabHelper.GetCoordinates(api, value[0]);
+                        if(coords){
+                            if (Array.isArray(coords)){
+                                entity.location = coords[0];
+                            }
                         }
-                    }
-                    break;
-                case 'dateTime':
-                    entity[key] = parsers.parseDate(configuration, value, timeZone);
-                    break;
-                case 'location':
-                    entity[key] = parsers.parseLocation(value);
-                    break;
-                case 'licencePlate':
-                    entity[key] = parsers.parseStringLength(value[0], 255).toUpperCase().replace(/\s/g, '');
-                    break;
-                case 'comments':
-                    entity[key] = parsers.parseStringValue(parsers.parseStringLength(value[0], 1024));
-                    break;
-                case 'description':
-                    entity[key] = parsers.parseStringValue(parsers.parseStringLength(value[0], 255));
-                    break;
-                case 'currencyCode':
-                    entity[key] = value[0].trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
-                    break;
-                case 'serialNumber':
-                case 'vehicleIdentificationNumber':
-                    entity[key] = value[0].toUpperCase().replace(/\s/g, '');
-                    break;
-                case 'provider':
-                    entity[key] = getProvider(value[0]);
-                    break;
-                case 'productType':
-                    entity[key] = productTypeHelper.getProductType(value[0]);
-                    break;
-                case 'cost':
-                    entity[key] = parsers.parseFloatValue(value[0]);
-                    break;
-                case 'odometer':
-                    if (configuration.unitOdoKm === 'N') {
-                        // value in miles so convert to kilometres.
-                        value[0] = converters.milesToKm(value[0]);
-                    }
-                    entity[key] = parsers.parseFloatValue(value[0]);
-                    break;
-                case 'volume':
-                    if (configuration.unitVolumeLiters === 'N') {
-                        // value in miles so convert to kilometres.
-                        value[0] = converters.gallonsToLitres(value[0]);
-                    }
-                    entity[key] = parsers.parseFloatValue(value[0]);
-                    break;
-                default:
-                    // handles any unhandled values and parses the result to string.
-                    entity[key] = parsers.parseStringValue(value[0]);
-                    break;
+                        break;
+                    case 'dateTime':
+                        entity[key] = parsers.parseDate(configuration, value, timeZone);
+                        break;
+                    case 'location':
+                        entity[key] = parsers.parseLocation(value);
+                        break;
+                    case 'licencePlate':
+                        entity[key] = parsers.parseStringLength(value[0], 255).toUpperCase().replace(/\s/g, '');
+                        break;
+                    case 'comments':
+                        entity[key] = parsers.parseStringValue(parsers.parseStringLength(value[0], 1024));
+                        break;
+                    case 'description':
+                        entity[key] = parsers.parseStringValue(parsers.parseStringLength(value[0], 255));
+                        break;
+                    case 'currencyCode':
+                        entity[key] = value[0].trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
+                        break;
+                    case 'serialNumber':
+                    case 'vehicleIdentificationNumber':
+                        entity[key] = value[0].toUpperCase().replace(/\s/g, '');
+                        break;
+                    case 'provider':
+                        entity[key] = getProvider(value[0]);
+                        break;
+                    case 'productType':
+                        entity[key] = productTypeHelper.getProductType(value[0]);
+                        break;
+                    case 'cost':
+                        entity[key] = parsers.parseFloatValue(value[0]);
+                        break;
+                    case 'odometer':
+                        if (configuration.unitOdoKm === 'N') {
+                            // value in miles so convert to kilometres.
+                            value[0] = converters.milesToKm(value[0]);
+                        }
+                        entity[key] = parsers.parseFloatValue(value[0]);
+                        break;
+                    case 'volume':
+                        if (configuration.unitVolumeLiters === 'N') {
+                            // value in miles so convert to kilometres.
+                            value[0] = converters.gallonsToLitres(value[0]);
+                        }
+                        entity[key] = parsers.parseFloatValue(value[0]);
+                        break;
+                    default:
+                        // handles any unhandled values and parses the result to string.
+                        // try {
+                            entity[key] = parsers.parseStringValue(value[0]);
+                        // }
+                        // catch(error) {
+                        //     throw new InputError(error, transactionRaw);
+                        // }
+                        break;
+                }
+            } else {
+                // if currencyCode does not exist the global value should be assigned.
+                if (key === 'currencyCode') {
+                    entity[key] = configuration.currencyCodeMapped.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
+                }
+                // console.log('value is null or undefined...');
             }
-        } else {
-            // if currencyCode does not exist the global value should be assigned.
-            if (key === 'currencyCode') {
-                entity[key] = configuration.currencyCodeMapped.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
-            }
-            // console.log('value is null or undefined...');
-        }
 
+        }
+        // console.log('parseTransaction output for entity: ', JSON.stringify(entity));
+        return entity;
     }
-    // console.log('parseTransaction output for entity: ', JSON.stringify(entity));
-    return entity;
+    catch(error) {
+        throw new InputError(error, transactionRaw);
+    }
 }
+
+class InputError extends Error {
+    constructor(message, entity) {
+      super(message); // (1)
+      this.name = 'InputError'; // (2)
+      this.entity = entity;
+    }
+  }
 
 /**
  * Parses and gets the fuel card provider.
