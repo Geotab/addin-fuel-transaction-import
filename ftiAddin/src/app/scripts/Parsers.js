@@ -55,7 +55,7 @@ function parseDate(configuration, inputDate, timeZone) {
 
     if (configuration.timeFormat.length > 0) {
         // date and time are split into two columns.
-        date = inputDate[0] + ' ' + inputDate[1];
+        date = combineDateAndTime(inputDate[0], inputDate[1]);
         dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
         // If date and time are split cell date type can't be set.
         configuration.isCellDateType = 'N';
@@ -77,6 +77,37 @@ function parseDate(configuration, inputDate, timeZone) {
             return null;
         }
     }
+}
+
+/**
+ * The method combines two separate date and time values to produce a date object;
+ * @param {*} date The date representation of the new date/time.
+ * @param {*} time The time representation of the new date/time.
+ * @returns A new date/time object combining the date and time inputs to a single date. If the inputs don't match any expected value a null is returned.
+ */
+function combineDateAndTime(date, time)
+{
+    // if the date and time are date objects
+    if ((isDateObject(date)) && (isDateObject(time))) {
+        return new Date(date.toDateString() + ' ' + time.toLocaleTimeString())
+    }
+    if ((isDateObject(date)) && (isDateObject(time) == false))
+    {
+        return new Date(date.toDateString() + ' ' + time.trim())
+    }
+    if ((isDateObject(date) == false) && (isDateObject(time) == false))
+    {
+        return new Date(date.trim() + ' ' + time.trim())
+    }
+    return null;
+}
+
+function isDateObject(date)
+{
+    if (typeof(date) == 'object') {
+        return true;
+    }
+    return false;
 }
 
 /**

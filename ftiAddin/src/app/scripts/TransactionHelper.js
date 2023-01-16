@@ -139,7 +139,7 @@ async function parseTransactionAsync(transactionRaw, configuration, timeZone, ap
                         entity[key] = parsers.parseLocation(value);
                         break;
                     case 'licencePlate':
-                        entity[key] = parsers.parseStringLength(value[0], 255).toUpperCase().replace(/\s/g, '');
+                        entity[key] = parsers.parseStringLength(value[0], 255).trim();
                         break;
                     case 'comments':
                         entity[key] = parsers.parseStringValue(parsers.parseStringLength(value[0], 1024));
@@ -152,7 +152,7 @@ async function parseTransactionAsync(transactionRaw, configuration, timeZone, ap
                         break;
                     case 'serialNumber':
                     case 'vehicleIdentificationNumber':
-                        entity[key] = value[0].toUpperCase().replace(/\s/g, '');
+                        entity[key] = value[0].toUpperCase().trim();
                         break;
                     case 'provider':
                         entity[key] = getProvider(value[0]);
