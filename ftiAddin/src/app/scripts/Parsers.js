@@ -89,15 +89,15 @@ function combineDateAndTime(date, time)
 {
     // if the date and time are date objects
     if ((isDateObject(date)) && (isDateObject(time))) {
-        return new Date(date.toDateString() + ' ' + time.toLocaleTimeString())
+        return new Date(date.toDateString() + ' ' + time.toLocaleTimeString());
     }
     if ((isDateObject(date)) && (isDateObject(time) == false))
     {
-        return new Date(date.toDateString() + ' ' + time.trim())
+        return new Date(date.toDateString() + ' ' + time.trim());
     }
     if ((isDateObject(date) == false) && (isDateObject(time) == false))
     {
-        return new Date(date.trim() + ' ' + time.trim())
+        return date.trim() + ' ' + time.trim();
     }
     return null;
 }
