@@ -1,3 +1,5 @@
+const { ImportError } = require('./ImportError');
+
 /**
  * @returns {{initialize: Function, focus: Function, blur: Function, startup; Function, shutdown: Function}}
  */
@@ -297,8 +299,10 @@ geotab.addin.ftiAddin = function () {
       console.log('validation result, isValid: ' + result.isValid);
       console.log('validation result, reason: ' + result.reason);
       if (result.isValid === false) {
-        setOutputDisplay('Configuration File Validation Problem', result.reason)
-        return;
+        var mesage = 'Configuration File Validation Problem';
+        //setOutputDisplay('Configuration File Validation Problem', result.reason)
+        throw new ImportError(mesage, result.reason);
+        // reject(new Error(title));
       }
       // parse the configuration defaults
       configHelper.parseConfigDefaults(configuration);
@@ -323,17 +327,23 @@ geotab.addin.ftiAddin = function () {
       setControlState(true);
     })
     .catch(error => {
-      if (error.name === 'InputError')
+      switch (error.name)
       {
-        let suggestion = 'Please correct the error in the input file (import file) and try again.';
-        let message = 'Entry containing the error: ' + JSON.stringify(error.entity) + '<br><br>' + suggestion;
-        setOutputDisplay('Input Error', message);
-        setControlState(true);
-      } else {
-        console.log('Preview process error experienced:');
-        console.log(error);
-        setOutputDisplay('Unexpected Error', error);
-        setControlState(true);
+        case 'InputError':
+          let suggestion = 'Please correct the error in the input file (import file) and try again.';
+          let message = 'Entry containing the error: ' + JSON.stringify(error.entity) + '<br><br>' + suggestion;
+          setOutputDisplay('Input Error', message);
+          setControlState(true);
+          break;
+        case 'ImportError':
+          setOutputDisplay(error.message, error.moreInfo);
+          setControlState(true);
+          break;
+        default:
+          console.log('Preview process error experienced:');
+          console.log(error);
+          setOutputDisplay('Unexpected Error', error);
+          setControlState(true);
       }
     });
   }
