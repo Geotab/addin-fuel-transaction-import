@@ -22,16 +22,25 @@ function importTransactionsPromise(api, transactions, elProgressText, elprogress
 
         postFuelTransCallBatchesNewAsync(api, transactions, elProgressText, elprogressBar, batchSize, pauseLengthMs, importSummary)
         .then( _ => {
-            console.log('After ExecutePromises...');
-            console.log('importSummary: ' + importSummary);
+            console.log('After all transaction inserts are finished...');
+            printImportSummary(importSummary);
             resolve(importSummary);
         })
         .catch( rej => {
             console.log('After ExecutePromises exception: ' + rej);
+            printImportSummary(importSummary);
             reject(importSummary);
         });
 
     });
+}
+
+function printImportSummary(importSummary){
+    console.log('Log Import Summary:')
+    console.log('imported: ' + importSummary.imported);
+    console.log('skipped: ' + importSummary.skipped);
+    console.log('errors: ' + importSummary.errors.count);
+    console.log('Timestamp: ' + new Date().toISOString());
 }
 
 /**
@@ -130,13 +139,13 @@ function postFuelTransCallsPromise(api, transactions, importSummary) {
         const promises = transactions.map(transaction => 
             new Promise((resolve, reject) => {
                 currentCall = { typeName: 'FuelTransaction', entity: transaction };
-                console.log('posting call: ' + JSON.stringify(currentCall));
+                //console.log('posting call: ' + JSON.stringify(currentCall));
 
                 api.call('Add', currentCall,
                     function () {
                         // Successful import
                         importSummary.imported += 1;
-                        console.log('importSummary.imported: ' + importSummary.imported);
+                        printImportSummary(importSummary);
                         resolve();
                     }, function (error) {
                         if (error instanceof Object) {
@@ -162,6 +171,12 @@ function postFuelTransCallsPromise(api, transactions, importSummary) {
                                 importSummary.errors.count += 1;
                                 importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), error]);
                             }
+                        }
+                        else {
+                            // unknown error instance
+                            console.log('Unexpected error instance, value: ' + error);
+                            importSummary.errors.count += 1;
+                            importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), 'Unexpected error']);
                         }
                         resolve();
                     });

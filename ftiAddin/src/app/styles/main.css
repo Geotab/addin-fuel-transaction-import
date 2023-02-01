@@ -70,24 +70,21 @@
 }
 
 .ftiTable {
-    /* border-collapse: collapse; */
-    /* margin: 25px 0; */
-    /* font-size: 0.9em; */
-    /* font-family: sans-serif; */
-    min-width: 400px;
+    table-layout: fixed;
+    width: 100%;
     border: 1px solid grey;
-    /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); */
 }
 
 .ftiTable thead tr {
     background-color: #ecf0ef;
-    /* color: #ffffff; */
     text-align: left;
 }
 
 .ftiTable th,
 .ftiTable td {
     padding: 12px 15px;
+    word-wrap: break-word;
+    max-width: 50%;
 }
 
 .ftiTable tbody tr {
