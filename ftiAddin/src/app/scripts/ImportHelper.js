@@ -83,10 +83,10 @@ async function postFuelTransCallBatchesAsync(api, transactions, elProgressText, 
  * @param {JSON} importSummary The import summary.
  */
 async function postFuelTransCallBatchesNewAsync(api, transactions, elProgressText, elprogressBar, batchSize, pauseLengthMs, importSummary) {
+
     let transactionCount = transactions.length;
     let transactionChunks = [];
 
-    // batchsize = 500
     let i = 0;
     let endPoint = 0;
     for (transaction in transactions)
@@ -133,7 +133,7 @@ function postFuelTransCallsPromise(api, transactions, importSummary) {
                 console.log('posting call: ' + JSON.stringify(currentCall));
 
                 api.call('Add', currentCall,
-                    function (result) {
+                    function () {
                         // Successful import
                         importSummary.imported += 1;
                         console.log('importSummary.imported: ' + importSummary.imported);
