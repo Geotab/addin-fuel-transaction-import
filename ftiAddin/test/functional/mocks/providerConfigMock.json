@@ -93,7 +93,7 @@
         "isCellDateType": "N",
         "dateFormat": "DD/MM/YYYY",
         "timeFormat": "HH:mm:ss",
-        "currencyCodeMapped": "USD",
+        "currencyCodeMapped": "",
         "data": {
           "serialNumber": "ColumnI",
           "cost": "ColumnN",
