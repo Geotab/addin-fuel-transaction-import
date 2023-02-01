@@ -94,9 +94,12 @@ function validateConfiguration(configuration) {
 
     //currencyCode validation
     if (!configuration.data['currencyCode']) {
-        output.isValid = false;
-        output.reason = 'No currency code defined.';
-        return output;
+        if(!configuration.currencyCodeMapped)
+        {
+            output.isValid = false;
+            output.reason = 'No currency code defined.';
+            return output;
+        }
     }
 
     // final successful return if all require properties are present
