@@ -456,40 +456,7 @@ geotab.addin.ftiAddin = function () {
       elOutputDiv.appendChild(table);
       table.className = 'ftiTable';
       toggleWindowDisplayState(true, true, true);
-
-      // let divMain = document.createElement('div');
-      // divMain.className = 'ftiDivTable';
-
-      // let divTitle = document.createElement('div');
-      // divTitle.className = 'ftiDivRow';
-
-      // let spanTranTitle = document.createElement('div');
-      // spanTranTitle.className = 'ftiDivCell ftiTitle';
-      // spanTranTitle.innerHTML = 'Transactions';
-
-      // let spanErrorTitle = document.createElement('div');
-      // spanErrorTitle.className = 'ftiDivCell ftiTitle';
-      // spanErrorTitle.innerHTML = 'Errors';
-
-      // divTitle.appendChild(spanTranTitle);
-      // divTitle.appendChild(spanErrorTitle);
-      // divMain.appendChild(divTitle);
-
-      // errors.forEach((error, i) => {
-      //   let divNew = document.createElement('div');
-      //   divNew.className = 'ftiDivRow';
-      //   let spanTran = document.createElement('div');
-      //   spanTran.className = 'ftiDivCell';
-      //   spanTran.innerHTML = error[0];
-      //   let spanError = document.createElement('div');
-      //   spanError.className = 'ftiDivCell';
-      //   spanError.innerHTML = error[1];
-      //   divNew.appendChild(spanTran);
-      //   divNew.appendChild(spanError);
-      //   divMain.appendChild(divNew);
-      // });
-      // elOutputDiv.appendChild(divMain);
-
+      
     } else {
       console.log('No erros reported...');
     }
