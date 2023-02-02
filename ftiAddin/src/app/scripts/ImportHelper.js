@@ -23,12 +23,12 @@ function importTransactionsPromise(api, transactions, elProgressText, elprogress
         postFuelTransCallBatchesNewAsync(api, transactions, elProgressText, elprogressBar, batchSize, pauseLengthMs, importSummary)
         .then( _ => {
             console.log('After all transaction inserts are finished...');
-            printImportSummary(importSummary);
+            //printImportSummary(importSummary);
             resolve(importSummary);
         })
         .catch( rej => {
             console.log('After ExecutePromises exception: ' + rej);
-            printImportSummary(importSummary);
+            //printImportSummary(importSummary);
             reject(importSummary);
         });
 
@@ -107,7 +107,7 @@ async function postFuelTransCallBatchesNewAsync(api, transactions, elProgressTex
                 endPoint = transactionCount;
             }
             console.log('endPoint: ' + endPoint);
-            const transBatch = transactions.slice(i, endPoint);
+            let transBatch = transactions.slice(i, endPoint);
             transactionChunks.push(postFuelTransCallsPromise(api, transBatch, importSummary));
             await updateProgress(endPoint, transactionCount, endPoint, transactionCount, elProgressText, elprogressBar);
             await Promise.allSettled(transactionChunks);
@@ -148,6 +148,7 @@ function postFuelTransCallsPromise(api, transactions, importSummary) {
                         printImportSummary(importSummary);
                         resolve();
                     }, function (error) {
+                        console.log('In error...');
                         if (error instanceof Object) {
                             //MyGeotab API call error object
                             console.log('message: ' + error.message);
@@ -161,6 +162,7 @@ function postFuelTransCallsPromise(api, transactions, importSummary) {
                                 importSummary.errors.count += 1;
                                 importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), error]);
                             }
+                            console.log('Error reported...');
                         }
                         else if (typeof(error) === 'string') {
                             // string error instance
@@ -171,18 +173,20 @@ function postFuelTransCallsPromise(api, transactions, importSummary) {
                                 importSummary.errors.count += 1;
                                 importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), error]);
                             }
+                            console.log('Error reported...');
                         }
                         else {
                             // unknown error instance
                             console.log('Unexpected error instance, value: ' + error);
                             importSummary.errors.count += 1;
                             importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), 'Unexpected error']);
+                            console.log('Error reported...');
                         }
                         resolve();
                     });
 
             }));
-            resolve();
+            //resolve();
     });
 }
 
