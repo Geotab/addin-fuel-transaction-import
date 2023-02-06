@@ -117,13 +117,13 @@ const configDefaults = {
  * Parses the configuration for any missing property values and applies the default where necessary.
  */
 function parseConfigDefaults(configuration) {
-    if (configuration['unitVolumeLiters'] !== 'Y' || configuration['unitVolumeLiters'] !== 'N') {
+    if (configuration['unitVolumeLiters'] !== 'Y' && configuration['unitVolumeLiters'] !== 'N') {
         configuration['unitVolumeLiters'] = configDefaults.unitVolumeLiters;
     }
-    if (configuration['unitOdoKm'] !== 'Y' || configuration['unitOdoKm'] !== 'N') {
+    if (configuration['unitOdoKm'] !== 'Y' && configuration['unitOdoKm'] !== 'N') {
         configuration['unitOdoKm'] = configDefaults.unitOdoKm;
     }
-    if (configuration['isCellDateType'] !== 'Y' || configuration['isCellDateType'] !== 'N') {
+    if (configuration['isCellDateType'] !== 'Y' && configuration['isCellDateType'] !== 'N') {
         configuration['isCellDateType'] = configDefaults.isCellDateType;
     }
     if (configuration['currencyCodeMapped'].length !== 3) {

@@ -12,7 +12,6 @@
         "ansi-regex": "^5.0.1",
         "camelcase": "^3.0.0",
         "chalk": "^1.0.0",
-        "webpack": "^5.74.0",
         "yeoman-generator": "^5.4.2",
         "yosay": "^2.0.2"
       },
@@ -1612,11 +1611,6 @@
       "bin": {
         "flat": "cli.js"
       }
-    },
-    "node_modules/fs": {
-      "version": "0.0.1-security",
-      "resolved": "https://registry.npmjs.org/fs/-/fs-0.0.1-security.tgz",
-      "integrity": "sha512-3XY9e1pP0CVEUCdj5BmfIZxRBTSDycnbqhIOGec9QYtmVH2fbLpj86CFWkrNOkt/Fvty4KZG5lTglL9j/gJ87w=="
     },
     "node_modules/fs-minipass": {
       "version": "2.1.0",
@@ -6955,11 +6949,6 @@
       "resolved": "https://registry.npmjs.org/flat/-/flat-5.0.2.tgz",
       "integrity": "sha512-b6suED+5/3rTpUBdG1gupIl8MPFCAMA0QXwmljLhvCUKcUvdE4gWky9zpuGCcXHOsz4J9wPGNWq6OKpmIzz3hQ==",
       "dev": true
-    },
-    "fs": {
-      "version": "0.0.1-security",
-      "resolved": "https://registry.npmjs.org/fs/-/fs-0.0.1-security.tgz",
-      "integrity": "sha512-3XY9e1pP0CVEUCdj5BmfIZxRBTSDycnbqhIOGec9QYtmVH2fbLpj86CFWkrNOkt/Fvty4KZG5lTglL9j/gJ87w=="
     },
     "fs-minipass": {
       "version": "2.1.0",

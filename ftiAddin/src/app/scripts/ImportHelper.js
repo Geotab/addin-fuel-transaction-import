@@ -94,12 +94,12 @@ async function postFuelTransCallBatchesAsync(api, transactions, elProgressText, 
 async function postFuelTransCallBatchesNewAsync(api, transactions, elProgressText, elprogressBar, batchSize, pauseLengthMs, importSummary) {
 
     let transactionCount = transactions.length;
-    let transactionChunks = [];
 
     let i = 0;
     let endPoint = 0;
     for (transaction in transactions)
     {
+        
         if (i % batchSize === 0)
         {
             endPoint = i + batchSize;
@@ -108,10 +108,11 @@ async function postFuelTransCallBatchesNewAsync(api, transactions, elProgressTex
             }
             console.log('endPoint: ' + endPoint);
             let transBatch = transactions.slice(i, endPoint);
-            transactionChunks.push(postFuelTransCallsPromise(api, transBatch, importSummary));
-            await updateProgress(endPoint, transactionCount, endPoint, transactionCount, elProgressText, elprogressBar);
+            
+            let transactionChunks = postFuelTransCallsPromise(api, transBatch, importSummary);
             await Promise.allSettled(transactionChunks);
-            await sleep(pauseLengthMs);
+            await updateProgress(endPoint, transactionCount, endPoint, transactionCount, elProgressText, elprogressBar);
+            //await sleep(pauseLengthMs);
         }
         i++;
     }
@@ -133,61 +134,57 @@ async function updateProgress(dividend, divisor, numberCompleted, total, elProgr
  * @returns A promise
  * */
 function postFuelTransCallsPromise(api, transactions, importSummary) {
-    new Promise((resolve, reject) => {
+    return transactions.map(transaction => 
+        new Promise((resolve, reject) => {
+            var currentCall = { typeName: 'FuelTransaction', entity: transaction };
+            console.log('posting call: ' + JSON.stringify(currentCall));
 
-        var currentCall = [];
-        const promises = transactions.map(transaction => 
-            new Promise((resolve, reject) => {
-                currentCall = { typeName: 'FuelTransaction', entity: transaction };
-                //console.log('posting call: ' + JSON.stringify(currentCall));
-
-                api.call('Add', currentCall,
-                    function () {
-                        // Successful import
-                        importSummary.imported += 1;
-                        printImportSummary(importSummary);
-                        resolve();
-                    }, function (error) {
-                        console.log('In error...');
-                        if (error instanceof Object) {
-                            //MyGeotab API call error object
-                            console.log('message: ' + error.message);
-                            console.log('name: ' + error.name);
-                            console.log('isAuthenticationException: ' + error.isAuthenticationException);
-                            console.log('isDBInitializingException: ' + error.isDBInitializingException);
-                            console.log('isServerException: ' + error.isDBInitializingException);
-                            if (error.name.includes('DuplicateException')) {
-                                importSummary.skipped += 1;
-                            } else {
-                                importSummary.errors.count += 1;
-                                importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), error]);
-                            }
-                            console.log('Error reported...');
-                        }
-                        else if (typeof(error) === 'string') {
-                            // string error instance
-                            console.log('string error instance, value: ' + error);
-                            if (error.includes('DuplicateException')) {
-                                importSummary.skipped += 1;
-                            } else {
-                                importSummary.errors.count += 1;
-                                importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), error]);
-                            }
-                            console.log('Error reported...');
-                        }
-                        else {
-                            // unknown error instance
-                            console.log('Unexpected error instance, value: ' + error);
+            api.call('Add', currentCall,
+                function (result) {
+                    // Successful import
+                    console.log('Imported', result);
+                    importSummary.imported += 1;
+                    printImportSummary(importSummary);
+                    resolve();
+                }, function (error) {                    
+                    console.log('In error...');
+                    if (error instanceof Object) {
+                        //MyGeotab API call error object
+                        console.log('message: ' + error.message);
+                        console.log('name: ' + error.name);
+                        console.log('isAuthenticationException: ' + error.isAuthenticationException);
+                        console.log('isDBInitializingException: ' + error.isDBInitializingException);
+                        console.log('isServerException: ' + error.isDBInitializingException);
+                        if (error.name.includes('DuplicateException')) {
+                            importSummary.skipped += 1;
+                        } else {
                             importSummary.errors.count += 1;
-                            importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), 'Unexpected error']);
-                            console.log('Error reported...');
+                            importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), error]);
                         }
-                        resolve();
-                    });
+                        console.log('Error reported...');
+                    }
+                    else if (typeof(error) === 'string') {
+                        // string error instance
+                        console.log('string error instance, value: ' + error);
+                        if (error.includes('DuplicateException')) {
+                            importSummary.skipped += 1;
+                        } else {
+                            importSummary.errors.count += 1;
+                            importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), error]);
+                        }
+                        console.log('Error reported...');
+                    }
+                    else {
+                        // unknown error instance
+                        console.log('Unexpected error instance, value: ' + error);
+                        importSummary.errors.count += 1;
+                        importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), 'Unexpected error']);
+                        console.log('Error reported...');
+                    }                
+                resolve();
+                });
 
-            }));
-            //resolve();
-    });
+        }));
 }
 
 module.exports = {
