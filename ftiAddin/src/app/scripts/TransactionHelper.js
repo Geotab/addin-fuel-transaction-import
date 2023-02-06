@@ -92,7 +92,7 @@ async function parseTransactionAsync(transactionRaw, configuration, timeZone, ap
         let value = [];
         let columnHeaderChar = [];
         let prefixString = 'Column';
-        console.log('Parsing provider: ' + configuration.Name);
+        // console.log('Parsing provider: ' + configuration.Name);
         let configKeys = Object.keys(configuration.data);
         for (var i = 0; i < configKeys.length; i++)
         {
