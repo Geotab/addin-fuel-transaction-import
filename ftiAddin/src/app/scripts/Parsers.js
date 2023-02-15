@@ -65,18 +65,18 @@ function parseDate(configuration, inputDate, timeZone) {
         dateFormat = configuration.dateFormat;
     }
 
-    if (configuration.isCellDateType === 'Y') {
-        // ISO 8601 format is a UTC and therefore does not require time zone calculation.
-        if ((isIsoDate(date))||(typeof date === 'object')) {
-            return date;
-        }
-    } else {
+    // if (configuration.isCellDateType === 'Y') {
+    //     // ISO 8601 format is a UTC and therefore does not require time zone calculation.
+    //     if ((isIsoDate(date))||(typeof date === 'object')) {
+    //         return date;
+    //     }
+    // } else {
         if (moment.tz(date, dateFormat, timeZone).isValid()) {
-            return moment.tz(date, dateFormat, timeZone).toISOString();
+            return moment.tz(date, dateFormat, timeZone).format();
         } else {
             return null;
         }
-    }
+    // }
 }
 
 /**

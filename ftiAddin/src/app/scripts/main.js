@@ -13,6 +13,8 @@ geotab.addin.ftiAddin = function () {
   const XLSX = require('xlsx');
 
   let api;
+  let currentUser;
+  let currentUserTimeZoneId;
   /** The root container. */
   var elAddin = document.getElementById('ftiAddin');
   /** The provider file input element. */
@@ -465,17 +467,18 @@ geotab.addin.ftiAddin = function () {
   /**
    * Loads the time zone dropdown (select) with all global time zones.
    */
-  function loadTimeZoneList() {
+  function loadTimeZoneList(userTimeZoneId) {
     let option;
     elTimeZoneDropdown.innerHTML = '';
-    let browserTimeZone = moment.tz.guess();
-    console.log(browserTimeZone);
+    // let browserTimeZone = moment.tz.guess();
+    // let browserTimeZone = timeZone;
+    // console.log(browserTimeZone);
     let timeZones = moment.tz.names();
     timeZones.forEach((timeZone) => {
       option = document.createElement('option');
       option.textContent = `${timeZone} (GMT${moment.tz(timeZone).format('Z')})`;
       option.value = timeZone;
-      if (timeZone == browserTimeZone) {
+      if (timeZone == userTimeZoneId) {
         option.selected = true;
       }
       elTimeZoneDropdown.appendChild(option);
@@ -537,7 +540,34 @@ geotab.addin.ftiAddin = function () {
       // ToggleWindowState(true, false, false);
       addEvents();
 
-      loadTimeZoneList();
+      // api.getSession(function (session) { 
+      //   console.log(session) 
+      // });
+
+      api.getSession(function (credentials, server) {
+
+        api.call('Get', {
+               typeName: 'User',
+               search: {
+                   name: credentials.userName
+               }
+           }, function (result) {
+              if (result) {
+                currentUser = result[0];
+                console.log(currentUser);
+                currentUserTimeZoneId = currentUser.timeZoneId;
+                console.log(currentUserTimeZoneId);
+                loadTimeZoneList(currentUserTimeZoneId); 
+              } else {
+                   var msg = 'Could not find user: ' + credentials.userName;
+                   console.log(msg);
+               }
+           }, function (error) {
+               console.log(error);
+           });
+       }, false);
+       
+      //loadTimeZoneList(currentUserTimeZoneId);
 
       // MUST call initializeCallback when done any setup
       initializeCallback();
