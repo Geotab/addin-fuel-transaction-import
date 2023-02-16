@@ -41,6 +41,53 @@ var parseFloatValue = function (float) {
     return isNaN(value) ? 0.0 : value;
 };
 
+function isEmpty(value){
+    return (value == null || value.length === 0);
+  }
+
+/**
+ * Parses the input date and returns a UTC formatted result.
+ * @param {JSON} configuration The JSON configuration.
+ * @param {Array} inputDate The input date array.
+ * @returns The date result formatted as ISO 8601 in UTC standard. 
+ */
+function parseMomentDate(configuration, inputDate) {
+    let output = null;
+    let date;
+    let dateFormat;
+    if (isEmpty(inputDate[0])) {
+        // date is not populated
+        return output;
+    } else {
+        // date is populated
+        if (inputDate[1]) {
+            // time is populated
+            date = combineDateAndTime(inputDate[0], inputDate[1]);
+            // we assume date and time formats are available as the date and time are stored in separate columns.
+            if ((configuration.dateFormat)&&(configuration.timeFormat)) {
+                dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
+            } else if (configuration.dateFormat) {
+                dateFormat = configuration.dateFormat;
+            }
+        } else {
+            // time is NOT populated
+            date = inputDate[0];
+            dateFormat = configuration.dateFormat
+        }
+    }
+    if(dateFormat) {
+        output = moment.utc(date, dateFormat)
+    } else {
+        output = moment.utc(date)
+    }
+    if (output.isValid()) {
+    // returns the date result formatted as ISO8601 in UTC standard. 
+        return output.toISOString();
+    } else {
+        return null;
+    }
+}
+
 /**
  * Parses the input date and produces an ISO 8601 formatted result where possible.
  * If the date is not an ISO formatted input date (not a valid date format) an attempt is made to apply the time zone to the result.
@@ -65,17 +112,23 @@ function parseDate(configuration, inputDate, timeZone) {
         dateFormat = configuration.dateFormat;
     }
 
+    if (moment.tz(date, dateFormat).isValid()) {
+        return moment.tz(date, dateFormat).toISOString();
+    } else {
+        return null;
+    }
+
     // if (configuration.isCellDateType === 'Y') {
     //     // ISO 8601 format is a UTC and therefore does not require time zone calculation.
     //     if ((isIsoDate(date))||(typeof date === 'object')) {
     //         return date;
     //     }
     // } else {
-        if (moment.tz(date, dateFormat, timeZone).isValid()) {
-            return moment.tz(date, dateFormat, timeZone).toISOString();
-        } else {
-            return null;
-        }
+        // if (moment.tz(date, dateFormat, timeZone).isValid()) {
+        //     return moment.tz(date, dateFormat, timeZone).toISOString();
+        // } else {
+        //     return null;
+        // }
     // }
 }
 
@@ -255,6 +308,7 @@ module.exports = {
     parseFloatValue,
     isIsoDate,
     parseDate,
+    parseMomentDate,
     getHeadings,
     addBlanckColumn,
     parseDateFormat,
