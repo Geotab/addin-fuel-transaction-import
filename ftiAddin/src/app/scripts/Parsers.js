@@ -72,7 +72,7 @@ function parseDate(configuration, inputDate, timeZone) {
     //     }
     // } else {
         if (moment.tz(date, dateFormat, timeZone).isValid()) {
-            return moment.tz(date, dateFormat, timeZone).format();
+            return moment.tz(date, dateFormat, timeZone).toISOString();
         } else {
             return null;
         }

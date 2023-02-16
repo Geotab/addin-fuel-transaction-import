@@ -464,21 +464,28 @@ geotab.addin.ftiAddin = function () {
     }
   }
 
+  function isEmpty(value){
+    return (value == null || value.length === 0);
+  }
+
   /**
-   * Loads the time zone dropdown (select) with all global time zones.
+   * Loads the time zone dropdown (select) with all global time zones and sets the selected item to the item passed in. If the argument is empty the browser time zone is set.
+   * @param {string} selectedZone The default zone to select.
+   * 
    */
-  function loadTimeZoneList(userTimeZoneId) {
+  function loadTimeZoneList(selectedZone) {
     let option;
     elTimeZoneDropdown.innerHTML = '';
-    // let browserTimeZone = moment.tz.guess();
-    // let browserTimeZone = timeZone;
-    // console.log(browserTimeZone);
+    if (isEmpty(selectedZone)) {
+      selectedZone = moment.tz.guess();
+      console.log(selectedZone);
+    }
     let timeZones = moment.tz.names();
     timeZones.forEach((timeZone) => {
       option = document.createElement('option');
       option.textContent = `${timeZone} (GMT${moment.tz(timeZone).format('Z')})`;
       option.value = timeZone;
-      if (timeZone == userTimeZoneId) {
+      if (timeZone == selectedZone) {
         option.selected = true;
       }
       elTimeZoneDropdown.appendChild(option);
