@@ -11,6 +11,7 @@ geotab.addin.ftiAddin = function () {
   const transactionHelper = require('./TransactionHelper');
   const moment = require('moment-timezone');
   const XLSX = require('xlsx');
+  const timeZoneHelper = require('./TimeZoneHelper');
 
   let api;
   let currentUser;
@@ -309,13 +310,19 @@ geotab.addin.ftiAddin = function () {
     })
     .then(() => {
       // parse and get the json transaction.
-      return transactionHelper.ParseAndBuildTransactionsAsync(transactionsLocal, configuration, elTimeZoneDropdown.value, api);
+      let timeZoneOffset = timeZoneHelper.GetTimeZoneOffset(
+        currentUserTimeZoneId, 
+        elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value);
+      // let timeZoneOffset = parseInt(moment.tz(elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value).format('Z').split(':')[0]);
+      // let timeZoneOffset = elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value;
+      return transactionHelper.ParseAndBuildTransactionsAsync(
+        transactionsLocal, configuration, api, timeZoneOffset);
     })
     .then((results) => {
       transactionsJson = results;
       toggleWindowDisplayState(true, true, true);
       if (transactionsJson) {
-        return importHelper.importTransactionsPromise(api, transactionsJson, elProgressText, elProgressBar, 250, 1000);
+        return importHelper.importTransactionsPromise(api, transactionsJson, elProgressText, elProgressBar, 200, 0);
       } else {
         //setOutputDisplay('Data Issue', 'No transactions found. Please try again...');
         throw new ImportError('Data Issue', 'No transactions found. Please try again...');

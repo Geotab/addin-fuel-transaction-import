@@ -41,9 +41,9 @@ var parseFloatValue = function (float) {
     return isNaN(value) ? 0.0 : value;
 };
 
-function isEmpty(value){
+function isEmpty(value) {
     return (value == null || value.length === 0);
-  }
+}
 
 /**
  * Parses the input date and returns a UTC formatted result.
@@ -51,7 +51,7 @@ function isEmpty(value){
  * @param {Array} inputDate The input date array.
  * @returns The date result formatted as ISO 8601 in UTC standard. 
  */
-function parseMomentDate(configuration, inputDate) {
+function parseMomentDate(configuration, inputDate, timeZoneOffset) {
     let output = null;
     let date;
     let dateFormat;
@@ -64,7 +64,7 @@ function parseMomentDate(configuration, inputDate) {
             // time is populated
             date = combineDateAndTime(inputDate[0], inputDate[1]);
             // we assume date and time formats are available as the date and time are stored in separate columns.
-            if ((configuration.dateFormat)&&(configuration.timeFormat)) {
+            if ((configuration.dateFormat) && (configuration.timeFormat)) {
                 dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
             } else if (configuration.dateFormat) {
                 dateFormat = configuration.dateFormat;
@@ -75,17 +75,30 @@ function parseMomentDate(configuration, inputDate) {
             dateFormat = configuration.dateFormat
         }
     }
-    if(dateFormat) {
-        output = moment.utc(date, dateFormat)
-    } else {
-        output = moment.utc(date)
-    }
-    if (output.isValid()) {
-    // returns the date result formatted as ISO8601 in UTC standard. 
-        return output.toISOString();
-    } else {
-        return null;
-    }
+
+
+
+    // if(dateFormat) {
+    //     output = moment(date, dateFormat).tz(timeZoneOffset);
+    // } else {
+    //     output = moment(date).tz(timeZoneOffset)
+    // }
+    // if (output.isValid()) {
+    // returns the date result formatted as ISO8601 in UTC standard.
+    // console.log(output.toString()); 
+    // if (timeZoneOffset !== 0) {
+    //     if (timeZoneOffset > 0) {
+    //         output.add(timeZoneOffset, 'hours');
+    //     } else {
+    //         output.subtract(Math.abs(timeZoneOffset), 'hours');
+    //     }
+    // }
+    // console.log(output.toString()); 
+    // output.add(timeZoneOffset, 'hours');
+    return output.toISOString();
+    // } else {
+    //     return null;
+    // }
 }
 
 /**
@@ -93,43 +106,60 @@ function parseMomentDate(configuration, inputDate) {
  * If the date is not an ISO formatted input date (not a valid date format) an attempt is made to apply the time zone to the result.
  * @param {JSON} configuration The JSON configuration.
  * @param {Array} inputDate The input date array.
- * @param {string} timeZone The time zone required.
+ * @param {string} timeZoneOffset The time zone offset.
  * @returns An ISO 8601 (GMT time zone) formatted date.
  */
-function parseDate(configuration, inputDate, timeZone) {
-    let date;
-    let dateFormat;
+function parseDate(configuration, inputDate, timeZoneOffset) {
 
-    if (configuration.timeFormat.length > 0) {
-        // date and time are split into two columns.
-        date = combineDateAndTime(inputDate[0], inputDate[1]);
-        dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
-        // If date and time are split cell date type can't be set.
-        configuration.isCellDateType = 'N';
+    let date = getDate(configuration, inputDate);
+    if (date) {
+        if (timeZoneOffset !== 0) {
+            date.setHours(date.getHours() + timeZoneOffset);
+        }
+    }
+    return date;
+}
+
+function getDate(configuration, inputDate) {
+    let output;
+    if (isEmpty(inputDate[0])) {
+        // date is not populated
+        return output;
     } else {
-        // date or date and time is/are contained in a single column.
-        date = inputDate[0];
-        dateFormat = configuration.dateFormat;
+        // date is populated
+        if (inputDate[1]) {
+            // time is populated
+            date = combineDateAndTime(inputDate[0], inputDate[1]);
+            // we assume date and time formats are available as the date and time are stored in separate columns.
+            if ((configuration.dateFormat) && (configuration.timeFormat)) {
+                dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
+            } else if (configuration.dateFormat) {
+                dateFormat = configuration.dateFormat;
+            }
+        } else {
+            // time is NOT populated
+            date = inputDate[0];
+            dateFormat = configuration.dateFormat
+        }
     }
 
-    if (moment.tz(date, dateFormat).isValid()) {
-        return moment.tz(date, dateFormat).toISOString();
+    // apply the format if one exists
+    if (dateFormat) {
+        output = moment(date, dateFormat);
+    } else {
+        output = moment(date);
+    }
+
+    // check if the return value is a valid date or not
+    if (output.isValid()) {
+        return output.toDate();
     } else {
         return null;
     }
+}
 
-    // if (configuration.isCellDateType === 'Y') {
-    //     // ISO 8601 format is a UTC and therefore does not require time zone calculation.
-    //     if ((isIsoDate(date))||(typeof date === 'object')) {
-    //         return date;
-    //     }
-    // } else {
-        // if (moment.tz(date, dateFormat, timeZone).isValid()) {
-        //     return moment.tz(date, dateFormat, timeZone).toISOString();
-        // } else {
-        //     return null;
-        // }
-    // }
+function isValidDate(date) {
+
 }
 
 /**
@@ -138,26 +168,22 @@ function parseDate(configuration, inputDate, timeZone) {
  * @param {*} time The time representation of the new date/time.
  * @returns A new date/time object combining the date and time inputs to a single date. If the inputs don't match any expected value a null is returned.
  */
-function combineDateAndTime(date, time)
-{
+function combineDateAndTime(date, time) {
     // if the date and time are date objects
     if ((isDateObject(date)) && (isDateObject(time))) {
         return new Date(date.toDateString() + ' ' + time.toLocaleTimeString());
     }
-    if ((isDateObject(date)) && (isDateObject(time) == false))
-    {
+    if ((isDateObject(date)) && (isDateObject(time) == false)) {
         return new Date(date.toDateString() + ' ' + time.trim());
     }
-    if ((isDateObject(date) == false) && (isDateObject(time) == false))
-    {
+    if ((isDateObject(date) == false) && (isDateObject(time) == false)) {
         return date.trim() + ' ' + time.trim();
     }
     return null;
 }
 
-function isDateObject(date)
-{
-    if (typeof(date) == 'object') {
+function isDateObject(date) {
+    if (typeof (date) == 'object') {
         return true;
     }
     return false;
@@ -308,7 +334,7 @@ module.exports = {
     parseFloatValue,
     isIsoDate,
     parseDate,
-    parseMomentDate,
+    getDate,
     getHeadings,
     addBlanckColumn,
     parseDateFormat,

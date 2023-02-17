@@ -11,7 +11,8 @@ const myGeotabHelper = require('./MyGeotabHelper');
  * @param {Object} api The MyGeotab API service.
  * @returns The final parsed and ready for import transactions.
  */
-function ParseAndBuildTransactionsAsync(transactionsRaw, configuration, timeZone, api) {
+function ParseAndBuildTransactionsAsync(
+    transactionsRaw, configuration, api, timeZoneOffset) {
     return new Promise(async (resolve, reject) => {
         let transactionsOutput = [];
         let entity;
@@ -21,7 +22,8 @@ function ParseAndBuildTransactionsAsync(transactionsRaw, configuration, timeZone
                 // ignore the first row as it is the header...
             } else {
                 try {
-                    entity = await parseTransactionAsync(transaction, configuration, timeZone, api);
+                    entity = await parseTransactionAsync(
+                        transaction, configuration, api, timeZoneOffset);
                     // console.log('parsed transaction entity: ' + entity);
                     transactionsOutput.push(entity);
                 }
@@ -71,7 +73,7 @@ function GetColumnText(sourceString, prefixString)
  * @param {Object} api The MyGeotab API service.
  * @returns A FuelTransaction entity ready to be imported into the database.
  */
-async function parseTransactionAsync(transactionRaw, configuration, timeZone, api) {
+async function parseTransactionAsync(transactionRaw, configuration, api, timeZoneOffset) {
 
     if (transactionRaw === undefined) {
         throw new Error('parseTransaction transaction argument not submitted.');
@@ -79,10 +81,6 @@ async function parseTransactionAsync(transactionRaw, configuration, timeZone, ap
 
     if (configuration === undefined) {
         throw new Error('parseTransaction configuration argument not submitted.');
-    }
-
-    if (timeZone === undefined) {
-        throw new Error('parseTransaction timeZone argument not submitted.');
     }
 
     try {
@@ -133,7 +131,8 @@ async function parseTransactionAsync(transactionRaw, configuration, timeZone, ap
                         }
                         break;
                     case 'dateTime':
-                        entity[key] = parsers.parseDate(configuration, value, timeZone);
+                        //entity[key] = parsers.parseDate(configuration, value, timeZone);
+                        entity[key] = parsers.parseDate(configuration, value, timeZoneOffset);
                         break;
                     case 'location':
                         entity[key] = parsers.parseLocation(value);
