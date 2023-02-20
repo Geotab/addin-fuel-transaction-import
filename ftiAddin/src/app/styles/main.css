@@ -1,120 +1,93 @@
 .ftiMain {
-	margin: 20px;
-}
-
-.ftiHidden {
-    display: none;
-}
-
-.ftiBlock {
-    display: block;
+	margin: 1rem;
 }
 
 #ftiParentDiv {
-    /* position: relative;
-    display: block; */
-    width: 70%;
+   width: 100%;
+}
+
+.ftiFieldGroup {
+   display: inline-block;
+   width: 100%;
+   padding-top: 1.5rem;
+   padding-left: 1rem;
+}
+
+.ftiFieldGroup label {
+   display: inline-block;
+   min-width:40%;
+   max-width: 40%;
+}
+
+.ftiDropdown {
+   width: 300px;
+}
+
+.ftiHidden {
+   display: none;
 }
 
 .ftiProgressBar {
-    width: 100%;
-    height: 30px;
+   width: 80%;
+   height: 30px;
 }
 
 .ftiSuccess {
-    font-size: 14px;
-    color: green;
-}
-
-.ftiSkipped {
-    font-size: 14px;
+   font-size: 14px;
+   color: green;
 }
 
 .ftiFailed {
-    font-size: 14px;
-    color: red;
-}
-
-.ftiFormat {
-    position: relative;
-    display: block;
-    width: auto;
-    border: 1px solid black;
+   font-size: 14px;
+   color: red;
 }
 
 .ftiImportButton {
-    width: 200px;
-    height: 50px;
+   width: 200px;
+   height: 50px;
 }
 
 .ftiResetButton {
-    width: 200px;
-    height: 50px;
+   width: 200px;
+   height: 50px;
 }
 
 .ftiImportButtonDiv {
-    clear: both;
-    padding: 20px;
+   clear: both;
+   padding: 1rem;
 }
 
 .ftiRed {
-    color: red;
-}
-
-.ftiOutputDiv {
-    color: darkblue;
+   color: red;
 }
 
 .ftiSummaryTable {
-    font-size: 14px;
-    font-weight: bold;
+   font-size: 14px;
+   font-weight: bold;
 }
 
 .ftiTable {
-    table-layout: fixed;
-    width: 100%;
-    border: 1px solid grey;
+   table-layout: fixed;
+   width: 100%;
+   border: 1px solid grey;
 }
 
 .ftiTable thead tr {
-    background-color: #ecf0ef;
-    text-align: left;
+   background-color: #ecf0ef;
+   text-align: left;
 }
 
 .ftiTable th,
 .ftiTable td {
-    padding: 12px 15px;
-    word-wrap: break-word;
-    max-width: 50%;
+   padding: 12px 15px;
+   word-wrap: break-word;
+   max-width: 50%;
 }
 
 .ftiTable tbody tr {
-    border-bottom: 1px solid #dddddd;
+   border-bottom: 1px solid #dddddd;
 }
 
 .ftiTable tbody tr:nth-of-type(even) {
-    background-color: #f3f3f3;
-}
-
-.ftiFieldGroup {
-    display: inline-block;
-    width: 100%;
-    padding-top: 1.5rem;
-    padding-left: 1rem;
-}
-
-.ftiFieldGroup label {
-    width:40%
-}
-
-.ftiControl {
-    /* position: absolute; */
-    left: 300px;
-    width: 60%;
-}
-
-.ftiDropdown {
-    min-width: 200px;
-    max-width: 400px;
-    /* width: 300px; */
+   background-color: #f3f3f3;
 }

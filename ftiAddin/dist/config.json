@@ -4,12 +4,12 @@
   "version": "4.0.0",
   "items": [
     {
-      "url": "https://addintest.geotab.com/AddIns/Geotab/fuelTransactionImport/ftiAddin.html",
+      "url": "https://apptest.geotab.com/fuel-transaction-import-addin/4.0.0-beta4/ftiAddin.html",
       "path": "",
       "menuName": {
-        "en": "FTI 4.0.0 GitHub"
+        "en": "FTI 4.0.0 apptest"
       },
-      "icon": "https://addintest.geotab.com/AddIns/Geotab/fuelTransactionImport/images/icon.svg"
+      "icon": "https://apptest.geotab.com/fuel-transaction-import-addin/4.0.0-beta4/images/icon.svg"
     }
   ]
 }
