@@ -25,7 +25,7 @@ geotab.addin.ftiAddin = function () {
   /** The time zone dropdown */
   let elTimeZoneDropdown = document.getElementById('timeZoneDropdown');
   /** The inputDiv section */
-  let elInputDiv = document.getElementById('inputDiv');
+  let elInputDiv = document.getElementById('ftiInputDiv');
   /** The outputDiv section */
   let elOutputDiv = document.getElementById('outputDiv');
   /** The output title element */

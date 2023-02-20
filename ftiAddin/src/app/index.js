@@ -10,4 +10,4 @@
 if(!geotab.addin.ftiAddin){
     require('./scripts/main');
 }
-require('./styles/main.css');
+require('./styles/site.css');
