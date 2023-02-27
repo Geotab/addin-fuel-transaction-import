@@ -14,7 +14,7 @@ function GetTimeZoneOffset(sourceTz, destTz)
       // console.log(sourceTzInt);
       let destTzInt = parseInt(moment.tz(destTz).format('Z').split(':')[0]); 
       // console.log(destTzInt);
-      output = sourceTzInt - destTzInt;
+      output = destTzInt - sourceTzInt;
    }
    return output;
 }
