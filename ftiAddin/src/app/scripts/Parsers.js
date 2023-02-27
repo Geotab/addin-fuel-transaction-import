@@ -158,10 +158,6 @@ function getDate(configuration, inputDate) {
     }
 }
 
-function isValidDate(date) {
-
-}
-
 /**
  * The method combines two separate date and time values to produce a date object;
  * @param {*} date The date representation of the new date/time.
@@ -213,11 +209,10 @@ function parseDateFormat(format) {
     let regex = new RegExp('^(?=.*DD)(?=.*MM)(?=.*YY).*$');
     // Test1 - Must contain CAPITAL YYYY, MM and DD
     if (regex.test(format)) {
-        console.log('Contains - CAPITAL YY, MM and DD')
+        // Contains - CAPITAL YY, MM and DD
     } else {
         output.ReturnValue = false;
         output.Problem = 'Does not contain CAPITAL YY, MM and DD';
-        console.log(output.Problem)
         return output;
     }
 
@@ -225,22 +220,20 @@ function parseDateFormat(format) {
     if (format.length > 11) {
         regex = new RegExp('^(?=.*[H|h])(?=.*m).*$');
         if (regex.test(format)) {
-            console.log('Longer than 11 characters then must contain h and m = TRUE')
+            // Longer than 11 characters then must contain h and m = TRUE
         } else {
             output.ReturnValue = false;
             output.Problem = 'Longer than 11 characters and does not contain h and m.';
-            console.log(output.Problem)
             return output;
         }
     }
     // Test3 - Only characters allowed -  Y, M, D, h, m, s, S or Z
     regex = new RegExp('^[^abcefgijklnopqrtuvwxzABCEFGIJKLNOPQRUVWX]+$');
     if (regex.test(format)) {
-        console.log('Contains only allowed characters.')
+        // Contains only allowed characters.
     } else {
         output.ReturnValue = false;
         output.Problem = 'Contains disallowed characters other than Y, M, D, h, m, s, S or Z.';
-        console.log(output.Problem)
         return output;
     }
 
@@ -248,14 +241,12 @@ function parseDateFormat(format) {
     if (format.length < 6) {
         output.ReturnValue = false;
         output.Problem = 'Shorter than 6 characters.';
-        console.log(output.Problem)
         return output;
     }
     // Test5 - Max number of characters = 24
     if (format.length > 24) {
         output.ReturnValue = false;
         output.Problem = 'Greater than 24 characters.';
-        console.log(output.Problem)
         return output;
     }
 

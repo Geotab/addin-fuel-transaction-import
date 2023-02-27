@@ -43,8 +43,6 @@ geotab.addin.ftiAddin = function () {
   let configuration;
   /** The excel file containing the transactions to be imported */
   let importFile;
-  /** The raw/unparsed excel transactions that have been converted to Json */
-  let transactionsRaw;
   /** The json transactions */
   let transactionsJson;
   let elProgressDiv = document.getElementById('progressDiv');
@@ -61,7 +59,6 @@ geotab.addin.ftiAddin = function () {
    * @param {*} event The event object.
    */
   var providerFileSelectionChangeEvent = async function (event) {
-    console.log('providerFile change event');
     toggleWindowDisplayState(true, false, false);
     let file = elProviderFile.files[0];
     if (file) {
@@ -75,7 +72,6 @@ geotab.addin.ftiAddin = function () {
    * Clears the fuel provider dropdown when the config file selection receives the focus.
    */
   function providerFileFocusEvent() {
-    console.log('providerFile focus event');
     toggleWindowDisplayState(true, false, false);
   }
 
@@ -116,7 +112,6 @@ geotab.addin.ftiAddin = function () {
    * @param {jsonObject} providerConfigurationFile The provider configuration file.
    */
   function populateProviderDropdown(providerConfigurationFile) {
-    console.log('populateProviderDropdown');
     if (providerConfigurationFile && providerConfigurationFile.providers) {
       initialiseProviderDropdown('Choose provider');
       let option;
@@ -155,18 +150,18 @@ geotab.addin.ftiAddin = function () {
    * @param {string} providerName The provider name.
    */
   function setProviderConfigurationVariable(providerName) {
-    console.log('providerName: ' + providerName);
-    console.log('providerConfiguration before update: ' + configuration);
+    // console.log('providerName: ' + providerName);
+    // console.log('providerConfiguration before update: ' + configuration);
     if (configurationFile) {
-      console.log('providerConfigurationFile: ' + configurationFile);
+      // console.log('providerConfigurationFile: ' + configurationFile);
       // sets the providerConfiguration array to the providerName
       var configurationArray = configurationFile.providers.filter(provider =>
         provider.Name === providerName
       );
       configuration = configurationArray[0];
-      console.log('configuration set: ' + JSON.stringify(configuration));
+      // console.log('configuration set: ' + JSON.stringify(configuration));
     }
-    console.log('configuration selected: ' + configuration.Name);
+    // console.log('configuration selected: ' + configuration.Name);
   }
 
   /**
@@ -261,7 +256,7 @@ geotab.addin.ftiAddin = function () {
         let jsonObject = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {
             'header': 'A'
           });
-          console.log(jsonObject)
+          // console.log(jsonObject)
           resolve(jsonObject);
         };
   
@@ -299,8 +294,6 @@ geotab.addin.ftiAddin = function () {
     .then(() => {
       // validate the configuration data
       var result = configHelper.validateConfiguration(configuration);
-      console.log('validation result, isValid: ' + result.isValid);
-      console.log('validation result, reason: ' + result.reason);
       if (result.isValid === false) {
         var mesage = 'Configuration File Validation Problem';
         throw new ImportError(mesage, result.reason);
@@ -329,7 +322,6 @@ geotab.addin.ftiAddin = function () {
       }
     }).then((summary) => {
       if (summary) {
-        printImportSummary(summary, 'importTransactions before importSummaryOutput call.');
         importSummaryOutput(summary);
       }
       setControlState(true);
@@ -346,7 +338,6 @@ geotab.addin.ftiAddin = function () {
           setOutputDisplay(error.message, error.moreInfo);
           break;
         default:
-          console.log(error);
           setOutputDisplay('Unexpected Error in importTransactions', error);
       }
       setControlState(true);
@@ -387,7 +378,7 @@ geotab.addin.ftiAddin = function () {
    * @param {*} importSummary 
    */
   function importSummaryOutput(importSummary){
-    printImportSummary(importSummary, 'importSummaryOutput function');
+    // printImportSummary(importSummary, 'importSummaryOutput function');
     let table = document.createElement('table');
     let tbody = document.createElement('tbody');
     let tr1 = document.createElement('tr');
@@ -466,8 +457,6 @@ geotab.addin.ftiAddin = function () {
       table.className = 'ftiTable';
       toggleWindowDisplayState(true, true, true);
       
-    } else {
-      console.log('No erros reported...');
     }
   }
 
@@ -485,7 +474,7 @@ geotab.addin.ftiAddin = function () {
     elTimeZoneDropdown.innerHTML = '';
     if (isEmpty(selectedZone)) {
       selectedZone = moment.tz.guess();
-      console.log(selectedZone);
+      // console.log(selectedZone);
     }
     let timeZones = moment.tz.names();
     timeZones.forEach((timeZone) => {
@@ -554,12 +543,7 @@ geotab.addin.ftiAddin = function () {
       // ToggleWindowState(true, false, false);
       addEvents();
 
-      // api.getSession(function (session) { 
-      //   console.log(session) 
-      // });
-
       api.getSession(function (credentials, server) {
-
         api.call('Get', {
                typeName: 'User',
                search: {
@@ -568,13 +552,13 @@ geotab.addin.ftiAddin = function () {
            }, function (result) {
               if (result) {
                 currentUser = result[0];
-                console.log(currentUser);
+                // console.log(currentUser);
                 currentUserTimeZoneId = currentUser.timeZoneId;
-                console.log(currentUserTimeZoneId);
+                // console.log(currentUserTimeZoneId);
                 loadTimeZoneList(currentUserTimeZoneId); 
               } else {
                    var msg = 'Could not find user: ' + credentials.userName;
-                   console.log(msg);
+                  //  console.log(msg);
                }
            }, function (error) {
                console.log(error);

@@ -2,7 +2,7 @@
  * @returns The correctly formed Geotab API URL
  */
     var getUrl = function () {
-        console.log('window.location.hostname: ' + window.location.hostname);
+        // console.log('window.location.hostname: ' + window.location.hostname);
         if(window.location.hostname === 'localhost'){
             return 'https://my.geotab.com/apiv1';    
         }

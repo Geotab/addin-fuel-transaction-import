@@ -11,9 +11,9 @@ function GetTimeZoneOffset(sourceTz, destTz)
    let output = 0;
    if (sourceTz !== destTz) {
       let sourceTzInt = parseInt(moment.tz(sourceTz).format('Z').split(':')[0]); 
-      console.log(sourceTzInt);
+      // console.log(sourceTzInt);
       let destTzInt = parseInt(moment.tz(destTz).format('Z').split(':')[0]); 
-      console.log(destTzInt);
+      // console.log(destTzInt);
       output = sourceTzInt - destTzInt;
    }
    return output;
