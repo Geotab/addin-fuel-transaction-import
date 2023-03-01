@@ -125,7 +125,7 @@ async function parseTransactionAsync(transactionRaw, configuration, api, timeZon
                     case 'address':
                         var coords = await myGeotabHelper.GetCoordinates(api, value[0]);
                         if(coords){
-                            if (Array.isArray(coords)){
+                            if (Array.isArray(coords)) {
                                 entity.location = coords[0];
                             }
                         }
@@ -138,7 +138,8 @@ async function parseTransactionAsync(transactionRaw, configuration, api, timeZon
                         entity[key] = parsers.parseLocation(value);
                         break;
                     case 'licencePlate':
-                        entity[key] = parsers.parseStringLength(value[0], 255).trim();
+                        entity[key] = parsers.parseStringLength(value[0].toString(), 255).trim();
+                        //entity[key] = parsers.parseStringLength(value[0], 255).trim();
                         break;
                     case 'comments':
                         entity[key] = parsers.parseStringValue(parsers.parseStringLength(value[0], 1024));
@@ -178,12 +179,7 @@ async function parseTransactionAsync(transactionRaw, configuration, api, timeZon
                         break;
                     default:
                         // handles any unhandled values and parses the result to string.
-                        // try {
-                            entity[key] = parsers.parseStringValue(value[0]);
-                        // }
-                        // catch(error) {
-                        //     throw new InputError(error, transactionRaw);
-                        // }
+                        entity[key] = parsers.parseStringValue(value[0].toString());
                         break;
                 }
             } else {
@@ -191,15 +187,13 @@ async function parseTransactionAsync(transactionRaw, configuration, api, timeZon
                 if (key === 'currencyCode') {
                     entity[key] = configuration.currencyCodeMapped.trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
                 }
-                // console.log('value is null or undefined...');
             }
 
         }
-        // console.log('parseTransaction output for entity: ', JSON.stringify(entity));
         return entity;
     }
     catch(error) {
-        throw new InputError(error, transactionRaw);
+        throw new InputError(error.message, transactionRaw);
     }
 }
 

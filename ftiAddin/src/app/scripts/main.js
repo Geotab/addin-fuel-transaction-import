@@ -1,4 +1,5 @@
 const { ImportError } = require('./ImportError');
+const { TableGenerator} = require('./TableGenerator');
 
 /**
  * @returns {{initialize: Function, focus: Function, blur: Function, startup; Function, shutdown: Function}}
@@ -330,9 +331,16 @@ geotab.addin.ftiAddin = function () {
       switch (error.name)
       {
         case 'InputError':
-          let suggestion = 'Please correct the error in the input file (import file) and try again.';
-          let message = 'Entry containing the error: ' + JSON.stringify(error.entity) + '<br><br>' + suggestion;
-          setOutputDisplay('Input Error', message);
+          // let suggestion = 'Please correct the error in the input file (import file) and try again.';
+          // let message = 'Entry containing the error: ' + JSON.stringify(error.entity) + '<br><br>' + suggestion;
+          console.log('InputError message: ' + error.message); 
+          // setOutputDisplay('Input Error', message);
+          const headers = ['Error Entry', 'Error'];
+          const rows = [
+            [JSON.stringify(error.entity), error.message]
+          ];
+          const tableGenerator = new TableGenerator(headers, rows);
+          setOutputDisplay('Input Error', tableGenerator.generateTable());
           break;
         case 'ImportError':
           setOutputDisplay(error.message, error.moreInfo);

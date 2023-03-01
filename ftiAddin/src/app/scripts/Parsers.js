@@ -120,6 +120,12 @@ function parseDate(configuration, inputDate, timeZoneOffset) {
     return date;
 }
 
+/**
+ * Gets a valid date from the input data if possible
+ * @param {JSON} configuration JSON configuration.
+ * @param {*} inputDate The input date.
+ * @returns 
+ */
 function getDate(configuration, inputDate) {
     let output;
     if (isEmpty(inputDate[0])) {
