@@ -24,7 +24,7 @@
     "@babel/preset-env": "^7.19.3",
     "babel-loader": "^8.2.5",
     "before-build-webpack": "^0.2.12",
-    "chai": "^4.3.6",
+    "chai": "^4.3.7",
     "copy-webpack-plugin": "^9.1.0",
     "css": "^3.0.0",
     "css-loader": "^6.7.1",
@@ -39,8 +39,8 @@
     "imagemin-pngquant": "^9.0.2",
     "imagemin-svgo": "^9.0.0",
     "mini-css-extract-plugin": "^2.6.1",
-    "mocha": "^9.2.2",
-    "moment-timezone": "^0.5.37",
+    "mocha": "^10.2.0",
+    "moment-timezone": "^0.5.41",
     "puppeteer": "^18.0.5",
     "regenerator-runtime": "^0.13.9",
     "semver-regex": "^4.0.5",
@@ -82,5 +82,8 @@
   "mocha": {
     "timeout": 10000,
     "reporter": "nyan"
+  },
+  "dependencies": {
+    "luxon": "^3.3.0"
   }
 }
