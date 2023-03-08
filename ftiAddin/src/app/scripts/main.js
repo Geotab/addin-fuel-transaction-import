@@ -304,7 +304,7 @@ geotab.addin.ftiAddin = function () {
     })
     .then(() => {
       // parse and get the json transaction.
-      let timeZoneOffset = timeZoneHelper.GetTimeZoneOffset(
+      let timeZoneOffset = timeZoneHelper.getTimeZoneOffset(
         elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value,
         currentUserTimeZoneId);
       // let timeZoneOffset = parseInt(moment.tz(elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value).format('Z').split(':')[0]);
