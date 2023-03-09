@@ -114,9 +114,7 @@ describe('DateHelper Tests - E2E', function(){
       inputDate[1] = '16:00';
       config.dateFormat = 'yyyy-MM-dd';
       config.timeFormat = 'HH:mm';
-      testDate = dateHelper.getJSDate(config, inputDate);
-      assert.equal(testDate.toISOString(),'2017-07-15T14:00:00.000Z');
-      let resultDate = dateHelper.getDateAdjusted(testDate, 'Asia/Dubai', 'Europe/Zurich');
+      const resultDate = dateHelper.parseDate(config, inputDate, 'Asia/Dubai', 'Europe/Zurich');
       assert.equal(resultDate.toISOString(), '2017-07-15T12:00:00.000Z');
    });
    it('getJSDate - E2E - Cayman (-5) -> Zurich (+1)', function(){
@@ -124,9 +122,7 @@ describe('DateHelper Tests - E2E', function(){
       inputDate[1] = '16:00';
       config.dateFormat = 'yyyy-MM-dd';
       config.timeFormat = 'HH:mm';
-      testDate = dateHelper.getJSDate(config, inputDate);
-      assert.equal(testDate.toISOString(),'2017-07-15T14:00:00.000Z');
-      let resultDate = dateHelper.getDateAdjusted(testDate, 'America/Cayman', 'Europe/Zurich');
+      const resultDate = dateHelper.parseDate(config, inputDate, 'America/Cayman', 'Europe/Zurich');
       assert.equal(resultDate.toISOString(), '2017-07-15T21:00:00.000Z');
    });
    it('getJSDate - E2E - Zurich (+1) -> Zurich (+1)', function(){
@@ -134,9 +130,7 @@ describe('DateHelper Tests - E2E', function(){
       inputDate[1] = '16:00';
       config.dateFormat = 'yyyy-MM-dd';
       config.timeFormat = 'HH:mm';
-      testDate = dateHelper.getJSDate(config, inputDate);
-      assert.equal(testDate.toISOString(),'2017-07-15T14:00:00.000Z');
-      let resultDate = dateHelper.getDateAdjusted(testDate, 'Europe/Zurich', 'Europe/Zurich');
+      const resultDate = dateHelper.parseDate(config, inputDate, 'Europe/Zurich', 'Europe/Zurich');
       assert.equal(resultDate.toISOString(), '2017-07-15T14:00:00.000Z');
    });
    it('getJSDate - E2E - GMT (0) -> Zurich (+1)', function(){
@@ -144,9 +138,7 @@ describe('DateHelper Tests - E2E', function(){
       inputDate[1] = '16:00';
       config.dateFormat = 'yyyy-MM-dd';
       config.timeFormat = 'HH:mm';
-      testDate = dateHelper.getJSDate(config, inputDate);
-      assert.equal(testDate.toISOString(),'2017-07-15T14:00:00.000Z');
-      let resultDate = dateHelper.getDateAdjusted(testDate, 'GMT', 'Europe/Zurich');
+      const resultDate = dateHelper.parseDate(config, inputDate, 'GMT', 'Europe/Zurich');
       assert.equal(resultDate.toISOString(), '2017-07-15T16:00:00.000Z');
    });
 });

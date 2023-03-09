@@ -162,7 +162,22 @@ function getJSDate(configuration, inputDate) {
    return output;
 }
 
+/**
+ * The primary date parsing method.
+ * @param {*} configuration The JSON configuration
+ * @param {*} inputDate The input date array
+ * @param {*} remoteZone The remote time zone. The transaction time zone.
+ * @param {*} localZone The local import time zone.
+ * @returns An accurate JavaScript date for the relevant transaction.
+ */
+function parseDate(configuration, inputDate, remoteZone, localZone) {
+   const jsDate = getJSDate(configuration, inputDate);
+   const outputDate = getDateAdjusted(jsDate, remoteZone, localZone);
+   return outputDate;
+}
+
 module.exports = {
+   parseDate,
    getDateAdjusted,
    getJSDate
 }
