@@ -12,7 +12,6 @@ geotab.addin.ftiAddin = function () {
   const transactionHelper = require('./TransactionHelper');
   const moment = require('moment-timezone');
   const XLSX = require('xlsx');
-  const timeZoneHelper = require('./TimeZoneHelper');
 
   let api;
   let currentUser;

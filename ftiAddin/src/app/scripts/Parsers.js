@@ -46,179 +46,22 @@ function isEmpty(value) {
 }
 
 /**
- * Parses the input date and returns a UTC formatted result.
- * @param {JSON} configuration The JSON configuration.
- * @param {Array} inputDate The input date array.
- * @returns The date result formatted as ISO 8601 in UTC standard. 
- */
-function parseMomentDate(configuration, inputDate, timeZoneOffset) {
-    let output = null;
-    let date;
-    let dateFormat;
-    if (isEmpty(inputDate[0])) {
-        // date is not populated
-        return output;
-    } else {
-        // date is populated
-        if (inputDate[1]) {
-            // time is populated
-            date = combineDateAndTime(inputDate[0], inputDate[1]);
-            // we assume date and time formats are available as the date and time are stored in separate columns.
-            if ((configuration.dateFormat) && (configuration.timeFormat)) {
-                dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
-            } else if (configuration.dateFormat) {
-                dateFormat = configuration.dateFormat;
-            }
-        } else {
-            // time is NOT populated
-            date = inputDate[0];
-            dateFormat = configuration.dateFormat
-        }
-    }
-
-
-
-    // if(dateFormat) {
-    //     output = moment(date, dateFormat).tz(timeZoneOffset);
-    // } else {
-    //     output = moment(date).tz(timeZoneOffset)
-    // }
-    // if (output.isValid()) {
-    // returns the date result formatted as ISO8601 in UTC standard.
-    // console.log(output.toString()); 
-    // if (timeZoneOffset !== 0) {
-    //     if (timeZoneOffset > 0) {
-    //         output.add(timeZoneOffset, 'hours');
-    //     } else {
-    //         output.subtract(Math.abs(timeZoneOffset), 'hours');
-    //     }
-    // }
-    // console.log(output.toString()); 
-    // output.add(timeZoneOffset, 'hours');
-    return output.toISOString();
-    // } else {
-    //     return null;
-    // }
-}
-
-/**
- * Parses the input date and produces an ISO 8601 formatted result where possible.
- * If the date is not an ISO formatted input date (not a valid date format) an attempt is made to apply the time zone to the result.
- * @param {JSON} configuration The JSON configuration.
- * @param {Array} inputDate The input date array.
- * @param {string} timeZoneOffset The time zone offset.
- * @returns An ISO 8601 (GMT time zone) formatted date.
- */
-function parseDate(configuration, inputDate, timeZoneOffset) {
-
-    let date = getDate(configuration, inputDate);
-    if (date) {
-        if (timeZoneOffset !== 0) {
-            date.setHours(date.getHours() + timeZoneOffset);
-        }
-    }
-    return date;
-}
-
-/**
- * Gets a valid date from the input data if possible
- * @param {JSON} configuration JSON configuration.
- * @param {*} inputDate The input date.
- * @returns 
- */
-function getDate(configuration, inputDate) {
-    let output;
-    if (isEmpty(inputDate[0])) {
-        // date is not populated
-        return output;
-    } else {
-        // date is populated
-        if (inputDate[1]) {
-            // time is populated
-            date = combineDateAndTime(inputDate[0], inputDate[1]);
-            // we assume date and time formats are available as the date and time are stored in separate columns.
-            if ((configuration.dateFormat) && (configuration.timeFormat)) {
-                dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
-            } else if (configuration.dateFormat) {
-                dateFormat = configuration.dateFormat;
-            }
-        } else {
-            // time is NOT populated
-            date = inputDate[0];
-            dateFormat = configuration.dateFormat
-        }
-    }
-
-    // apply the format if one exists
-    if (dateFormat) {
-        output = moment(date, dateFormat);
-    } else {
-        output = moment(date);
-    }
-
-    // check if the return value is a valid date or not
-    if (output.isValid()) {
-        return output.toDate();
-    } else {
-        return null;
-    }
-}
-
-/**
- * The method combines two separate date and time values to produce a date object;
- * @param {*} date The date representation of the new date/time.
- * @param {*} time The time representation of the new date/time.
- * @returns A new date/time object combining the date and time inputs to a single date. If the inputs don't match any expected value a null is returned.
- */
-function combineDateAndTime(date, time) {
-    // if the date and time are date objects
-    if ((isDateObject(date)) && (isDateObject(time))) {
-        return new Date(date.toDateString() + ' ' + time.toLocaleTimeString());
-    }
-    if ((isDateObject(date)) && (isDateObject(time) == false)) {
-        return new Date(date.toDateString() + ' ' + time.trim());
-    }
-    if ((isDateObject(date) == false) && (isDateObject(time) == false)) {
-        return date.trim() + ' ' + time.trim();
-    }
-    return null;
-}
-
-function isDateObject(date) {
-    if (typeof (date) == 'object') {
-        return true;
-    }
-    return false;
-}
-
-/**
- * Checks whether the input string is an ISO 8601 formatted date value.
- * @param {String} str The input test string.
- * @returns True if the input string is a valid ISO date and False otherwise.
- */
-function isIsoDate(str) {
-    if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(str)) return false;
-    const d = new Date(str);
-    return d instanceof Date && !isNaN(d) && d.toISOString() === str; // valid date 
-}
-
-/**
  * Parses the date format string submitted in the configuration file. e.g. YYYYMMDD or MM-DD-YYYY HH:mm:ss etc.
  * @param {String} format The format to parse
  * @returns An object containing a boolean (ReturnValue) indicating a good structure (true) or a poorly formatted date (false) and a reason (Problem) if the date is poorly formatted.
  */
-function parseDateFormat(format) {
+function parseLuxonDateFormat(format) {
     let output = {
         'ReturnValue': false,
         'Problem': ''
     };
-    let regex = new RegExp('^(?=.*DD)(?=.*MM)(?=.*YY).*$');
-    // Test1 - Must contain CAPITAL YYYY, MM and DD
+    let regex = new RegExp('^(?=.*d)(?=.*M)(?=.*yy).*$');
+    // Test1 - Must contain CAPITAL M, LOWER d and yy
     if (regex.test(format)) {
-        // Contains - CAPITAL YY, MM and DD
+        // Contains - CAPITAL M, LOWER d and yy
     } else {
         output.ReturnValue = false;
-        output.Problem = 'Does not contain CAPITAL YY, MM and DD';
+        output.Problem = 'Does not have a CAPITAL M and LOWER d and yy';
         return output;
     }
 
@@ -329,11 +172,8 @@ module.exports = {
     parseStringValue,
     parseStringLength,
     parseFloatValue,
-    isIsoDate,
-    parseDate,
-    getDate,
     getHeadings,
     addBlanckColumn,
-    parseDateFormat,
+    parseLuxonDateFormat,
     parseLocation
 }
