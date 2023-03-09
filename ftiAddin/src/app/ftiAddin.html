@@ -15,7 +15,7 @@
     <div id="ftiAddin">
       <header class="geotabPageHeader">
         <span>
-          <h1 class="geotabPageName">Fuel Transaction Addin</h1>
+          <h1 class="geotabPageName">Fuel Transaction Add-In</h1>
           <p>Version 4.0.0-<span class="ftiRed">beta5</span></p>
           <p><a href="https://docs.google.com/document/d/107SMVKVLsNefd3tucIhxIH0pchnvsX8aoqqgxUMVUlE/edit?usp=sharing" target="_blank">User Guide</a></p>
         </span>
@@ -38,14 +38,14 @@
             </select>
           </div>
           <div class="ftiFieldGroup"
-            title="The file in one of the valid formats containing the transactions to import.">
+            title="The file containing the transactions to be imported.">
             <label for="importFile">Select the import File (XLS, XLSX): </label>
             <input type="file" name="importFile" id="importFile" accept=".xls,.xlsx">
           </div>
 
           <div class="ftiFieldGroup"
-            title="The time zone/offset to apply to the transactions being imported. Default = local timezone.">
-            <label for="timeZoneDropdown">Source Data Time zone: </label>
+            title="The transaction time zone. This allows you to import transactions for your local time zone or a different (remote) time zone. Default is your MyGeotab user-defined time zone.">
+            <label for="timeZoneDropdown">Reference Time zone:</label>
             <select class="ftiDropdown" id="timeZoneDropdown"></select>
           </div>
 
