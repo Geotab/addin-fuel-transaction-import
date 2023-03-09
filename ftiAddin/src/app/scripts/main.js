@@ -304,13 +304,14 @@ geotab.addin.ftiAddin = function () {
     })
     .then(() => {
       // parse and get the json transaction.
-      let timeZoneOffset = timeZoneHelper.getTimeZoneOffset(
-        elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value,
-        currentUserTimeZoneId);
+      // let timeZoneOffset = timeZoneHelper.getTimeZoneOffset(
+      //   elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value,
+      //   currentUserTimeZoneId);
       // let timeZoneOffset = parseInt(moment.tz(elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value).format('Z').split(':')[0]);
       // let timeZoneOffset = elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value;
+      const remoteTimeZone = elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value;
       return transactionHelper.ParseAndBuildTransactionsAsync(
-        transactionsLocal, configuration, api, timeZoneOffset);
+        transactionsLocal, configuration, api, remoteTimeZone, currentUserTimeZoneId);
     })
     .then((results) => {
       transactionsJson = results;

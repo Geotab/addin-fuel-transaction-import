@@ -70,7 +70,7 @@ function validateConfiguration(configuration) {
     }
 
     //dateTime format validation
-    var dateFormatTestResult = parsers.parseDateFormat(configuration.dateFormat);
+    var dateFormatTestResult = parsers.parseLuxonDateFormat(configuration.dateFormat);
     if(dateFormatTestResult.ReturnValue === false)
     {
         output.isValid = false;

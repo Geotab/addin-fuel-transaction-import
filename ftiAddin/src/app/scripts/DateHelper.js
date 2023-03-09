@@ -1,6 +1,6 @@
 'use strict';
 
-const { DateTime } = require("luxon");
+const { DateTime } = require('luxon');
 
 class DateError extends Error {
    constructor(message) {
@@ -97,7 +97,7 @@ function combineDateAndTime(date, time) {
    } else if ((isDateObject(date) == false) && (isDateObject(time) == false)) {
        return date.trim() + ' ' + time.trim();
    } else {
-      return null;
+      throw new DateError(`Date and/or time are in the incorrect state. Date: ${date}, Time: ${time}. Most likely one of them is formatted as a date and the other is not.`);
    }
 }
 
