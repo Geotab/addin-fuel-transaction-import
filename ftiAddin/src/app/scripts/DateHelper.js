@@ -37,7 +37,7 @@ function getISODateFormat(date) {
       + formatDateUnit(date.getMinutes()) + ':' 
       + formatDateUnit(date.getSeconds()) + '.000';
    const isoDate = myDate + 'T' + myTime;
-   console.log(`isoDate ${isoDate}`);
+   //console.log(`isoDate ${isoDate}`);
    return isoDate;
 }
 
@@ -49,15 +49,15 @@ function getISODateFormat(date) {
  * @returns A javascript date object containing the local representation of the input date.
  */
 function getDateAdjusted(inputDate, remoteZone, localZone) {
-   console.log(`inputDate toLocaleString: ${inputDate.toLocaleString()}`);
-   console.log(`inputDate toISOString: ${inputDate.toISOString()}`);
+   // console.log(`inputDate toLocaleString: ${inputDate.toLocaleString()}`);
+   // console.log(`inputDate toISOString: ${inputDate.toISOString()}`);
    const isoDate = getISODateFormat(inputDate);
-   console.log(`isoDate: ${isoDate}`);
+   // console.log(`isoDate: ${isoDate}`);
    const remoteDate = DateTime.fromISO(isoDate, { zone: remoteZone });
    //const remoteDate = DateTime.fromISO(inputDate.toISOString().slice(0, -1), { zone: remoteZone });
-   console.log(`remoteDate: ${remoteDate.toString()}`);
+   // console.log(`remoteDate: ${remoteDate.toString()}`);
    const localDate = remoteDate.setZone(localZone);
-   console.log(`localDate: ${localDate.toString()}`);
+   // console.log(`localDate: ${localDate.toString()}`);
    return localDate.toJSDate();
 }
 

@@ -331,10 +331,6 @@ geotab.addin.ftiAddin = function () {
       switch (error.name)
       {
         case 'InputError':
-          // let suggestion = 'Please correct the error in the input file (import file) and try again.';
-          // let message = 'Entry containing the error: ' + JSON.stringify(error.entity) + '<br><br>' + suggestion;
-          console.log('InputError message: ' + error.message); 
-          // setOutputDisplay('Input Error', message);
           const headers = ['Error Entry', 'Error'];
           const rows = [
             [JSON.stringify(error.entity), error.message]
@@ -351,15 +347,6 @@ geotab.addin.ftiAddin = function () {
       setControlState(true);
     });
   }
-
-  function printImportSummary(importSummary, location){
-    console.log('Log Import Summary:')
-    console.log('imported: ' + importSummary.imported);
-    console.log('skipped: ' + importSummary.skipped);
-    console.log('errors: ' + importSummary.errors.count);
-    console.log('import summary location: ' + location);
-    console.log('Timestamp: ' + new Date().toISOString());
-}
 
   /**
    * Sets the state of the controls on the page. Moves the state between enabled and disabled.

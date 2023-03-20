@@ -31,14 +31,6 @@ function importTransactionsPromise(api, transactions, elProgressText, elprogress
     });
 }
 
-function printImportSummary(importSummary){
-    console.log('Log Import Summary:')
-    console.log('imported: ' + importSummary.imported);
-    console.log('skipped: ' + importSummary.skipped);
-    console.log('errors: ' + importSummary.errors.count);
-    console.log('Timestamp: ' + new Date().toISOString());
-}
-
 /**
  * Fuel transaction batch manager (New).
  * @param {Object} api The Geotab api.
@@ -119,7 +111,7 @@ function postFuelTransCallsPromise(api, transactions, importSummary) {
                     }
                     else if (typeof(error) === 'string') {
                         // string error instance
-                        console.log('string error instance, value: ' + error);
+                        // console.log('string error instance, value: ' + error);
                         if (error.includes('DuplicateException')) {
                             importSummary.skipped += 1;
                         } else {
@@ -129,7 +121,7 @@ function postFuelTransCallsPromise(api, transactions, importSummary) {
                     }
                     else {
                         // unknown error instance
-                        console.log('Unexpected error instance, value: ' + error);
+                        // console.log('Unexpected error instance, value: ' + error);
                         importSummary.errors.count += 1;
                         importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), 'Unexpected error']);
                     }                
