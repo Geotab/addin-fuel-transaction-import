@@ -8,6 +8,7 @@
     "build:template": "node ./utils/templateBuilder.js",
     "template": "start-server-and-test serve http://localhost:9000 build:template",
     "build": "webpack --mode production --config webpack.production.js",
+    "build-test": "webpack --mode test --config webpack.production.js",
     "build-dev": "webpack --mode development --config webpack.development.js",
     "serve": "webpack serve --mode development --config webpack.development.js",
     "test": "start-server-and-test serve http://localhost:9000 mocha",

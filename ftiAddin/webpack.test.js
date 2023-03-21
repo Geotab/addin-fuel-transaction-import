@@ -18,24 +18,22 @@ const ESLintPlugin = require('eslint-webpack-plugin');
  */
 const transform = function (content, path) {
     let config = JSON.parse(content);
-    let host = config.prod.dist.host;
+    let host = config.dev.dist.host;
     let len = config.items.length;
     // Appending the host to all item's url and icon
     for(let i=0;i<len;i++){
-        config.items[i].url = host + config.version + '/' + config.items[i].url;
-        config.items[i].icon = host + config.version + '/' + config.items[i].icon; 
-        config.items[i].menuName.en = config.prod.menuName.en + ' ' + config.version;
+        config.items[i].url = host + config.items[i].url;
+        config.items[i].icon = host + config.items[i].icon; 
     }
 
     delete config['dev'];
-    delete config['prod'];
     let response = JSON.stringify(config, null, 2);
     // Returned string is written to file
     return response;
 }
 
 module.exports = merge(common, {
-    mode: 'production',
+    mode: 'test',
     entry: './src/app/index.js',
     module: {
         rules: [
@@ -46,7 +44,7 @@ module.exports = merge(common, {
                     {
                         loader: MiniCssExtractPlugin.loader,
                         options: {
-                            publicPath: config.prod.dist.host
+                            publicPath: config.dev.dist.host
                         }
                     },
                     'css-loader',
@@ -130,6 +128,6 @@ module.exports = merge(common, {
         }) 
     ],
     output: {
-        publicPath: config.prod.dist.host
+        publicPath: config.dev.dist.host
     }
 });
