@@ -6,14 +6,17 @@
     "url": "ftiAddin.html",
     "path": "",
     "menuName": {
-      "en": "FTI 4.0.0 apptest"
+      "en": "FTI Dev"
     },
     "icon": "images/icon.svg"
   }],
   "dev": {
     "root": "ftiAddin",
     "dist": {
-      "host": "https://apptest.geotab.com/fuel-transaction-import-addin/4.0.0-beta4/"
+      "host": "https://apptest.geotab.com/fuel-transaction-import-addin/"
+    },
+    "menuName": {
+      "en": "FTI Dev Addin"
     }
   },
   "prod": {

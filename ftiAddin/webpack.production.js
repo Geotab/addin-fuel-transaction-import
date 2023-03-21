@@ -46,7 +46,7 @@ module.exports = merge(common, {
                     {
                         loader: MiniCssExtractPlugin.loader,
                         options: {
-                            publicPath: config.prod.dist.host
+                            publicPath: config.prod.dist.host + config.version + '/'
                         }
                     },
                     'css-loader',
@@ -130,6 +130,6 @@ module.exports = merge(common, {
         }) 
     ],
     output: {
-        publicPath: config.prod.dist.host
+        publicPath: config.prod.dist.host + config.version + '/'
     }
 });
