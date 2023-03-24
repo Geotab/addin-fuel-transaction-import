@@ -25,7 +25,7 @@
       "host": "https://app.geotab.com/addins/geotab/addin-fuel-transaction-import/"
     },
     "menuName": {
-      "en": "Fuel Transaction Import Add-In"
+      "en": "FTI Add-In"
     }
   }
 }
