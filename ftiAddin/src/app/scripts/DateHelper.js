@@ -31,7 +31,7 @@ function getISODateFormat(date) {
    const myDate = 
       date.getFullYear() + '-' 
       + formatDateUnit(date.getMonth() + 1) + '-' 
-      + formatDateUnit(date.getUTCDate());
+      + formatDateUnit(date.getDate());
    const myTime = 
       formatDateUnit(date.getHours()) + ':' 
       + formatDateUnit(date.getMinutes()) + ':' 
