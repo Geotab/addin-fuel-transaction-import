@@ -23,7 +23,7 @@
   "devDependencies": {
     "@babel/core": "^7.21.4",
     "@babel/preset-env": "^7.21.4",
-    "babel-loader": "^8.3.0",
+    "babel-loader": "^9.1.2",
     "before-build-webpack": "^0.2.13",
     "chai": "^4.3.7",
     "copy-webpack-plugin": "^9.1.0",
