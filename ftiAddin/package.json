@@ -26,7 +26,7 @@
     "babel-loader": "^9.1.2",
     "before-build-webpack": "^0.2.13",
     "chai": "^4.3.7",
-    "copy-webpack-plugin": "^9.1.0",
+    "copy-webpack-plugin": "^11.0.0",
     "css": "^3.0.0",
     "css-loader": "^6.7.3",
     "css-minimizer-webpack-plugin": "^3.4.1",
