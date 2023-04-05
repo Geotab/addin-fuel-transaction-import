@@ -45,7 +45,7 @@
     "mini-css-extract-plugin": "^2.7.5",
     "mocha": "^10.2.0",
     "moment-timezone": "^0.5.43",
-    "puppeteer": "^18.0.5",
+    "puppeteer": "^19.8.3",
     "regenerator-runtime": "^0.13.11",
     "semver-regex": "^4.0.5",
     "start-server-and-test": "^2.0.0",
