@@ -48,7 +48,7 @@
     "puppeteer": "^18.0.5",
     "regenerator-runtime": "^0.13.11",
     "semver-regex": "^4.0.5",
-    "start-server-and-test": "<=1.14.0",
+    "start-server-and-test": "^2.0.0",
     "style-loader": "^3.3.2",
     "svg-inline-loader": "^0.8.2",
     "terser-webpack-plugin": "^5.3.7",
