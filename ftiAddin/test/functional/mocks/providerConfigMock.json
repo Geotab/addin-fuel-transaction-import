@@ -5,7 +5,7 @@
         "unitVolumeLiters": "Y",
         "unitOdoKm": "Y",
         "isCellDateType": "Y",
-        "dateFormat": "DD/MM/YYYY",
+        "dateFormat": "dd/MM/yyyy",
         "timeFormat": "",
         "currencyCodeMapped": "CHF",
         "data": {
@@ -35,7 +35,7 @@
         "unitVolumeLiters": "Y",
         "unitOdoKm": "Y",
         "isCellDateType": "N",
-        "dateFormat": "DD/MM/YYYY",
+        "dateFormat": "dd/MM/yyyy",
         "timeFormat": "HH:mm:ss",
         "currencyCodeMapped": "USD",
         "data": {
