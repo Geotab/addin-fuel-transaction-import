@@ -15,7 +15,10 @@
     "mocha": "mocha test/**/*.js"
   },
   "resolutions": {
-    "semver-regex": "4.0.1"
+    "semver-regex": ">=4.0.3",
+    "trim-newlines": ">=3.0.1",
+    "http-cache-semantics": ">=4.1.1",
+    "got": ">=11.8.5"
   },
   "keywords": [],
   "author": "",
