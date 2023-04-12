@@ -26,13 +26,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-      
-    - name: npm ci
-      working-directory: ./ftiAddin/ftiAddin
-      run: npm ci
-    - name: npm run build --if-present
-      working-directory: ./ftiAddin/ftiAddin
-      run: npm run build --if-present
-    - name: npm test
-      working-directory: ./ftiAddin/ftiAddin
-      run: npm test
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
