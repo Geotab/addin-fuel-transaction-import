@@ -11,7 +11,7 @@ on: [workflow_dispatch]
 
 defaults:
   run:
-    working-directory: ./ftiAddin/ftiAddin
+    working-directory: ./home/runner/work/ftiAddin/ftiAddin/
     
 jobs:
   build:
