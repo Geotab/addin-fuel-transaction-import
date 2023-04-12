@@ -9,6 +9,10 @@ on: [workflow_dispatch]
 #  pull_request:
 #    branches: [ "main" ]
 
+defaults:
+  run:
+    working-directory: ./ftiAddin/ftiAddin
+    
 jobs:
   build:
 
