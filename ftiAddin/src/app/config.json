@@ -1,14 +1,14 @@
 {
   "name": "ftiAddin",
   "supportEmail": "support@geotab.com",
-  "version": "4.0.0",
+  "version": "4.0.2",
   "items": [{
     "url": "ftiAddin.html",
-    "path": "",
+    "path": "EngineMaintenanceLink/",
     "menuName": {
       "en": "FTI Dev"
     },
-    "icon": "images/icon.svg"
+    "svgIcon": "images/icon.svg"
   }],
   "dev": {
     "root": "ftiAddin",
