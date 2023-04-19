@@ -20,10 +20,12 @@ const transform = function (content, path) {
     let config = JSON.parse(content);
     let host = config.prod.dist.host;
     let len = config.items.length;
+    config.name = 'FTI V' + config.version;
     // Appending the host to all item's url and icon
     for(let i=0;i<len;i++){
         config.items[i].url = host + config.version + '/' + config.items[i].url;
-        config.items[i].icon = host + config.version + '/' + config.items[i].icon; 
+        // config.items[i].icon = host + config.version + '/' + config.items[i].icon; 
+        config.items[i].svgIcon = host + config.version + '/' + config.items[i].svgIcon; 
         config.items[i].menuName.en = config.prod.menuName.en + ' ' + config.version;
     }
 
