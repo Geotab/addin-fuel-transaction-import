@@ -1,12 +1,12 @@
 {
-  "name": "ftiAddin",
+  "name": "fuel transaction import",
   "supportEmail": "support@geotab.com",
   "version": "4.0.2",
   "items": [{
     "url": "ftiAddin.html",
     "path": "EngineMaintenanceLink/",
     "menuName": {
-      "en": "FTI Dev"
+      "en": "fuel transaction import"
     },
     "svgIcon": "images/icon.svg"
   }],
