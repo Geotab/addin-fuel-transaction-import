@@ -1,15 +1,15 @@
 {
-  "name": "ftiAddin",
+  "name": "fuel transaction import",
   "supportEmail": "support@geotab.com",
-  "version": "4.0.0",
+  "version": "4.0.2",
   "items": [
     {
-      "url": "https://app.geotab.com/addins/geotab/addin-fuel-transaction-import/4.0.0/ftiAddin.html",
-      "path": "",
+      "url": "https://app.geotab.com/addins/geotab/addin-fuel-transaction-import/4.0.2/ftiAddin.html",
+      "path": "EngineMaintenanceLink/",
       "menuName": {
-        "en": "FTI Add-In 4.0.0"
+        "en": "fuel transaction import"
       },
-      "icon": "https://app.geotab.com/addins/geotab/addin-fuel-transaction-import/4.0.0/images/icon.svg"
+      "svgIcon": "https://app.geotab.com/addins/geotab/addin-fuel-transaction-import/4.0.2/images/icon.svg"
     }
   ]
 }
