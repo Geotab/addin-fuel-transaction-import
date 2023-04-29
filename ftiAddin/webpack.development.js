@@ -9,6 +9,8 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 module.exports = merge(common, {
     mode: 'development',
     entry: './src/.dev/index.js',
+    // allows you to debug your code in it's native format
+    devtool: 'source-map', 
     module: {
         rules: [
             {
