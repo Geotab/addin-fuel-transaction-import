@@ -1,12 +1,13 @@
-const { ImportError } = require('./ImportError');
-const { TableGenerator} = require('./TableGenerator');
-
 /**
  * @returns {{initialize: Function, focus: Function, blur: Function, startup; Function, shutdown: Function}}
  */
 geotab.addin.ftiAddin = function () {
   'use strict';
 
+  // Classes
+  const { ImportError } = require('./ImportError');
+  const { TableGenerator } = require('./TableGenerator');
+  // External libraries
   const configHelper = require('./ConfigHelper');
   const importHelper = require('./ImportHelper');
   const transactionHelper = require('./TransactionHelper');
@@ -45,9 +46,11 @@ geotab.addin.ftiAddin = function () {
   let importFile;
   /** The json transactions */
   let transactionsJson;
+  /** Progress DOM items */
   let elProgressDiv = document.getElementById('progressDiv');
   let elProgressText = document.getElementById('progressText');
   let elProgressBar = document.getElementById('progressBar');
+  let elSpinner = document.getElementById('spinner');
   /** The browser timezone index for later resets. */
   let selectedTimezoneIndex;
   const TableElementId = 'ErrorTable';
@@ -309,10 +312,12 @@ geotab.addin.ftiAddin = function () {
       // let timeZoneOffset = parseInt(moment.tz(elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value).format('Z').split(':')[0]);
       // let timeZoneOffset = elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value;
       const remoteTimeZone = elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value;
+      elSpinner.style.display = 'inline-block';
       return transactionHelper.ParseAndBuildTransactionsAsync(
         transactionsLocal, configuration, api, remoteTimeZone, currentUserTimeZoneId);
     })
     .then((results) => {
+      elSpinner.style.display = 'none';
       transactionsJson = results;
       toggleWindowDisplayState(true, true, true);
       if (transactionsJson) {
@@ -328,6 +333,7 @@ geotab.addin.ftiAddin = function () {
       setControlState(true);
     })
     .catch(error => {
+      elSpinner.style.display = 'none';
       switch (error.name)
       {
         case 'InputError':

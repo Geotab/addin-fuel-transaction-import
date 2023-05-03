@@ -91,3 +91,24 @@
 .ftiTable tbody tr:nth-of-type(even) {
    background-color: #f3f3f3;
 }
+
+.ftiLoader {
+   position: absolute;
+   top: 25%;
+   left: 25%;
+   /* display: inline-block; */
+   display: none;
+   width: 100px;
+   height: 100px;
+   border: 10px solid rgba(255,255,255,.3);
+   border-radius: 50%;
+   border-top-color: #5293c6;
+   animation: ftiSpin 1s ease-in-out infinite;
+   -webkit-animation: ftiSpin 1s ease-in-out infinite;
+}
+@keyframes ftiSpin {
+  to { -webkit-transform: rotate(360deg); }
+}
+@-webkit-keyframes ftiSpin {
+  to { -webkit-transform: rotate(360deg); }
+}
