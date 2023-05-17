@@ -17,19 +17,14 @@ const ESLintPlugin = require('eslint-webpack-plugin');
  * @param {string} path path to file
  */
 const transform = function (content, path) {
-    let addinName = 'fuel transaction import';
     let config = JSON.parse(content);
     let host = config.dev.dist.host;
     let len = config.items.length;
-    config.name = addinName;
     // Appending the host to all item's url and icon
     for(let i=0;i<len;i++){
         config.items[i].url = host + config.version + '/' + config.items[i].url;
-        // config.items[i].icon = host + config.version + '/' + config.items[i].icon; 
         config.items[i].svgIcon = host + config.version + '/' + config.items[i].svgIcon; 
-        config.items[i].menuName.en = addinName;
     }
-
     delete config['dev'];
     delete config['prod'];
     let response = JSON.stringify(config, null, 2);
