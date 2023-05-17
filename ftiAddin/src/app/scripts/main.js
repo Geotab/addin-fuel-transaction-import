@@ -176,6 +176,7 @@ geotab.addin.ftiAddin = function () {
   function toggleWindowDisplayState(input = true, output = false, progress = false) {
     input ? elInputDiv.classList.remove('ftiHidden') : elInputDiv.classList.add('ftiHidden');
     if(progress) {
+      elProgressText.innerText = ''; 
       elProgressDiv.classList.remove('ftiHidden')
     } else {
       elProgressDiv.classList.add('ftiHidden');
@@ -195,6 +196,7 @@ geotab.addin.ftiAddin = function () {
    * @param {*} message The message
    */
   function setOutputDisplay(title, message) {
+    resetOutputDiv();
     elOutputTitle.innerHTML = title;
     elOutputMessage.innerHTML = message;
     toggleWindowDisplayState(true, true, false);
@@ -286,8 +288,13 @@ geotab.addin.ftiAddin = function () {
       return;
     }
 
+    // ****** UI ******
     // disable form controls
     setControlState(false);
+    // display the spinner
+    elSpinner.style.display = 'inline-block';
+    setOutputDisplay('Working', 'Busy parsing the excel file...');
+    // ****** UI ******
 
     let transactionsLocal;
     convertExcelToJsonAsync(importFile)
@@ -305,14 +312,8 @@ geotab.addin.ftiAddin = function () {
       configHelper.parseConfigDefaults(configuration);
     })
     .then(() => {
-      // parse and get the json transaction.
-      // let timeZoneOffset = timeZoneHelper.getTimeZoneOffset(
-      //   elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value,
-      //   currentUserTimeZoneId);
-      // let timeZoneOffset = parseInt(moment.tz(elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value).format('Z').split(':')[0]);
-      // let timeZoneOffset = elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value;
       const remoteTimeZone = elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value;
-      elSpinner.style.display = 'inline-block';
+      setOutputDisplay('Working', 'Busy parsing and building the transactions...<br />If this import contains requests for physical addresses to be parsed to geographic coordinates this process could be time consuming depending on the number of transactions involded. Each transaction requires a unique request.')
       return transactionHelper.ParseAndBuildTransactionsAsync(
         transactionsLocal, configuration, api, remoteTimeZone, currentUserTimeZoneId);
       // return transactionHelper.ParseAndBuildTransactionsPromiseTest(
@@ -324,6 +325,7 @@ geotab.addin.ftiAddin = function () {
     //   })
     // })
     .then((results) => {
+      resetOutputDiv();
       elSpinner.style.display = 'none';
       transactionsJson = results;
       toggleWindowDisplayState(true, true, true);
@@ -341,6 +343,7 @@ geotab.addin.ftiAddin = function () {
     })
     .catch(error => {
       elSpinner.style.display = 'none';
+      resetOutputDiv();
       switch (error.name)
       {
         case 'InputError':
