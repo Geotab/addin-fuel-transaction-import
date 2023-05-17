@@ -6,7 +6,7 @@ const myGeotabHelper = require('./MyGeotabHelper');
 
 /**
  * Transforms the transaction from raw/unparsed excel format (JSON) and produces the final parsed transactions.
- * @param {JSON} transactionsRaw The raw/unparsed transactions (imported from excel).
+ * @param {Array} transactionsRaw An array of raw/unparsed transaction objects (imported from excel).
  * @param {JSON} configuration The fuel provider configuration.
  * @param {String} timeZone The time zone.
  * @param {Object} api The MyGeotab API service.
@@ -37,6 +37,28 @@ function ParseAndBuildTransactionsAsync(
         resolve(transactionsOutput)
     });
 }
+
+function ParseAndBuildTransactionsPromiseTest(
+                    transactionsRaw, 
+                    configuration, 
+                    api, 
+                    remoteTimeZone, 
+                    localTimeZone) {
+    // let transactionsOutput = [];
+    // Remove the first item in the array. It is the excel header row.
+    transactionsRaw.shift();
+    console.log('Before map.');
+    const promises = transactionsRaw.map( transaction => {
+         return parseTransactionAsync(transaction, configuration, api, remoteTimeZone, localTimeZone);
+        });
+        // let entity = await parseTransactionAsync(
+        //     transaction, configuration, api, remoteTimeZone, localTimeZone);
+        // // console.log('parsed transaction entity: ' + entity);
+        // transactionsOutput.push(entity);
+        // return;
+    console.log('After map. Before allSettled.');
+    return Promise.allSettled(promises);
+};
 
 /**
  * Gets a key for the value from a JSON object
@@ -132,8 +154,6 @@ async function parseTransactionAsync(transactionRaw, configuration, api, remoteT
                         }
                         break;
                     case 'dateTime':
-                        //entity[key] = parsers.parseDate(configuration, value, timeZone);
-                        //entity[key] = parsers.parseDate(configuration, value, timeZoneOffset);
                         entity[key] = dateHelper.parseDate(configuration, value, remoteTimeZone, localTimeZone);
                         break;
                     case 'location':
@@ -141,7 +161,6 @@ async function parseTransactionAsync(transactionRaw, configuration, api, remoteT
                         break;
                     case 'licencePlate':
                         entity[key] = parsers.parseStringLength(value[0].toString(), 255).trim();
-                        //entity[key] = parsers.parseStringLength(value[0], 255).trim();
                         break;
                     case 'comments':
                         entity[key] = parsers.parseStringValue(parsers.parseStringLength(value[0], 1024));
@@ -241,6 +260,7 @@ var fuelTransactionProviders = {
 
 module.exports = {
     ParseAndBuildTransactionsAsync,
+    ParseAndBuildTransactionsPromiseTest,
     parseTransactionAsync,
     fuelTransactionProviders
 }

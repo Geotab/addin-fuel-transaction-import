@@ -315,7 +315,14 @@ geotab.addin.ftiAddin = function () {
       elSpinner.style.display = 'inline-block';
       return transactionHelper.ParseAndBuildTransactionsAsync(
         transactionsLocal, configuration, api, remoteTimeZone, currentUserTimeZoneId);
+      // return transactionHelper.ParseAndBuildTransactionsPromiseTest(
+      //   transactionsLocal, configuration, api, remoteTimeZone, currentUserTimeZoneId);
     })
+    // .then((results) => {
+    //   return results.map(trans => {
+    //     return trans.value;
+    //   })
+    // })
     .then((results) => {
       elSpinner.style.display = 'none';
       transactionsJson = results;
