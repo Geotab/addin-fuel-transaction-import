@@ -1,13 +1,13 @@
 {
-  "Complemento de transacciones de combustible": "Fuel Transaction Add-In",
-  "Version": "Versión",
-  "User Guide": "Guía del usuario",
-  "Input Criteria": "Criterios de entrada",
-  "Select the configuration File (JSON):": "Seleccione el Archivo de configuración (JSON):",
-  "Fuel provider:": "Proveedor de combustible:",
-  "None selected": "Ninguno seleccionado",
-  "Select the import File (XLS, XLSX):": "Seleccione el Archivo de importación (XLS, XLSX):",
-  "Reference Time zone:": "Huso horario de referencia:",
+  "Complemento de transacciones de combustible": "Suplemento de transação de combustível",
+  "Version": "Versão",
+  "User Guide": "Guia de usuario",
+  "Input Criteria": "Critérios de entrada",
+  "Select the configuration File (JSON):": "Selecione o arquivo de configuração (JSON):",
+  "Fuel provider:": "Provedor de combustível:",
+  "None selected": "Nenhum selecionado",
+  "Select the import File (XLS, XLSX):": "Selecione o arquivo de importação (xls, xlsx):",
+  "Reference Time zone:": "Fuso horário de referência:",
   "Import": "Importar",
-  "Reset": "Restablecer"
+  "Reset": "Reiniciar"
 }
