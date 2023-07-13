@@ -33,6 +33,8 @@ geotab.addin.ftiAddin = function () {
   let elOutputTitle = document.getElementById('outputTitle');
   /** The output message element */
   let elOutputMessage = document.getElementById('outputMessage');
+  /** The sheet number element */
+  let elSheetNumber = document.getElementById('sheetNumber');
   /** The import button */
   let elImportButton = document.getElementById('importButton');
   let elResetButton = document.getElementById('resetButton');
@@ -246,9 +248,10 @@ geotab.addin.ftiAddin = function () {
   /**
    * Converts the excel file to binary format and then uses the XLSX library to convert the file into JSON format.
    * @param {File} excelFile The excel file to import.
+   * @param {int} sheetIndex The sheet index (zero based). Default = 0.
    * @returns A promise resolved true when the excel transaction file has been converted to a JSON object.
    */
-  function convertExcelToJsonAsync(excelFile) {
+  function convertExcelToJsonAsync(excelFile, sheetIndex = 0) {
     return new Promise((resolve, reject) => {
       let reader = new FileReader();
   
@@ -258,7 +261,7 @@ geotab.addin.ftiAddin = function () {
           type: 'binary',
           cellDates: true
         });
-        let jsonObject = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {
+        let jsonObject = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[sheetIndex]], {
             'header': 'A'
           });
           // console.log(jsonObject)
@@ -297,7 +300,9 @@ geotab.addin.ftiAddin = function () {
     // ****** UI ******
 
     let transactionsLocal;
-    convertExcelToJsonAsync(importFile)
+    let sheetNumber = elSheetNumber.value - 1;
+    console.log(`sheetNumber: ${sheetNumber}`);
+    convertExcelToJsonAsync(importFile, elSheetNumber.value-1)
     .then(results => {
       transactionsLocal = results;
     })
@@ -504,6 +509,7 @@ geotab.addin.ftiAddin = function () {
     elProviderFile.value = null;
     elProviderDropdown.selectedIndex = 0;
     elImportFile.value = null;
+    elSheetNumber.value = 1;
     elTimeZoneDropdown.selectedIndex = selectedTimezoneIndex;
     toggleWindowDisplayState(true, false, false);
   }

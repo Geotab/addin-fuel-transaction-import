@@ -16,7 +16,7 @@
       <header class="geotabPageHeader">
         <span>
           <h1 class="geotabPageName">Fuel Transaction Add-In</h1>
-          <p><span>Version</span> 4.0.3</p>
+          <p><span>Version</span> 4.1.0</p>
           <!-- <p>Version 4.0.0-<span class="ftiRed">beta5</span></p> -->
           <p><a href="https://docs.google.com/document/d/107SMVKVLsNefd3tucIhxIH0pchnvsX8aoqqgxUMVUlE/edit?usp=sharing" target="_blank">User Guide</a></p>
         </span>
@@ -43,6 +43,10 @@
             <label for="importFile">Select the import File (XLS, XLSX): </label>
             <input type="file" name="importFile" id="importFile" accept=".xls,.xlsx">
           </div>
+          <div class="ftiFieldGroup" title="The import file sheet number to use for the operation.">
+            <label for="sheetNumber">Sheet number (1-50): </label>
+            <input type="number" name="sheetNumber" id="sheetNumber" value="1" min="1" max="50" style="width: 50px;">
+          </div>
 
           <div class="ftiFieldGroup"
             title="The transaction time zone. This allows you to import transactions for your local time zone or a different (remote) time zone. Default is your MyGeotab user-defined time zone.">
@@ -52,7 +56,7 @@
 
         </div>
         <div id="importButtonDiv" class="ftiImportButtonDiv">
-          <button id="importButton" class="ftiImportButton" title="Executes the import operation.">Import</button>
+          <input type="submit" value="Import" id="importButton" class="ftiImportButton" title="Executes the import operation." />
           <button id="resetButton" class="ftiResetButton" title="Resets the operation to start afresh.">Reset</button>
         </div>
         <div id="spinner" class="ftiLoader"></div>
