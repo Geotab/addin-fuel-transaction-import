@@ -27,28 +27,28 @@
         <div id="ftiInputDiv">
           <!-- <div id="inputDiv" class="geotabFieldset ftiInputDiv"> -->
           <div>
-            <div class="ftiFieldGroup" title="Select a JSON file containing one or many provider configuration/s.">
+            <div id="fieldGroup1" class="ftiFieldGroup" title="Select a JSON file containing one or many provider configuration/s.">
               <label for="providerFile">Select the configuration File (JSON): </label>
               <input type="file" name="providerFile" id="providerFile" accept=".json">
             </div>
           </div>
-          <div class="ftiFieldGroup" title="Select the relevant provider for the current import operation.">
+          <div id="fieldGroup2" class="ftiFieldGroup" title="Select the relevant provider for the current import operation.">
             <label class="ftiLabel" for="providerDropdown">Fuel provider:</label>
             <select class="ftiDropdown" name="providerDropdown" id="providerDropdown">
               <option value="none">None selected</option>
             </select>
           </div>
-          <div class="ftiFieldGroup"
+          <div id="fieldGroup3" class="ftiFieldGroup"
             title="The file containing the transactions to be imported.">
             <label for="importFile">Select the import File (XLS, XLSX): </label>
             <input type="file" name="importFile" id="importFile" accept=".xls,.xlsx">
           </div>
-          <div class="ftiFieldGroup" title="The import file sheet number to use for the operation.">
+          <div id="fieldGroup4" class="ftiFieldGroup" title="The import file sheet number to use for the operation.">
             <label for="sheetNumber">Sheet number (1-50): </label>
             <input type="number" name="sheetNumber" id="sheetNumber" value="1" min="1" max="50" style="width: 50px;">
           </div>
 
-          <div class="ftiFieldGroup"
+          <div id="fieldGroup5" class="ftiFieldGroup"
             title="The transaction time zone. This allows you to import transactions for your local time zone or a different (remote) time zone. Default is your MyGeotab user-defined time zone.">
             <label for="timeZoneDropdown">Reference Time zone:</label>
             <select class="ftiDropdown" id="timeZoneDropdown"></select>

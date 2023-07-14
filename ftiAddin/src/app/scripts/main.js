@@ -15,6 +15,7 @@ geotab.addin.ftiAddin = function () {
   const XLSX = require('xlsx');
 
   let api;
+  let state;
   let currentUser;
   let currentUserTimeZoneId;
   /** The root container. */
@@ -35,7 +36,12 @@ geotab.addin.ftiAddin = function () {
   let elOutputMessage = document.getElementById('outputMessage');
   /** The sheet number element */
   let elSheetNumber = document.getElementById('sheetNumber');
-  /** The import button */
+  /** Import stuff */
+  let elFieldGroup1 = document.getElementById('fieldGroup1');
+  let elFieldGroup2 = document.getElementById('fieldGroup2');
+  let elFieldGroup3 = document.getElementById('fieldGroup3');
+  let elFieldGroup4 = document.getElementById('fieldGroup4');
+  let elFieldGroup5 = document.getElementById('fieldGroup5');
   let elImportButton = document.getElementById('importButton');
   let elResetButton = document.getElementById('resetButton');
   /** The import file input element */
@@ -50,6 +56,7 @@ geotab.addin.ftiAddin = function () {
   let transactionsJson;
   /** Progress DOM items */
   let elProgressDiv = document.getElementById('progressDiv');
+  let elProgressHeader = elProgressDiv.querySelector('h2');
   let elProgressText = document.getElementById('progressText');
   let elProgressBar = document.getElementById('progressBar');
   let elSpinner = document.getElementById('spinner');
@@ -58,6 +65,33 @@ geotab.addin.ftiAddin = function () {
   const TableElementId = 'ErrorTable';
   const ErrorListTitleId = 'ErrorListTitle';
   const TableImportSummaryElementId = 'ImportSummaryTable';
+  /** Text/Messages for translation */
+  let workingText = 'Working';
+  let importedText = 'Imported';
+  let skippedText = 'Skipped';
+  let errorsText = 'Errors';
+  let alertText = 'Alert';
+  let noProvidersFoundText = 'no providers found...';
+  let chooseProviderText = 'Choose provider';
+  let importSummaryText = 'Import Summary';
+  let errorListText = 'Error List';
+  let errorListTitleText = 'List of transactions that produced errors.';
+  let transactionText = 'Transaction';
+  let exceptionText = 'Exception';
+  let errorEntryText = 'Error Entry';
+  let errorText = 'Error';
+  let inputErrorText = 'Input Error';
+  let unexpectedErrorText = 'Unexpected Error in importTransactions';
+  let dataIssueText = 'Data Issue';
+  let noTransactionsFoundText = 'No transactions found. Please try again...';
+  let parsingAndBuildingText = 'Busy parsing and building the transactions...<br />If this import contains requests for physical addresses to be parsed to geographic coordinates this process could be time consuming depending on the number of transactions involded. Each transaction requires a unique request.';
+  let validationProblemText = 'Configuration File Validation Problem';
+  let busyParsingText = 'Busy parsing the excel file...';
+  let fileNotFoundText = 'File Not Found';
+  let selectFileText = 'Please select an import file.';
+  let noFileSelectedText = 'No import file selected';
+  let pleaseSelectFileText = 'Please select an import file prior to this operation.';
+  let progressHeadingText = 'Progress';
 
   /**
    * Manages the provider file selection change event.
@@ -118,7 +152,7 @@ geotab.addin.ftiAddin = function () {
    */
   function populateProviderDropdown(providerConfigurationFile) {
     if (providerConfigurationFile && providerConfigurationFile.providers) {
-      initialiseProviderDropdown('Choose provider');
+      initialiseProviderDropdown(chooseProviderText);
       let option;
       for (let i = 0; i < providerConfigurationFile.providers.length; i++) {
         option = document.createElement('option');
@@ -126,8 +160,8 @@ geotab.addin.ftiAddin = function () {
         elProviderDropdown.appendChild(option);
       }
     } else {
-      let title = 'Alert';
-      let alert = 'no providers found...';
+      let title = alertText;
+      let alert = noProvidersFoundText;
       setOutputDisplay(title, alert);
     }
   }
@@ -241,7 +275,7 @@ geotab.addin.ftiAddin = function () {
     if (elImportFile) {
       importFile = elImportFile.files[0];
     } else {
-      setOutputDisplay('No import file selected', 'Please select an import file prior to this operation.');
+      setOutputDisplay(noFileSelectedText, pleaseSelectFileText);
     }
   }
 
@@ -287,7 +321,7 @@ geotab.addin.ftiAddin = function () {
 
     // Check initial state.
     if (!importFile) {
-      setOutputDisplay('File Not Found', 'Please select an import file.');
+      setOutputDisplay(state.translate(fileNotFoundText), state.translate(selectFileText));
       return;
     }
 
@@ -296,7 +330,7 @@ geotab.addin.ftiAddin = function () {
     setControlState(false);
     // display the spinner
     elSpinner.style.display = 'inline-block';
-    setOutputDisplay('Working', 'Busy parsing the excel file...');
+    setOutputDisplay(workingText, state.translate(busyParsingText));
     // ****** UI ******
 
     let transactionsLocal;
@@ -310,15 +344,15 @@ geotab.addin.ftiAddin = function () {
       // validate the configuration data
       var result = configHelper.validateConfiguration(configuration);
       if (result.isValid === false) {
-        var mesage = 'Configuration File Validation Problem';
-        throw new ImportError(mesage, result.reason);
+        var message = state.translate(validationProblemText);
+        throw new ImportError(message, result.reason);
       }
       // parse the configuration defaults
       configHelper.parseConfigDefaults(configuration);
     })
     .then(() => {
       const remoteTimeZone = elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value;
-      setOutputDisplay('Working', 'Busy parsing and building the transactions...<br />If this import contains requests for physical addresses to be parsed to geographic coordinates this process could be time consuming depending on the number of transactions involded. Each transaction requires a unique request.')
+      setOutputDisplay(workingText, parsingAndBuildingText)
       return transactionHelper.ParseAndBuildTransactionsAsync(
         transactionsLocal, configuration, api, remoteTimeZone, currentUserTimeZoneId);
       // return transactionHelper.ParseAndBuildTransactionsPromiseTest(
@@ -338,7 +372,7 @@ geotab.addin.ftiAddin = function () {
         return importHelper.importTransactionsPromise(api, transactionsJson, elProgressText, elProgressBar, 200, 0);
       } else {
         //setOutputDisplay('Data Issue', 'No transactions found. Please try again...');
-        throw new ImportError('Data Issue', 'No transactions found. Please try again...');
+        throw new ImportError(dataIssueText, noTransactionsFoundText);
       }
     }).then((summary) => {
       if (summary) {
@@ -352,18 +386,18 @@ geotab.addin.ftiAddin = function () {
       switch (error.name)
       {
         case 'InputError':
-          const headers = ['Error Entry', 'Error'];
+          const headers = [errorEntryText, errorText];
           const rows = [
             [JSON.stringify(error.entity), error.message]
           ];
           const tableGenerator = new TableGenerator(headers, rows);
-          setOutputDisplay('Input Error', tableGenerator.generateTable());
+          setOutputDisplay(inputErrorText, tableGenerator.generateTable());
           break;
         case 'ImportError':
           setOutputDisplay(error.message, error.moreInfo);
           break;
         default:
-          setOutputDisplay('Unexpected Error in importTransactions', error);
+          setOutputDisplay(unexpectedErrorText, error);
       }
       setControlState(true);
     });
@@ -399,7 +433,7 @@ geotab.addin.ftiAddin = function () {
     let tbody = document.createElement('tbody');
     let tr1 = document.createElement('tr');
     let cell1 = document.createElement('td');
-    cell1.innerHTML = 'Imported';
+    cell1.innerHTML = importedText;
     let cellValue1 = document.createElement('td');
     cellValue1.innerHTML = importSummary.imported;
     cellValue1.className = 'ftiSuccess';
@@ -409,7 +443,7 @@ geotab.addin.ftiAddin = function () {
     let tr2 = document.createElement('tr');
     let cell2 = document.createElement('td');
     let cellValue2 = document.createElement('td');
-    cell2.innerHTML = 'Skipped';
+    cell2.innerHTML = skippedText;
     cellValue2.innerHTML = importSummary.skipped;
     tr2.appendChild(cell2);
     tr2.appendChild(cellValue2);
@@ -417,7 +451,7 @@ geotab.addin.ftiAddin = function () {
     let tr3 = document.createElement('tr');
     let cell3 = document.createElement('td');
     let cellValue3 = document.createElement('td');
-    cell3.innerHTML = 'Errors';
+    cell3.innerHTML = errorsText;
     cellValue3.innerHTML = importSummary.errors.count;
     cellValue3.className = 'ftiFailed';
     tr3.appendChild(cell3);
@@ -427,7 +461,7 @@ geotab.addin.ftiAddin = function () {
     table.appendChild(tbody);
     table.className = 'ftiSummaryTable';
     elOutputDiv.appendChild(table);
-    elOutputTitle.textContent = 'Import Summary';
+    elOutputTitle.textContent = importSummaryText;
     elOutputMessage.textContent = '';
     if (importSummary.errors.failedCalls.length > 0) {
       reportErrors(importSummary.errors.failedCalls);
@@ -437,8 +471,8 @@ geotab.addin.ftiAddin = function () {
   function reportErrors(errors) {
     let title = document.createElement('h2');
     title.id = ErrorListTitleId;
-    title.textContent = 'Error List'
-    title.title = 'List of transactions that produced errors.'
+    title.textContent = errorListText
+    title.title = errorListTitleText
     elOutputDiv.appendChild(title);
     if (errors) {
       let table = document.createElement('table');
@@ -451,9 +485,9 @@ geotab.addin.ftiAddin = function () {
       let tr = document.createElement('tr');
       let th = document.createElement('th');
       let th1 = document.createElement('th');
-      th.innerHTML = 'Transaction';
+      th.innerHTML = transactionText;
       tr.appendChild(th);
-      th1.innerHTML = 'Exception';
+      th1.innerHTML = exceptionText;
       tr.appendChild(th1);
       thead.appendChild(tr);
 
@@ -538,6 +572,44 @@ geotab.addin.ftiAddin = function () {
     elResetButton.removeEventListener('click', resetButtonClickEvent, false);
   }
 
+  /**
+   * Translate the text fields
+   */
+  function translateText() {
+    elImportButton.title = state.translate(elImportButton.title);
+    elFieldGroup1.title = state.translate(elFieldGroup1.title);
+    elFieldGroup2.title = state.translate(elFieldGroup2.title);
+    elFieldGroup3.title = state.translate(elFieldGroup3.title);
+    elFieldGroup4.title = state.translate(elFieldGroup4.title);
+    elFieldGroup5.title = state.translate(elFieldGroup5.title);
+    workingText = state.translate(workingText);
+    importedText = state.translate(importedText);
+    skippedText = state.translate(skippedText);
+    errorsText = state.translate(errorsText);
+    alertText = state.translate(alertText);
+    noProvidersFoundText = state.translate(noProvidersFoundText);
+    chooseProviderText = state.translate(chooseProviderText);
+    importSummaryText = state.translate(importSummaryText);
+    errorListText = state.translate(errorListText);
+    errorListTitleText = state.translate(errorListTitleText);
+    transactionText = state.translate(transactionText);
+    exceptionText = state.translate(exceptionText);
+    errorEntryText = state.translate(errorEntryText);
+    errorText = state.translate(errorText);
+    inputErrorText = state.translate(inputErrorText);
+    unexpectedErrorText = state.translate(unexpectedErrorText);
+    dataIssueText = state.translate(dataIssueText);
+    noTransactionsFoundText = state.translate(noTransactionsFoundText);
+    parsingAndBuildingText = state.translate(parsingAndBuildingText);
+    validationProblemText = state.translate(validationProblemText);
+    busyParsingText = state.translate(busyParsingText);
+    fileNotFoundText = state.translate(fileNotFoundText);
+    selectFileText = state.translate(selectFileText);
+    noFileSelectedText = state.translate(noFileSelectedText);
+    pleaseSelectFileText = state.translate(pleaseSelectFileText);
+    elProgressHeader.innerText = state.translate(elProgressHeader.innerText);
+  }
+
   return {
 
     /**
@@ -553,12 +625,14 @@ geotab.addin.ftiAddin = function () {
     initialize: function (freshApi, freshState, initializeCallback) {
       // set the global api reference.
       api = freshApi;
+      state = freshState;
       // Loading translations if available
       if (freshState.translate) {
         freshState.translate(elAddin || '');
       }
       // ToggleWindowState(true, false, false);
       addEvents();
+      translateText();
 
       api.getSession(function (credentials, server) {
         api.call('Get', {
@@ -607,6 +681,7 @@ geotab.addin.ftiAddin = function () {
       // });
 
       loadTimeZoneList();
+      // translateTitles();
 
       toggleWindowDisplayState(true, false, false);
 
