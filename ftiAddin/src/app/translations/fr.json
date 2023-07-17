@@ -43,7 +43,15 @@
   "Please select an import file.": "Veuillez sélectionner un fichier d'importation.",
   "No import file selected": "Aucun fichier d'importation sélectionné",
   "Please select an import file prior to this operation.": "Veuillez sélectionner un fichier d'importation avant cette opération.",
-  " transaction/s of ": " transaction/s de",
+  " transaction/s of ": " transaction/s de ",
   " processed...": "  traité...",
-  "Progress": "Progrès"
+  "Progress": "Progrès",
+  "A provider name is required.": "",
+  "The dateFormat property is required.": "",
+  "No device identifier has been defined.": "",
+  "No date and time defined.": "",
+  "The date and time defined is incorrectly formatted. Reason:": "",
+  "No volume defined.": "",
+  "No cost defined.": "",
+  "No currency code defined.": ""
 }

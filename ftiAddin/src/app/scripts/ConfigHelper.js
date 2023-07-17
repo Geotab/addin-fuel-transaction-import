@@ -32,7 +32,7 @@ function validateConfiguration(configuration) {
     // Name is required
     if (!configuration.Name) {
         output.isValid = false;
-        output.reason = 'A provider name is required.';
+        output.reason = state.translate('A provider name is required.');
         return output;
     }
 
@@ -40,7 +40,7 @@ function validateConfiguration(configuration) {
     // dateFormat is required
     if (!configuration.dateFormat) {
         output.isValid = false;
-        output.reason = 'The dateFormat property is required.';
+        output.reason = state.translate('The dateFormat property is required.');
         return output;
     }
 
@@ -57,7 +57,7 @@ function validateConfiguration(configuration) {
             output.isValid = true;
         } else {
             output.isValid = false;
-            output.reason = 'No device identifier has been defined.';
+            output.reason = state.translate('No device identifier has been defined.');
             return output;
         };
     }
@@ -65,7 +65,7 @@ function validateConfiguration(configuration) {
     //dateTime presence validation
     if (!configuration.data['dateTime']) {
         output.isValid = false;
-        output.reason = 'No date and time defined.';
+        output.reason = state.translate('No date and time defined.');
         return output;
     }
 
@@ -74,21 +74,21 @@ function validateConfiguration(configuration) {
     if(dateFormatTestResult.ReturnValue === false)
     {
         output.isValid = false;
-        output.reason = `The date and time defined is incorrectly formatted. Reason: ${dateFormatTestResult.Problem}`;
+        output.reason = state.translate('The date and time defined is incorrectly formatted. Reason: ') + dateFormatTestResult.Problem;
         return output;
     }
 
     //volume validation
     if (!configuration.data['volume']) {
         output.isValid = false;
-        output.reason = 'No volume defined.';
+        output.reason = state.translate('No volume defined.');
         return output;
     }
 
     //cost validation
     if (!configuration.data['cost']) {
         output.isValid = false;
-        output.reason = 'No cost defined.';
+        output.reason = state.translate('No cost defined.');
         return output;
     }
 
@@ -97,7 +97,7 @@ function validateConfiguration(configuration) {
         if(!configuration.currencyCodeMapped)
         {
             output.isValid = false;
-            output.reason = 'No currency code defined.';
+            output.reason = state.translate('No currency code defined.');
             return output;
         }
     }

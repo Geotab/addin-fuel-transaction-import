@@ -45,5 +45,13 @@
   "Please select an import file prior to this operation.": "Please select an import file prior to this operation.",
   " transaction/s of ": " transaction/s of ",
   " processed...": " processed...",
-  "Progress": "Progress"
+  "Progress": "Progress",
+  "A provider name is required.": "A provider name is required.",
+  "The dateFormat property is required.": "The dateFormat property is required.",
+  "No device identifier has been defined.": "No device identifier has been defined.",
+  "No date and time defined.": "No date and time defined.",
+  "The date and time defined is incorrectly formatted. Reason:": "The date and time defined is incorrectly formatted. Reason:",
+  "No volume defined.": "No volume defined.",
+  "No cost defined.": "No cost defined.",
+  "No currency code defined.": "No currency code defined."
 }

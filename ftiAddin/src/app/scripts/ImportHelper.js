@@ -70,7 +70,7 @@ async function postFuelTransCallBatchesNewAsync(api, transactions, elProgressTex
 async function updateProgress(dividend, divisor, numberCompleted, total, elProgressText, elprogressBar) {
     return new Promise(resolve => {
         elprogressBar.value = (dividend / divisor) * 100;
-        elProgressText.innerText = numberCompleted + ' transaction/s of ' + total + ' processed...';
+        elProgressText.innerText = numberCompleted + state.translate(' transaction/s of ') + total + state.translate(' processed...');
         resolve();
     });
 }
