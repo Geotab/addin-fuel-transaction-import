@@ -74,7 +74,8 @@ function validateConfiguration(configuration) {
     if(dateFormatTestResult.ReturnValue === false)
     {
         output.isValid = false;
-        output.reason = state.translate('The date and time defined is incorrectly formatted. Reason: ') + dateFormatTestResult.Problem;
+        let validationText = state.translate('The date and time defined is incorrectly formatted. Reason:');
+        output.reason = validationText + ' ' + dateFormatTestResult.Problem;
         return output;
     }
 

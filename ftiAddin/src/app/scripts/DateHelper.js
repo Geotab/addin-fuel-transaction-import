@@ -97,7 +97,11 @@ function combineDateAndTime(date, time) {
    } else if ((isDateObject(date) == false) && (isDateObject(time) == false)) {
        return date.trim() + ' ' + time.trim();
    } else {
-      throw new DateError(`Date and/or time are in the incorrect state. Date: ${date}, Time: ${time}. Most likely one of them is formatted as a date and the other is not.`);
+      let errorPart1 = state.translate('Date and/or time are in the incorrect state. Date:');
+      let errorPart2 = state.translate('Time:');
+      let errorPart3 = state.translate('Most likely one of them is formatted as a date and the other is not.');
+      let errorMessage = `${errorPart1} ${date}, ${errorPart2} ${time}. ${errorPart3}`;
+      throw new DateError(errorMessage);
    }
 }
 
@@ -126,7 +130,7 @@ function getJSDate(configuration, inputDate) {
    let dateFormat;
 
    if (isEmpty(inputDate[0])) {
-      throw new DateError('No input date at inception of getJSDate.');
+      throw new DateError(state.translate('No input date at inception of getJSDate.'));
    } else {
        // date is populated
        if (inputDate[1]) {

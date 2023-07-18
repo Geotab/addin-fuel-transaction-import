@@ -61,7 +61,7 @@ function parseLuxonDateFormat(format) {
         // Contains - CAPITAL M, LOWER d and yy
     } else {
         output.ReturnValue = false;
-        output.Problem = 'Does not have a CAPITAL M and LOWER d and yy';
+        output.Problem = state.translate('Does not have a CAPITAL M and LOWER d and yy');
         return output;
     }
 
@@ -72,7 +72,7 @@ function parseLuxonDateFormat(format) {
             // Longer than 11 characters then must contain h and m = TRUE
         } else {
             output.ReturnValue = false;
-            output.Problem = 'Longer than 11 characters and does not contain h and m.';
+            output.Problem = state.translate('Longer than 11 characters and does not contain h and m.');
             return output;
         }
     }
@@ -82,20 +82,20 @@ function parseLuxonDateFormat(format) {
         // Contains only allowed characters.
     } else {
         output.ReturnValue = false;
-        output.Problem = 'Contains disallowed characters other than Y, M, D, h, m, s, S or Z.';
+        output.Problem = state.translate('Contains disallowed characters other than Y, M, D, h, m, s, S or Z.');
         return output;
     }
 
     // Test4 - Min number of characters = 6
     if (format.length < 6) {
         output.ReturnValue = false;
-        output.Problem = 'Shorter than 6 characters.';
+        output.Problem = state.translate('Shorter than 6 characters.');
         return output;
     }
     // Test5 - Max number of characters = 24
     if (format.length > 24) {
         output.ReturnValue = false;
-        output.Problem = 'Greater than 24 characters.';
+        output.Problem = state.translate('Greater than 24 characters.');
         return output;
     }
 

@@ -53,5 +53,14 @@
   "The date and time defined is incorrectly formatted. Reason:": "The date and time defined is incorrectly formatted. Reason:",
   "No volume defined.": "No volume defined.",
   "No cost defined.": "No cost defined.",
-  "No currency code defined.": "No currency code defined."
+  "No currency code defined.": "No currency code defined.",
+  "Date and/or time are in the incorrect state. Date:": "Date and/or time are in the incorrect state. Date:",
+  "Time:": "Time:",
+  "Most likely one of them is formatted as a date and the other is not.": "Most likely one of them is formatted as a date and the other is not.",
+  "No input date at inception of getJSDate.": "No input date at inception of getJSDate.",
+  "Does not have a CAPITAL M and LOWER d and yy": "Does not have a CAPITAL M and LOWER d and yy",
+  "Longer than 11 characters and does not contain h and m.": "Longer than 11 characters and does not contain h and m.",
+  "Contains disallowed characters other than Y, M, D, h, m, s, S or Z.": "Contains disallowed characters other than Y, M, D, h, m, s, S or Z.",
+  "Shorter than 6 characters.": "Shorter than 6 characters.",
+  "Greater than 24 characters.": "Greater than 24 characters."
 }
