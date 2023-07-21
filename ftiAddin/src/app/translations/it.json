@@ -1,5 +1,5 @@
 {
-  "Fuel Transaction Add-In": "Componente aggiuntivo per transazioni di carburante",
+  "Fuel Transaction Add-In": "Fuel Transaction Add-in",
   "Version": "Versione",
   "User Guide": "Guida utente",
   "Input Criteria": "Criteri di input",
@@ -7,7 +7,7 @@
   "Sheet number (1-50):": "Numero del foglio (1-50):",
   "Fuel provider:": "Fornitore di carburante:",
   "None selected": "Nessuno selezionato",
-  "Select the import File (XLS,XLSX):": "Seleziona il file di importazione (XLS, XLSX):",
+  "Select the import File (XLS, XLSX):": "Seleziona il file di importazione (XLS, XLSX):",
   "Reference Time zone:": "Fuso orario di riferimento:",
   "Import": "Importare",
   "Reset": "Ripristina",
