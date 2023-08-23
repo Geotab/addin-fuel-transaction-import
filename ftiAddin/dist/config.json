@@ -1,15 +1,16 @@
 {
-  "name": "Fuel Transaction Import",
+  "name": "Fuel Transaction Import Test",
   "supportEmail": "support@geotab.com",
-  "version": "4.0.3",
+  "version": "4.1.0",
   "items": [
     {
-      "url": "https://app.geotab.com/addins/geotab/addin-fuel-transaction-import/4.0.3/ftiAddin.html",
-      "path": "EngineMaintenanceLink/",
+      "url": "https://apptest.geotab.com/fuel-transaction-import-addin/4.1.0/ftiAddin.html",
+      "path": "SustainabilityId/",
       "menuName": {
-        "en": "Fuel Transaction Import"
+        "en": "FTI Test"
       },
-      "svgIcon": "https://app.geotab.com/addins/geotab/addin-fuel-transaction-import/4.0.3/images/icon.svg"
+      "svgIcon": "https://apptest.geotab.com/fuel-transaction-import-addin/4.1.0/images/icon.svg"
     }
-  ]
+  ],
+  "isSigned": false
 }
