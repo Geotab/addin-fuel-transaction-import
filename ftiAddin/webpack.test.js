@@ -20,10 +20,12 @@ const transform = function (content, path) {
     let config = JSON.parse(content);
     let host = config.dev.dist.host;
     let len = config.items.length;
+    config.name = config.dev.name;
     // Appending the host to all item's url and icon
     for(let i=0;i<len;i++){
         config.items[i].url = host + config.version + '/' + config.items[i].url;
         config.items[i].svgIcon = host + config.version + '/' + config.items[i].svgIcon; 
+        config.items[i].menuName.en = config.dev.menuName.en; 
     }
     delete config['dev'];
     delete config['prod'];
