@@ -4,19 +4,21 @@
   "version": "4.1.0",
   "items": [{
     "url": "ftiAddin.html",
-    "path": "EngineMaintenanceLink/",
+    "path": "SustainabilityId/",
     "menuName": {
       "en": "Fuel Transaction Import"
     },
     "svgIcon": "images/icon.svg"
   }],
+  "isSigned": false,
   "dev": {
+    "name":"Fuel Transaction Import Test",
     "root": "ftiAddin",
     "dist": {
       "host": "https://apptest.geotab.com/fuel-transaction-import-addin/"
     },
     "menuName": {
-      "en": "FTI Dev Addin"
+      "en": "FTI Test"
     }
   },
   "prod": {
@@ -25,7 +27,7 @@
       "host": "https://app.geotab.com/addins/geotab/addin-fuel-transaction-import/"
     },
     "menuName": {
-      "en": "FTI Add-In"
+      "en": "Fuel Transaction Import"
     }
   }
 }
