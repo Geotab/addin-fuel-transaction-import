@@ -70,7 +70,12 @@ async function postFuelTransCallBatchesNewAsync(api, transactions, elProgressTex
 async function updateProgress(dividend, divisor, numberCompleted, total, elProgressText, elprogressBar) {
     return new Promise(resolve => {
         elprogressBar.value = (dividend / divisor) * 100;
-        elProgressText.innerText = numberCompleted + state.translate(' transaction/s of ') + total + state.translate(' processed...');
+        if (typeof state != 'undefined') {
+            elProgressText.innerText = numberCompleted + state.translate(' transaction/s of ') + total + state.translate(' processed...');
+        }
+        else {
+            elProgressText.innerText = numberCompleted + ' transaction/s of ' + total + ' processed...';
+        }
         resolve();
     });
 }
@@ -124,8 +129,8 @@ function postFuelTransCallsPromise(api, transactions, importSummary) {
                         // console.log('Unexpected error instance, value: ' + error);
                         importSummary.errors.count += 1;
                         importSummary.errors.failedCalls.push([JSON.stringify(currentCall.entity), 'Unexpected error']);
-                    }                
-                resolve();
+                    }
+                    resolve();
                 });
 
         }));
