@@ -14,14 +14,16 @@ geotab.addin.ftiAddin = function () {
   const moment = require('moment-timezone');
   const XLSX = require('xlsx');
 
+  let versionNumber = '4.1.0';
   let api;
   let state;
   let currentUser;
   let currentUserTimeZoneId;
   /** The root container. */
-  var elAddin = document.getElementById('ftiAddin');
+  let elAddin = document.getElementById('ftiAddin');
+  let elVersion = document.getElementById('ftiVersion');
   /** The provider file input element. */
-  var elProviderFile = document.getElementById('providerFile');
+  let elProviderFile = document.getElementById('providerFile');
   /** The fuel provider dropdown box */
   let elProviderDropdown = document.getElementById('providerDropdown');
   /** The time zone dropdown */
@@ -91,7 +93,7 @@ geotab.addin.ftiAddin = function () {
   let selectFileText = 'Please select an import file.';
   let noFileSelectedText = 'No import file selected';
   let pleaseSelectFileText = 'Please select an import file prior to this operation.';
-  let progressHeadingText = 'Progress';
+  let versionText = 'Version';
 
   /**
    * Manages the provider file selection change event.
@@ -414,6 +416,7 @@ geotab.addin.ftiAddin = function () {
     elProviderDropdown.disabled = !isEnabled;
     elImportFile.disabled = !isEnabled;
     elTimeZoneDropdown.disabled = !isEnabled;
+    elSheetNumber.disabled = !isEnabled;
   }
 
   /**
@@ -608,6 +611,7 @@ geotab.addin.ftiAddin = function () {
     noFileSelectedText = state.translate(noFileSelectedText);
     pleaseSelectFileText = state.translate(pleaseSelectFileText);
     elProgressHeader.innerText = state.translate(elProgressHeader.innerText);
+    versionText = state.translate(versionText);
   }
 
   return {
@@ -626,13 +630,17 @@ geotab.addin.ftiAddin = function () {
       // set the global api reference.
       api = freshApi;
       state = freshState;
-      // Loading translations if available
+
+      // Loading HTML translations
       if (freshState.translate) {
         freshState.translate(elAddin || '');
       }
       // ToggleWindowState(true, false, false);
       addEvents();
       translateText();
+
+      // Add the version information
+      elVersion.innerText = versionText + ': ' + versionNumber;
 
       api.getSession(function (credentials, server) {
         api.call('Get', {
@@ -684,6 +692,9 @@ geotab.addin.ftiAddin = function () {
       // translateTitles();
 
       toggleWindowDisplayState(true, false, false);
+
+      // Add the version information
+      elVersion.innerText = versionText + ': ' + versionNumber;
 
       elAddin.className = '';
       // show main content
