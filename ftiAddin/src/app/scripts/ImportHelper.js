@@ -7,7 +7,7 @@
  * @param {number} batchSize The number of transaction calls to add per iteration.
  * @param {number} pauseLengthMs Time in milliseconds to pause between transaction call add iterations.
  */
-function importTransactionsPromise(api, transactions, elProgressText, elprogressBar, batchSize, pauseLengthMs) {
+function importTransactionsPromise(api, transactions, elProgressText, elprogressBar, batchSize, pauseLengthMs, transactionsOfText, processedText) {
 
     return new Promise ((resolve, reject) => {
 
@@ -20,7 +20,7 @@ function importTransactionsPromise(api, transactions, elProgressText, elprogress
             }
         }
 
-        postFuelTransCallBatchesNewAsync(api, transactions, elProgressText, elprogressBar, batchSize, pauseLengthMs, importSummary)
+        postFuelTransCallBatchesNewAsync(api, transactions, elProgressText, elprogressBar, batchSize, pauseLengthMs, importSummary, transactionsOfText, processedText)
         .then( _ => {
             resolve(importSummary);
         })
@@ -41,8 +41,9 @@ function importTransactionsPromise(api, transactions, elProgressText, elprogress
  * @param {number} pauseLengthMs Time in milliseconds to pause between transaction call add iterations.
  * @param {JSON} importSummary The import summary.
  */
-async function postFuelTransCallBatchesNewAsync(api, transactions, elProgressText, elprogressBar, batchSize, pauseLengthMs, importSummary) {
+async function postFuelTransCallBatchesNewAsync(api, transactions, elProgressText, elprogressBar, batchSize, pauseLengthMs, importSummary, transactionsOfText, processedText) {
 
+    // total number of transactions
     let transactionCount = transactions.length;
 
     let i = 0;
@@ -60,22 +61,27 @@ async function postFuelTransCallBatchesNewAsync(api, transactions, elProgressTex
             
             let transactionChunks = postFuelTransCallsPromise(api, transBatch, importSummary);
             await Promise.allSettled(transactionChunks);
-            await updateProgress(endPoint, transactionCount, endPoint, transactionCount, elProgressText, elprogressBar);
+            await updateProgress(endPoint, transactionCount, endPoint, transactionCount, elProgressText, elprogressBar, transactionsOfText, processedText);
             //await sleep(pauseLengthMs);
         }
         i++;
     }
 }
 
-async function updateProgress(dividend, divisor, numberCompleted, total, elProgressText, elprogressBar) {
+/**
+ * Updates the progess of the import task in terms of 
+ * @param {*} dividend 
+ * @param {*} divisor 
+ * @param {*} numberCompleted 
+ * @param {*} total 
+ * @param {*} elProgressText 
+ * @param {*} elprogressBar 
+ * @returns 
+ */
+async function updateProgress(dividend, divisor, numberCompleted, total, elProgressText, elprogressBar, transactionsOfText, processedText) {
     return new Promise(resolve => {
         elprogressBar.value = (dividend / divisor) * 100;
-        if (typeof state != 'undefined') {
-            elProgressText.innerText = numberCompleted + state.translate(' transaction/s of ') + total + state.translate(' processed...');
-        }
-        else {
-            elProgressText.innerText = numberCompleted + ' transaction/s of ' + total + ' processed...';
-        }
+        elProgressText.innerText = numberCompleted + '\u00a0' + transactionsOfText + '\u00a0' + total + '\u00a0' + processedText;
         resolve();
     });
 }

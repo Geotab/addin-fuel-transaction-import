@@ -94,6 +94,8 @@ geotab.addin.ftiAddin = function () {
   let noFileSelectedText = 'No import file selected';
   let pleaseSelectFileText = 'Please select an import file prior to this operation.';
   let versionText = 'Version';
+  let transactionsOfText = 'transaction/s of';
+  let processedText = 'processed...';
 
   /**
    * Manages the provider file selection change event.
@@ -357,21 +359,15 @@ geotab.addin.ftiAddin = function () {
       setOutputDisplay(workingText, parsingAndBuildingText)
       return transactionHelper.ParseAndBuildTransactionsAsync(
         transactionsLocal, configuration, api, remoteTimeZone, currentUserTimeZoneId);
-      // return transactionHelper.ParseAndBuildTransactionsPromiseTest(
-      //   transactionsLocal, configuration, api, remoteTimeZone, currentUserTimeZoneId);
     })
-    // .then((results) => {
-    //   return results.map(trans => {
-    //     return trans.value;
-    //   })
-    // })
     .then((results) => {
       resetOutputDiv();
       elSpinner.style.display = 'none';
       transactionsJson = results;
       toggleWindowDisplayState(true, true, true);
       if (transactionsJson) {
-        return importHelper.importTransactionsPromise(api, transactionsJson, elProgressText, elProgressBar, 200, 0);
+        // Import the transactions
+        return importHelper.importTransactionsPromise(api, transactionsJson, elProgressText, elProgressBar, 200, 0, transactionsOfText, processedText);
       } else {
         //setOutputDisplay('Data Issue', 'No transactions found. Please try again...');
         throw new ImportError(dataIssueText, noTransactionsFoundText);
@@ -612,6 +608,8 @@ geotab.addin.ftiAddin = function () {
     pleaseSelectFileText = state.translate(pleaseSelectFileText);
     elProgressHeader.innerText = state.translate(elProgressHeader.innerText);
     versionText = state.translate(versionText);
+    transactionsOfText = state.translate(transactionsOfText);
+    processedText = state.translate(processedText);
   }
 
   return {
