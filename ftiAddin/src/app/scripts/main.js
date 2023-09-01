@@ -96,6 +96,23 @@ geotab.addin.ftiAddin = function () {
   let versionText = 'Version';
   let transactionsOfText = 'transaction/s of';
   let processedText = 'processed...';
+  let validationMessages = {
+    providerNameRequired: 'A provider name is required.',
+    dateFormatRequired: 'The dateFormat property is required.',
+    noDeviceIdentifier: 'No device identifier has been defined.',
+    noDateTime: 'No date and time defined.',
+    dateTimeIncorrectFormat: 'The date and time defined is incorrectly formatted. Reason:',
+    noVolume: 'No volume defined.',
+    noCost: 'No cost defined.',
+    noCurrency: 'No currency code defined.'
+  };
+  let luxonDateParserMessages = {
+    condition1: 'Does not have a CAPITAL M and LOWER d and yy',
+    condition2: 'Longer than 11 characters and does not contain h and m.',
+    condition3: 'Contains disallowed characters other than Y, M, D, h, m, s, S or Z.',
+    condition4: 'Shorter than 6 characters.',
+    condition5: 'Greater than 24 characters.'
+  };
 
   /**
    * Manages the provider file selection change event.
@@ -346,7 +363,7 @@ geotab.addin.ftiAddin = function () {
     })
     .then(() => {
       // validate the configuration data
-      var result = configHelper.validateConfiguration(configuration);
+      var result = configHelper.validateConfiguration(configuration, validationMessages, luxonDateParserMessages);
       if (result.isValid === false) {
         var message = state.translate(validationProblemText);
         throw new ImportError(message, result.reason);
@@ -610,6 +627,19 @@ geotab.addin.ftiAddin = function () {
     versionText = state.translate(versionText);
     transactionsOfText = state.translate(transactionsOfText);
     processedText = state.translate(processedText);
+    validationMessages.dateFormatRequired = state.translate(validationMessages.dateFormatRequired);
+    validationMessages.dateTimeIncorrectFormat = state.translate(validationMessages.dateTimeIncorrectFormat);
+    validationMessages.noCost = state.translate(validationMessages.noCost);
+    validationMessages.noCurrency = state.translate(validationMessages.noCurrency);
+    validationMessages.noDateTime = state.translate(validationMessages.noDateTime);
+    validationMessages.noDeviceIdentifier = state.translate(validationMessages.noDeviceIdentifier);
+    validationMessages.noVolume = state.translate(validationMessages.noVolume);
+    validationMessages.providerNameRequired = state.translate(validationMessages.providerNameRequired);
+    luxonDateParserMessages.condition1 = state.translate(luxonDateParserMessages.condition1);
+    luxonDateParserMessages.condition2 = state.translate(luxonDateParserMessages.condition2);
+    luxonDateParserMessages.condition3 = state.translate(luxonDateParserMessages.condition3);
+    luxonDateParserMessages.condition4 = state.translate(luxonDateParserMessages.condition4);
+    luxonDateParserMessages.condition5 = state.translate(luxonDateParserMessages.condition5);
   }
 
   return {

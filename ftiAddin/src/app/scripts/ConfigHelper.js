@@ -21,7 +21,7 @@ const parsers = require('./Parsers');
  * 5. currencyCode - The three digit ISO 427 currency code (http://www.xe.com/iso4217.php). Default ['USD'].
  * @param {*} configuration A single item array containing a JsonObject with the provider configuration.
  */
-function validateConfiguration(configuration) {
+function validateConfiguration(configuration, validationMessages, luxonDateParserMessages) {
 
     var output = {
         isValid: false,
@@ -32,7 +32,8 @@ function validateConfiguration(configuration) {
     // Name is required
     if (!configuration.Name) {
         output.isValid = false;
-        output.reason = state.translate('A provider name is required.');
+        output.reason = validationMessages.providerNameRequired;
+        // output.reason = state.translate('A provider name is required.');
         return output;
     }
 
@@ -40,7 +41,8 @@ function validateConfiguration(configuration) {
     // dateFormat is required
     if (!configuration.dateFormat) {
         output.isValid = false;
-        output.reason = state.translate('The dateFormat property is required.');
+        output.reason = validationMessages.dateFormatRequired;
+        // output.reason = state.translate('The dateFormat property is required.');
         return output;
     }
 
@@ -57,7 +59,8 @@ function validateConfiguration(configuration) {
             output.isValid = true;
         } else {
             output.isValid = false;
-            output.reason = state.translate('No device identifier has been defined.');
+            output.reason = validationMessages.noDeviceIdentifier;
+            // output.reason = state.translate('No device identifier has been defined.');
             return output;
         };
     }
@@ -65,16 +68,18 @@ function validateConfiguration(configuration) {
     //dateTime presence validation
     if (!configuration.data['dateTime']) {
         output.isValid = false;
-        output.reason = state.translate('No date and time defined.');
+        output.reason = validationMessages.noDateTime;
+        // output.reason = state.translate('No date and time defined.');
         return output;
     }
 
     //dateTime format validation
-    var dateFormatTestResult = parsers.parseLuxonDateFormat(configuration.dateFormat);
+    var dateFormatTestResult = parsers.parseLuxonDateFormat(configuration.dateFormat, luxonDateParserMessages);
     if(dateFormatTestResult.ReturnValue === false)
     {
         output.isValid = false;
-        let validationText = state.translate('The date and time defined is incorrectly formatted. Reason:');
+        let validationText = validationMessages.dateTimeIncorrectFormat;
+        // let validationText = state.translate('The date and time defined is incorrectly formatted. Reason:');
         output.reason = validationText + ' ' + dateFormatTestResult.Problem;
         return output;
     }
@@ -82,14 +87,16 @@ function validateConfiguration(configuration) {
     //volume validation
     if (!configuration.data['volume']) {
         output.isValid = false;
-        output.reason = state.translate('No volume defined.');
+        output.reason = validationMessages.noVolume;
+        // output.reason = state.translate('No volume defined.');
         return output;
     }
 
     //cost validation
     if (!configuration.data['cost']) {
         output.isValid = false;
-        output.reason = state.translate('No cost defined.');
+        output.reason = validationMessages.noCost;
+        // output.reason = state.translate('No cost defined.');
         return output;
     }
 
@@ -98,7 +105,8 @@ function validateConfiguration(configuration) {
         if(!configuration.currencyCodeMapped)
         {
             output.isValid = false;
-            output.reason = state.translate('No currency code defined.');
+            output.reason = validationMessages.noCurrency;
+            // output.reason = state.translate('No currency code defined.');
             return output;
         }
     }
