@@ -82,6 +82,13 @@ function isDateObject(date) {
    return false;
 }
 
+function getDataType(date) {
+   switch (typeof(date)) {
+      case 'number':
+         return 
+   }
+}
+
 /**
  * The method combines two separate date and time values to produce a single date object;
  * @param {*} date The date representation of the new date/time.
@@ -108,14 +115,57 @@ function combineDateAndTime(date, time) {
 /**
  * Using the Luxon library a JavaScript date is produced from a date string and it's relevant format.
  * Uses the Luxon library implementation.
- * @param {*} dateString 
- * @param {*} format 
+ * @param {string} dateString A date in string format.
+ * @param {string} format A luxon format string.
  * @returns 
  */
 function getJSDateFromString(dateString, format) {
    const date = DateTime.fromFormat(dateString, format);
    return date.toJSDate();
 }
+
+/**
+ * Replaces getJSDate
+ * @param {JSON} configuration 
+ * @param {Array} inputDate 
+ */
+function getDate(configuration, inputDate) {
+   let output;
+   let date;
+   let dateFormat = getDateFormat(configuration, inputDate);
+   let isTimePresent = false;
+
+   // Check the pre-conditions
+   if (isEmpty(inputDate[0])) {
+      throw new DateError('Pre-Condition: No input date found.');
+   }
+   if (isEmpty(configuration.dateFormat)) {
+      throw new DateError('Pre-Condition: No configuration dateFormat found.');
+   }
+   isTimePresent = (isEmpty(inputDate[1]) === false);
+   if (isTimePresent && (isEmpty(configuration.timeFormat))) {
+      throw new DateError('Pre-Condition: Time found with no configuration timeFormat provided.');
+   }
+
+   switch (typeof (inputDate[0])) {
+      case 'string':
+         date = isTimePresent ? combineDateAndTime(inputDate[0], inputDate[1]) : inputDate[0];
+         output = getJSDateFromString(date, dateFormat);
+         break;
+      case 'object':
+         output = isTimePresent ? combineDateAndTime(inputDate[0], inputDate[1]) : inputDate[0];
+         break;
+      case 'number':
+         date = isTimePresent ? combineDateAndTime(inputDate[0].toString(), inputDate[1].toString()) : inputDate[0].toString();
+         output = getJSDateFromString(date, dateFormat);
+         break;
+      default:
+         throw new DateError('Unexpected date format received.');
+   }
+
+   return output;
+}
+
 
 /**
  * Gets a valid javascript date from the input data if possible
@@ -167,6 +217,25 @@ function getJSDate(configuration, inputDate) {
 }
 
 /**
+ * Retreives the date and time format string to be used for the Luxon API request.
+ * @param {Object} configuration The configuration object
+ * @param {Array} inputDate The date and/or time array
+ * @returns 
+ */
+function getDateFormat(configuration, inputDate) {
+   if (inputDate[1]){
+      if ((configuration.dateFormat) && (configuration.timeFormat)) {
+            return configuration.dateFormat + ' ' + configuration.timeFormat;
+      } else {
+         // the time format has not been supplied and therefore an exception.
+         throw new DateError('The time has been supplied but no time format has been provided in the configuration file.');
+      }
+   } else {
+      return configuration.dateFormat;
+   }
+}
+
+/**
  * The primary date parsing method.
  * @param {*} configuration The JSON configuration
  * @param {*} inputDate The input date array
@@ -183,5 +252,6 @@ function parseDate(configuration, inputDate, remoteZone, localZone) {
 module.exports = {
    parseDate,
    getDateAdjusted,
-   getJSDate
+   getJSDate,
+   getDate
 }
