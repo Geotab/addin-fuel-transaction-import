@@ -29,6 +29,7 @@ function ParseAndBuildTransactionsAsync(
                     transactionsOutput.push(entity);
                 }
                 catch(error) {
+                    // Transactions are rejected if they cannot be parsed before the import process.
                     reject(error);
                 }
             }
