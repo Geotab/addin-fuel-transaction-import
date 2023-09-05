@@ -1,12 +1,13 @@
 'use strict';
 
 const { DateTime } = require('luxon');
-
-class DateError extends Error {
-   constructor(message) {
-     super(message);
-   }
-}
+const { DateError } = require('./date-error');
+ 
+// class DateError extends Error {
+//    constructor(message) {
+//      super(message);
+//    }
+// }
 
 /**
  * Formats a date/time unit to 2 places if only a single value.
@@ -121,6 +122,9 @@ function combineDateAndTime(date, time) {
  */
 function getJSDateFromString(dateString, format) {
    const date = DateTime.fromFormat(dateString, format);
+   if (date.isValid === false) {
+      throw new DateError('Invalid date found.');
+   }
    return date.toJSDate();
 }
 
@@ -244,7 +248,8 @@ function getDateFormat(configuration, inputDate) {
  * @returns An accurate JavaScript date for the relevant transaction.
  */
 function parseDate(configuration, inputDate, remoteZone, localZone) {
-   const jsDate = getJSDate(configuration, inputDate);
+   const jsDate = getDate(configuration, inputDate);
+   // const jsDate = getJSDate(configuration, inputDate);
    const outputDate = getDateAdjusted(jsDate, remoteZone, localZone);
    return outputDate;
 }

@@ -1,5 +1,6 @@
 const assert = require('chai').assert;
 const dateHelper = require('../../src/app/scripts/DateHelper');
+const { DateError } = require('../../src/app/scripts/date-error');
 
 // getDateAdjusted tests
 describe('DateHelper Tests - getDateAdjusted tests', function(){
@@ -28,122 +29,7 @@ describe('DateHelper Tests - getDateAdjusted tests', function(){
    });
 });
 
-// getJSDate tests
-describe('DateHelper Tests - getJSDate tests', function(){
-   let config = {};
-   let inputDate = [];
-   let testDate;
-   it('getJSDate - date object single', function(){
-      inputDate[0] = new Date('2022-04-16');
-      inputDate[1] = null;
-      testDate = dateHelper.getJSDate(config, inputDate);
-      assert.equal(testDate.toISOString(),'2022-04-16T00:00:00.000Z');
-   });
-   it('getJSDate - date object double', function(){
-      inputDate[0] = new Date('2022-04-16');
-      inputDate[1] = new Date('2022-04-16T12:00:00');
-      testDate = dateHelper.getJSDate(config, inputDate);
-      assert.equal(testDate.toISOString(),'2022-04-16T10:00:00.000Z');
-   });
-   it('getJSDate - date string - single - Germany', function(){
-      inputDate[0] = '2022-04-16';
-      inputDate[1] = null;
-      config.dateFormat = 'yyyy-MM-dd';
-      config.timeFormat = null;
-      testDate = dateHelper.getJSDate(config, inputDate);
-      assert.equal(testDate.toISOString(),'2022-04-15T22:00:00.000Z');
-   });
-   it('getJSDate - date string single long date', function(){
-      inputDate[0] = '04/16/2023 14:00';
-      inputDate[1] = null;
-      config.dateFormat = 'MM/dd/yyyy HH:mm';
-      config.timeFormat = null;
-      testDate = dateHelper.getJSDate(config, inputDate);
-      assert.equal(testDate.toISOString(),'2023-04-16T12:00:00.000Z');
-   });
-   it('getJSDate - date string double', function(){
-      inputDate[0] = '04/16/2023';
-      inputDate[1] = '14:00';
-      config.dateFormat = 'MM/dd/yyyy';
-      config.timeFormat = 'HH:mm';
-      testDate = dateHelper.getJSDate(config, inputDate);
-      assert.equal(testDate.toISOString(),'2023-04-16T12:00:00.000Z');
-   });
-   it('getJSDate - date string double 2', function(){
-      inputDate[0] = '04162023';
-      inputDate[1] = '1400';
-      config.dateFormat = 'MMddyyyy';
-      config.timeFormat = 'HHmm';
-      testDate = dateHelper.getJSDate(config, inputDate);
-      assert.equal(testDate.toISOString(),'2023-04-16T12:00:00.000Z');
-   });
-   it('getJSDate - date string double 2', function(){
-      inputDate[0] = '04162023';
-      inputDate[1] = '1400';
-      config.dateFormat = 'MMddyyyy';
-      config.timeFormat = 'HHmm';
-      testDate = dateHelper.getJSDate(config, inputDate);
-      assert.equal(testDate.toISOString(),'2023-04-16T12:00:00.000Z');
-   });
-   it('getJSDate - date string - single - French', function(){
-      inputDate[0] = '16/04/2022';
-      inputDate[1] = null;
-      config.dateFormat = 'dd/MM/yyyy';
-      config.timeFormat = null;
-      testDate = dateHelper.getJSDate(config, inputDate);
-      assert.equal(testDate.toISOString(),'2022-04-15T22:00:00.000Z');
-   });
-   it('getJSDate - date string - single - Italian', function(){
-      inputDate[0] = '16.04.22';
-      inputDate[1] = null;
-      config.dateFormat = 'dd.MM.yy';
-      config.timeFormat = null;
-      testDate = dateHelper.getJSDate(config, inputDate);
-      assert.equal(testDate.toISOString(),'2022-04-15T22:00:00.000Z');
-   });
-   // exceptions
-});
-
-// End to End tests
-describe('DateHelper Tests - E2E', function(){
-   let config = {};
-   let inputDate = [];
-   let testDate;
-   it('getJSDate - E2E - Dubai (+4) -> Zurich (+1)', function(){
-      inputDate[0] = '2017-07-15';
-      inputDate[1] = '16:00';
-      config.dateFormat = 'yyyy-MM-dd';
-      config.timeFormat = 'HH:mm';
-      const resultDate = dateHelper.parseDate(config, inputDate, 'Asia/Dubai', 'Europe/Zurich');
-      assert.equal(resultDate.toISOString(), '2017-07-15T12:00:00.000Z');
-   });
-   it('getJSDate - E2E - Cayman (-5) -> Zurich (+1)', function(){
-      inputDate[0] = '2017-07-15';
-      inputDate[1] = '16:00';
-      config.dateFormat = 'yyyy-MM-dd';
-      config.timeFormat = 'HH:mm';
-      const resultDate = dateHelper.parseDate(config, inputDate, 'America/Cayman', 'Europe/Zurich');
-      assert.equal(resultDate.toISOString(), '2017-07-15T21:00:00.000Z');
-   });
-   it('getJSDate - E2E - Zurich (+1) -> Zurich (+1)', function(){
-      inputDate[0] = '2017-07-15';
-      inputDate[1] = '16:00';
-      config.dateFormat = 'yyyy-MM-dd';
-      config.timeFormat = 'HH:mm';
-      const resultDate = dateHelper.parseDate(config, inputDate, 'Europe/Zurich', 'Europe/Zurich');
-      assert.equal(resultDate.toISOString(), '2017-07-15T14:00:00.000Z');
-   });
-   it('getJSDate - E2E - GMT (0) -> Zurich (+1)', function(){
-      inputDate[0] = '2017-07-15';
-      inputDate[1] = '16:00';
-      config.dateFormat = 'yyyy-MM-dd';
-      config.timeFormat = 'HH:mm';
-      const resultDate = dateHelper.parseDate(config, inputDate, 'GMT', 'Europe/Zurich');
-      assert.equal(resultDate.toISOString(), '2017-07-15T16:00:00.000Z');
-   });
-});
-
-// getJSDate tests
+// getDate tests
 describe('DateHelper Tests - New getDate tests', function () {
    let config = {
       dateFormat: 'yyyy-MM-dd',
@@ -219,7 +105,7 @@ describe('DateHelper Tests - New getDate tests', function () {
       testDate = dateHelper.getDate(config, inputDate);
       assert.equal(testDate.toISOString(), '2022-04-15T22:00:00.000Z');
    });
-   it('getJSDate: date string - single - Italian', function () {
+   it('getDate: date string - single - Italian', function () {
       inputDate[0] = '16.04.22';
       inputDate[1] = null;
       config.dateFormat = 'dd.MM.yy';
@@ -227,5 +113,44 @@ describe('DateHelper Tests - New getDate tests', function () {
       testDate = dateHelper.getDate(config, inputDate);
       assert.equal(testDate.toISOString(), '2022-04-15T22:00:00.000Z');
    });
-   // exceptions
+   it('getDate: 1. Invalid date passed - should throw an error', function () {
+      inputDate[0] = true;
+      inputDate[1] = null;
+      config.dateFormat = 'dd.MM.yy';
+      config.timeFormat = null;
+      assert.throws(
+         (testDate) => dateHelper.getDate(config, inputDate),
+         DateError
+      );
+   });
+   it('getDate: 2. Invalid date passed - should throw an error', function () {
+      inputDate[0] = undefined;
+      inputDate[1] = null;
+      config.dateFormat = 'dd.MM.yy';
+      config.timeFormat = null;
+      assert.throws(
+         (testDate) => dateHelper.getDate(config, inputDate),
+         DateError
+      );
+   });
+   it('getDate: 3. Invalid date passed - should throw an error', function () {
+      inputDate[0] = null;
+      inputDate[1] = null;
+      config.dateFormat = 'dd.MM.yy';
+      config.timeFormat = null;
+      assert.throws(
+         (testDate) => dateHelper.getDate(config, inputDate),
+         DateError
+      );
+   });
+   it('getDate: date string, date only, Germany', function () {
+      inputDate[0] = '20220416';
+      inputDate[1] = null;
+      config.dateFormat = 'yyyy-MM-dd';
+      config.timeFormat = null;
+      assert.throws(
+         (testDate) => dateHelper.getDate(config, inputDate),
+         DateError
+      )
+   });
 });

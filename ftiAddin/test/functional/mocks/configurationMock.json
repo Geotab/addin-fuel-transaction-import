@@ -5,7 +5,7 @@
       "unitVolumeLiters": "Y",
       "unitOdoKm": "Y",
       "isCellDateType": "Y",
-      "dateFormat": "DD/MM/YYYY",
+      "dateFormat": "MM/dd/yyyy HH:mm:ss",
       "timeFormat": "",
       "currencyCodeMapped": "USD",
       "data": {
@@ -40,7 +40,7 @@
       "unitVolumeLiters": "Y",
       "unitOdoKm": "Y",
       "isCellDateType": "N",
-      "dateFormat": "DD/MM/YYYY",
+      "dateFormat": "dd/MM/yyyy",
       "timeFormat": "",
       "currencyCodeMapped": "USD",
       "data": {
@@ -100,7 +100,7 @@
       "unitVolumeLiters": "",
       "unitOdoKm": "",
       "isCellDateType": "",
-      "dateFormat": "DD/MM/YYYY",
+      "dateFormat": "dd/MM/yyyy",
       "timeFormat": "",
       "currencyCodeMapped": "",
       "data": {
@@ -127,7 +127,7 @@
       "unitVolumeLiters": "",
       "unitOdoKm": "",
       "isCellDateType": "",
-      "dateFormat": "DD/MM/YYYY",
+      "dateFormat": "dd/MM/yyyy",
       "timeFormat": "",
       "currencyCodeMapped": "",
       "data": {
@@ -157,7 +157,7 @@
         "unitVolumeLiters": "",
         "unitOdoKm": "",
         "isCellDateType": "",
-        "dateFormat": "DD/MM/YYYY",
+        "dateFormat": "dd/MM/yyyy",
         "timeFormat": "HH:mm:ss",
         "currencyCodeMapped": "",
         "data": {
