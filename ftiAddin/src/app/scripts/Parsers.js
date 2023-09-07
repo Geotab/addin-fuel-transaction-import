@@ -38,7 +38,10 @@ function parseStringLength(string, length) {
  */
 var parseFloatValue = function (float) {
     var value = parseFloat(float);
-    return isNaN(value) ? 0.0 : value;
+    if(isNaN(value)){
+        throw new Error(`A numeric input (cost, odometer or volume etc.) with value: ${float} is not a valid number (float).`);
+    }
+    return value;
 };
 
 function isEmpty(value) {

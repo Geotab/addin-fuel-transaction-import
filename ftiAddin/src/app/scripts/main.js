@@ -113,6 +113,11 @@ geotab.addin.ftiAddin = function () {
     condition4: 'Shorter than 6 characters.',
     condition5: 'Greater than 24 characters.'
   };
+  let combineDateTimeErrorMessageTranslations = {
+    part1: 'Date and/or time are in the incorrect state. Date:',
+    part2: 'Time:',
+    part3: 'Most likely one of them is formatted as a date and the other is not.'
+  };
 
   /**
    * Manages the provider file selection change event.
@@ -375,7 +380,7 @@ geotab.addin.ftiAddin = function () {
       const remoteTimeZone = elTimeZoneDropdown.options[elTimeZoneDropdown.selectedIndex].value;
       setOutputDisplay(workingText, parsingAndBuildingText)
       return transactionHelper.ParseAndBuildTransactionsAsync(
-        transactionsLocal, configuration, api, remoteTimeZone, currentUserTimeZoneId);
+        transactionsLocal, configuration, api, remoteTimeZone, currentUserTimeZoneId, combineDateTimeErrorMessageTranslations);
     })
     .then((results) => {
       resetOutputDiv();
@@ -640,6 +645,9 @@ geotab.addin.ftiAddin = function () {
     luxonDateParserMessages.condition3 = state.translate(luxonDateParserMessages.condition3);
     luxonDateParserMessages.condition4 = state.translate(luxonDateParserMessages.condition4);
     luxonDateParserMessages.condition5 = state.translate(luxonDateParserMessages.condition5);
+    combineDateTimeErrorMessageTranslations.part1 = state.translate(combineDateTimeErrorMessageTranslations.part1);
+    combineDateTimeErrorMessageTranslations.part2 = state.translate(combineDateTimeErrorMessageTranslations.part2);
+    combineDateTimeErrorMessageTranslations.part3 = state.translate(combineDateTimeErrorMessageTranslations.part3);
   }
 
   return {

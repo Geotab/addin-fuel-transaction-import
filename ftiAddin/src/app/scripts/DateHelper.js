@@ -94,9 +94,10 @@ function getDataType(date) {
  * The method combines two separate date and time values to produce a single date object;
  * @param {*} date The date representation of the new date/time.
  * @param {*} time The time representation of the new date/time.
+ * @param {object} Contains the error message translations
  * @returns A new date/time object combining the date and time inputs to a single date. If the inputs don't match any expected value a null is returned.
  */
-function combineDateAndTime(date, time) {
+function combineDateAndTime(date, time, combineDateTimeErrorMessageTranslations) {
    // if the date and time are date objects
    if ((isDateObject(date)) && (isDateObject(time))) {
       const datetime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 
@@ -105,10 +106,7 @@ function combineDateAndTime(date, time) {
    } else if ((isDateObject(date) == false) && (isDateObject(time) == false)) {
        return date.trim() + ' ' + time.trim();
    } else {
-      let errorPart1 = state.translate('Date and/or time are in the incorrect state. Date:');
-      let errorPart2 = state.translate('Time:');
-      let errorPart3 = state.translate('Most likely one of them is formatted as a date and the other is not.');
-      let errorMessage = `${errorPart1} ${date}, ${errorPart2} ${time}. ${errorPart3}`;
+      let errorMessage = `${combineDateTimeErrorMessageTranslations.part1} ${date}, ${combineDateTimeErrorMessageTranslations.part2} ${time}. ${combineDateTimeErrorMessageTranslations.part3}`;
       throw new DateError(errorMessage);
    }
 }
@@ -130,10 +128,11 @@ function getJSDateFromString(dateString, format) {
 
 /**
  * Replaces getJSDate
- * @param {JSON} configuration 
- * @param {Array} inputDate 
+ * @param {JSON} configuration The import configuration.
+ * @param {Array} inputDate The input date array containing the date and/or the time.
+ * @param {object} Contains the error message translations for the combineDateAndTime method.
  */
-function getDate(configuration, inputDate) {
+function getDate(configuration, inputDate, combineDateTimeErrorMessageTranslations) {
    let output;
    let date;
    let dateFormat = getDateFormat(configuration, inputDate);
@@ -153,14 +152,14 @@ function getDate(configuration, inputDate) {
 
    switch (typeof (inputDate[0])) {
       case 'string':
-         date = isTimePresent ? combineDateAndTime(inputDate[0], inputDate[1]) : inputDate[0];
+         date = isTimePresent ? combineDateAndTime(inputDate[0], inputDate[1], combineDateTimeErrorMessageTranslations) : inputDate[0];
          output = getJSDateFromString(date, dateFormat);
          break;
       case 'object':
-         output = isTimePresent ? combineDateAndTime(inputDate[0], inputDate[1]) : inputDate[0];
+         output = isTimePresent ? combineDateAndTime(inputDate[0], inputDate[1], combineDateTimeErrorMessageTranslations) : inputDate[0];
          break;
       case 'number':
-         date = isTimePresent ? combineDateAndTime(inputDate[0].toString(), inputDate[1].toString()) : inputDate[0].toString();
+         date = isTimePresent ? combineDateAndTime(inputDate[0].toString(), inputDate[1].toString(), combineDateTimeErrorMessageTranslations) : inputDate[0].toString();
          output = getJSDateFromString(date, dateFormat);
          break;
       default:
@@ -184,6 +183,7 @@ function getJSDate(configuration, inputDate) {
    let dateFormat;
 
    if (isEmpty(inputDate[0])) {
+      //TODO: state issue to fix.
       throw new DateError(state.translate('No input date at inception of getJSDate.'));
    } else {
        // date is populated
@@ -245,10 +245,11 @@ function getDateFormat(configuration, inputDate) {
  * @param {*} inputDate The input date array
  * @param {*} remoteZone The remote time zone. The transaction time zone.
  * @param {*} localZone The local import time zone.
+ * @param {object} Contains the error message translations for the combineDateAndTime method.
  * @returns An accurate JavaScript date for the relevant transaction.
  */
-function parseDate(configuration, inputDate, remoteZone, localZone) {
-   const jsDate = getDate(configuration, inputDate);
+function parseDate(configuration, inputDate, remoteZone, localZone, combineDateTimeErrorMessageTranslations) {
+   const jsDate = getDate(configuration, inputDate, combineDateTimeErrorMessageTranslations);
    // const jsDate = getJSDate(configuration, inputDate);
    const outputDate = getDateAdjusted(jsDate, remoteZone, localZone);
    return outputDate;

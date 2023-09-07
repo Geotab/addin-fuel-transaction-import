@@ -10,10 +10,18 @@ const myGeotabHelper = require('./MyGeotabHelper');
  * @param {JSON} configuration The fuel provider configuration.
  * @param {String} timeZone The time zone.
  * @param {Object} api The MyGeotab API service.
+ * @param {*} remoteZone The remote time zone. The transaction time zone.
+ * @param {*} localZone The local import time zone.
+ * @param {object} Contains the error message translations for the combineDateAndTime method.
  * @returns The final parsed and ready for import transactions.
  */
 function ParseAndBuildTransactionsAsync(
-    transactionsRaw, configuration, api, remoteTimeZone, localTimeZone) {
+        transactionsRaw, 
+        configuration, 
+        api, 
+        remoteTimeZone, 
+        localTimeZone, 
+        combineDateTimeTranslations) {
     return new Promise(async (resolve, reject) => {
         let transactionsOutput = [];
         let entity;
@@ -24,7 +32,7 @@ function ParseAndBuildTransactionsAsync(
             } else {
                 try {
                     entity = await parseTransactionAsync(
-                        transaction, configuration, api, remoteTimeZone, localTimeZone);
+                        transaction, configuration, api, remoteTimeZone, localTimeZone, combineDateTimeTranslations);
                     // console.log('parsed transaction entity: ' + entity);
                     transactionsOutput.push(entity);
                 }
@@ -40,17 +48,18 @@ function ParseAndBuildTransactionsAsync(
 }
 
 function ParseAndBuildTransactionsPromiseTest(
-                    transactionsRaw, 
-                    configuration, 
-                    api, 
-                    remoteTimeZone, 
-                    localTimeZone) {
+        transactionsRaw, 
+        configuration, 
+        api, 
+        remoteTimeZone, 
+        localTimeZone, 
+        combineDateTimeTranslations) {
     // let transactionsOutput = [];
     // Remove the first item in the array. It is the excel header row.
     transactionsRaw.shift();
     console.log('Before map.');
     const promises = transactionsRaw.map( transaction => {
-         return parseTransactionAsync(transaction, configuration, api, remoteTimeZone, localTimeZone);
+        return parseTransactionAsync(transaction, configuration, api, remoteTimeZone, localTimeZone, combineDateTimeTranslations);
         });
         // let entity = await parseTransactionAsync(
         //     transaction, configuration, api, remoteTimeZone, localTimeZone);
@@ -95,9 +104,11 @@ function GetColumnText(sourceString, prefixString)
  * @param {JSON} configuration The configuration for this instance. Shows each transaction property and it's relative mapping like "cardNumber": "ColumnA", "comments": "ColumnB" etc.
  * @param {String} timeZone The currently selected time zone.
  * @param {Object} api The MyGeotab API service.
+ * @param {*} remoteZone The remote time zone. The transaction time zone.
+ * @param {*} localZone The local import time zone.
  * @returns A FuelTransaction entity ready to be imported into the database.
  */
-async function parseTransactionAsync(transactionRaw, configuration, api, remoteTimeZone, localTimeZone) {
+async function parseTransactionAsync(transactionRaw, configuration, api, remoteTimeZone, localTimeZone,                 combineDateTimeTranslations) {
 
     if (transactionRaw === undefined) {
         throw new Error('parseTransaction transaction argument not submitted.');
@@ -155,7 +166,7 @@ async function parseTransactionAsync(transactionRaw, configuration, api, remoteT
                         }
                         break;
                     case 'dateTime':
-                        entity[key] = dateHelper.parseDate(configuration, value, remoteTimeZone, localTimeZone);
+                        entity[key] = dateHelper.parseDate(configuration, value, remoteTimeZone, localTimeZone, combineDateTimeTranslations);
                         break;
                     case 'location':
                         entity[key] = parsers.parseLocation(value);
