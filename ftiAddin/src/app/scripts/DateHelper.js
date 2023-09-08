@@ -2,7 +2,7 @@
 
 const { DateTime } = require('luxon');
 const { DateError } = require('./date-error');
- 
+
 // class DateError extends Error {
 //    constructor(message) {
 //      super(message);
@@ -29,13 +29,13 @@ function formatDateUnit(unit) {
  * @returns An ISO 8601 formatted date e.g. 2017-07-15T14:00:00.000
  */
 function getISODateFormat(date) {
-   const myDate = 
-      date.getFullYear() + '-' 
-      + formatDateUnit(date.getMonth() + 1) + '-' 
+   const myDate =
+      date.getFullYear() + '-'
+      + formatDateUnit(date.getMonth() + 1) + '-'
       + formatDateUnit(date.getDate());
-   const myTime = 
-      formatDateUnit(date.getHours()) + ':' 
-      + formatDateUnit(date.getMinutes()) + ':' 
+   const myTime =
+      formatDateUnit(date.getHours()) + ':'
+      + formatDateUnit(date.getMinutes()) + ':'
       + formatDateUnit(date.getSeconds()) + '.000';
    const isoDate = myDate + 'T' + myTime;
    //console.log(`isoDate ${isoDate}`);
@@ -78,15 +78,15 @@ function isEmpty(value) {
  */
 function isDateObject(date) {
    if (typeof (date) == 'object') {
-       return true;
+      return true;
    }
    return false;
 }
 
 function getDataType(date) {
-   switch (typeof(date)) {
+   switch (typeof (date)) {
       case 'number':
-         return 
+         return
    }
 }
 
@@ -100,11 +100,11 @@ function getDataType(date) {
 function combineDateAndTime(date, time, combineDateTimeErrorMessageTranslations) {
    // if the date and time are date objects
    if ((isDateObject(date)) && (isDateObject(time))) {
-      const datetime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 
-                        time.getHours(), time.getMinutes(), time.getSeconds());
+      const datetime = new Date(date.getFullYear(), date.getMonth(), date.getDate(),
+         time.getHours(), time.getMinutes(), time.getSeconds());
       return datetime;
    } else if ((isDateObject(date) == false) && (isDateObject(time) == false)) {
-       return date.trim() + ' ' + time.trim();
+      return date.trim() + ' ' + time.trim();
    } else {
       let errorMessage = `${combineDateTimeErrorMessageTranslations.part1} ${date}, ${combineDateTimeErrorMessageTranslations.part2} ${time}. ${combineDateTimeErrorMessageTranslations.part3}`;
       throw new DateError(errorMessage);
@@ -172,12 +172,13 @@ function getDate(configuration, inputDate, combineDateTimeErrorMessageTranslatio
 
 /**
  * Gets a valid javascript date from the input data if possible
+ * @deprecated since version 4.1.0 will be deleted in the next release. Use getDate instead.
  * @param {JSON} configuration JSON configuration.
  * @param {*} inputDate The input date.
  * @returns A JavaScript date Object
  */
 function getJSDate(configuration, inputDate) {
-   
+
    let output;
    let date;
    let dateFormat;
@@ -186,36 +187,34 @@ function getJSDate(configuration, inputDate) {
       //TODO: state issue to fix.
       throw new DateError(state.translate('No input date at inception of getJSDate.'));
    } else {
-       // date is populated
-       if (inputDate[1]) {
-           // time is populated
-           date = combineDateAndTime(inputDate[0], inputDate[1]);
-           if (isDateObject(date) === false)
-           {
-               // the date is a string object and therefore requires a format.
-               // Both date and time formats must be provided as the date and time are stored in separate columns.
-               if ((configuration.dateFormat) && (configuration.timeFormat)) {
-                     dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
-               } else {
-                  // the time format has not been supplied and therefore an exception.
-                  return null;
-               }
-               // get the javascript date from the string format
-               output = getJSDateFromString(date, dateFormat);
+      // date is populated
+      if (inputDate[1]) {
+         // time is populated
+         date = combineDateAndTime(inputDate[0], inputDate[1]);
+         if (isDateObject(date) === false) {
+            // the date is a string object and therefore requires a format.
+            // Both date and time formats must be provided as the date and time are stored in separate columns.
+            if ((configuration.dateFormat) && (configuration.timeFormat)) {
+               dateFormat = configuration.dateFormat + ' ' + configuration.timeFormat;
             } else {
-               output = date;
+               // the time format has not been supplied and therefore an exception.
+               return null;
             }
-       } else {
+            // get the javascript date from the string format
+            output = getJSDateFromString(date, dateFormat);
+         } else {
+            output = date;
+         }
+      } else {
          // time is NOT populated. date and time contained in a single cell.
          date = inputDate[0];
-         if (isDateObject(date) === false)
-         {
+         if (isDateObject(date) === false) {
             dateFormat = configuration.dateFormat
             output = getJSDateFromString(date, dateFormat);
          } else {
             output = date;
          }
-       }
+      }
    }
    return output;
 }
@@ -227,9 +226,9 @@ function getJSDate(configuration, inputDate) {
  * @returns 
  */
 function getDateFormat(configuration, inputDate) {
-   if (inputDate[1]){
+   if (inputDate[1]) {
       if ((configuration.dateFormat) && (configuration.timeFormat)) {
-            return configuration.dateFormat + ' ' + configuration.timeFormat;
+         return configuration.dateFormat + ' ' + configuration.timeFormat;
       } else {
          // the time format has not been supplied and therefore an exception.
          throw new DateError('The time has been supplied but no time format has been provided in the configuration file.');
@@ -258,6 +257,5 @@ function parseDate(configuration, inputDate, remoteZone, localZone, combineDateT
 module.exports = {
    parseDate,
    getDateAdjusted,
-   getJSDate,
    getDate
 }
