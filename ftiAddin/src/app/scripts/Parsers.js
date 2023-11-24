@@ -1,11 +1,37 @@
 const moment = require('moment-timezone');
 
+function isString(value) {
+    return typeof value === 'string' || value instanceof String
+}
+
+/**
+ * Confirms that the input is a string and that it is not longer than the length specified. If it is not a string a string conversion is attempted. If it is longer than the length specified it is truncated to that length.
+ * @param {*} s The input value to check.
+ * @param {*} len The length to check.
+ * @returns A string value.
+ */
+const parseString = (s, len) => {
+    if (isString(s) === false) {        
+        try {
+            s = s.toString();
+        } catch (error) {       
+            throw new Error(`The expected string value ${s} is not a string and failed a string conversion.`);
+        }
+    }
+    return parseStringLength(s, len);
+}
+
 /**
  * Parses string values and returns a zero length string empty values.
  * @param {*} s The string to parse.
  * @returns The string returned.
  */
 var parseStringValue = function (s) {
+
+    //  if (isString(s) === false) {
+    //     throw new Error(`A string input with value: ${s} is not a valid string.`);
+    // }
+
     let length = s.length;
     if (length > 0 && s[0] === '"') {
         s = s.substring(1, s.length);
@@ -183,5 +209,6 @@ module.exports = {
     getHeadings,
     addBlanckColumn,
     parseLuxonDateFormat,
-    parseLocation
+    parseLocation,
+    parseString
 }

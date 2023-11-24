@@ -172,20 +172,23 @@ async function parseTransactionAsync(transactionRaw, configuration, api, remoteT
                         entity[key] = parsers.parseLocation(value);
                         break;
                     case 'licencePlate':
-                        entity[key] = parsers.parseStringLength(value[0].toString(), 255).trim();
+                        entity[key] = parsers.parseString(value[0], 255);
+                        //entity[key] = parsers.parseStringLength(value[0].toString(), 255).trim();
                         break;
                     case 'comments':
-                        entity[key] = parsers.parseStringValue(parsers.parseStringLength(value[0], 1024));
+                        entity[key] = parsers.parseString(value[0], 1024);
+                        //entity[key] = parsers.parseStringValue(parsers.parseStringLength(value[0], 1024));
                         break;
                     case 'description':
-                        entity[key] = parsers.parseStringValue(parsers.parseStringLength(value[0], 255));
+                        entity[key] = parsers.parseString(value[0], 255);
+                        //entity[key] = parsers.parseStringValue(parsers.parseStringLength(value[0], 255));
                         break;
                     case 'currencyCode':
                         entity[key] = value[0].trim().toUpperCase().replace(/[^a-zA-Z]/g, '');
                         break;
                     case 'serialNumber':
                     case 'vehicleIdentificationNumber':
-                        entity[key] = value[0].toUpperCase().trim();
+                        entity[key] = parsers.parseString(value[0]).toUpperCase().trim();
                         break;
                     case 'provider':
                         entity[key] = getProvider(value[0]);
@@ -212,7 +215,7 @@ async function parseTransactionAsync(transactionRaw, configuration, api, remoteT
                         break;
                     default:
                         // handles any unhandled values and parses the result to string.
-                        entity[key] = parsers.parseStringValue(value[0].toString());
+                        entity[key] = parsers.parseString(value[0]);
                         break;
                 }
             } else {
