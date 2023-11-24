@@ -38,6 +38,8 @@ geotab.addin.ftiAddin = function () {
   let elOutputMessage = document.getElementById('outputMessage');
   /** The sheet number element */
   let elSheetNumber = document.getElementById('sheetNumber');
+  /** The user guide element */
+  let elUserGuide = document.getElementById('userGuide');
   /** Import stuff */
   let elFieldGroup1 = document.getElementById('fieldGroup1');
   let elFieldGroup2 = document.getElementById('fieldGroup2');
@@ -648,7 +650,67 @@ geotab.addin.ftiAddin = function () {
     combineDateTimeErrorMessageTranslations.part1 = state.translate(combineDateTimeErrorMessageTranslations.part1);
     combineDateTimeErrorMessageTranslations.part2 = state.translate(combineDateTimeErrorMessageTranslations.part2);
     combineDateTimeErrorMessageTranslations.part3 = state.translate(combineDateTimeErrorMessageTranslations.part3);
+  };
+
+  /**
+   *  clears the import file previously set.
+   * */
+  function clearImportFile(elImportFile, importFile) {
+    elImportFile.value = '';
+    importFile = null;
   }
+
+
+  /**
+   * Sets the secondary user guide link.
+   * @param {*} href The href link.
+   * @param {*} text The text to display.
+   */
+  function setGuide(href, text) {
+    let link = document.createElement('a');
+    link.href = href;
+    link.target = '_blank';
+    link.textContent = text;
+    elUserGuide.appendChild(link);
+  }
+
+  /**
+   * Sets the secondary user guide link based on the browser language.
+   * @param {*} navLang The navigator language. 
+   */
+  const setUserGuide = (navLang) => {
+    let href = '';
+    elUserGuide.innerHTML = '';
+    switch (navLang) {
+      case 'fr':
+      case 'fr-FR':
+        console.log('French');
+        href = 'https://docs.google.com/document/d/1DKh61wPUbR9DLw703QylcB36XXbPCoWpZrNJgx7jFN8/edit?usp=sharing';
+        setGuide(href, 'Guide de l\'utilisateur (FR)');
+        break;
+      case 'de':
+      case 'de-DE':
+        console.log('German');
+        href = 'https://docs.google.com/document/d/1Wz1hg46nQk8IACRAKQkvWYmXvR44bghI8P0MW0HUOfY/edit?usp=sharing';
+        setGuide(href, 'Benutzerhandbuch (DE)');
+        break;
+      case 'es':
+      case 'es-ES':
+        console.log('Spanish');
+        href = 'https://docs.google.com/document/d/1e1YHyWjLSTdBu1WD690zTwCEOMaEtqkhwgHd8PH-iEk/edit?usp=sharing';
+        setGuide(href, 'Guía del usuario (ES)');
+        break;
+      case 'it':
+      case 'it-IT':
+        console.log('Italian');
+        href = 'https://docs.google.com/document/d/18HJQxlfHjyGKLfNqy60cJS8zMm0PUGz0U28zNwkXNOA/edit?usp=sharing';
+        setGuide(href, 'Guida per l\'utente (IT)');
+        break;
+      // default:
+      //   console.log('English and other');
+      //   break;
+    }
+  };
 
   return {
 
@@ -671,7 +733,8 @@ geotab.addin.ftiAddin = function () {
       if (freshState.translate) {
         freshState.translate(elAddin || '');
       }
-      // ToggleWindowState(true, false, false);
+
+      setUserGuide(navigator.language);
       addEvents();
       translateText();
 
@@ -753,10 +816,3 @@ geotab.addin.ftiAddin = function () {
   };
 };
 
-/**
- *  clears the import file previously set.
- * */ 
-function clearImportFile(elImportFile, importFile) {
-  elImportFile.value = '';
-  importFile = null;
-}
