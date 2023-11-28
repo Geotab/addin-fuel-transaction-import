@@ -133,6 +133,7 @@ geotab.addin.ftiAddin = function () {
       populateProviderDropdown(configurationFile);
     }
     clearImportFile(elImportFile, importFile);
+    elSheetNumber.value = 1;
   };
 
   /**
@@ -363,7 +364,7 @@ geotab.addin.ftiAddin = function () {
 
     let transactionsLocal;
     let sheetNumber = elSheetNumber.value - 1;
-    console.log(`sheetNumber: ${sheetNumber}`);
+    // console.log(`sheetNumber: ${sheetNumber}`);
     convertExcelToJsonAsync(importFile, elSheetNumber.value-1)
     .then(results => {
       transactionsLocal = results;
@@ -684,25 +685,25 @@ geotab.addin.ftiAddin = function () {
     switch (navLang) {
       case 'fr':
       case 'fr-FR':
-        console.log('French');
+        // console.log('French');
         href = 'https://docs.google.com/document/d/1DKh61wPUbR9DLw703QylcB36XXbPCoWpZrNJgx7jFN8/edit?usp=sharing';
         setGuide(href, 'Guide de l\'utilisateur (FR)');
         break;
       case 'de':
       case 'de-DE':
-        console.log('German');
+        // console.log('German');
         href = 'https://docs.google.com/document/d/1Wz1hg46nQk8IACRAKQkvWYmXvR44bghI8P0MW0HUOfY/edit?usp=sharing';
         setGuide(href, 'Benutzerhandbuch (DE)');
         break;
       case 'es':
       case 'es-ES':
-        console.log('Spanish');
+        // console.log('Spanish');
         href = 'https://docs.google.com/document/d/1e1YHyWjLSTdBu1WD690zTwCEOMaEtqkhwgHd8PH-iEk/edit?usp=sharing';
         setGuide(href, 'Guía del usuario (ES)');
         break;
       case 'it':
       case 'it-IT':
-        console.log('Italian');
+        // console.log('Italian');
         href = 'https://docs.google.com/document/d/18HJQxlfHjyGKLfNqy60cJS8zMm0PUGz0U28zNwkXNOA/edit?usp=sharing';
         setGuide(href, 'Guida per l\'utente (IT)');
         break;
