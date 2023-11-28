@@ -57,7 +57,7 @@ function ParseAndBuildTransactionsPromiseTest(
     // let transactionsOutput = [];
     // Remove the first item in the array. It is the excel header row.
     transactionsRaw.shift();
-    console.log('Before map.');
+    // console.log('Before map.');
     const promises = transactionsRaw.map( transaction => {
         return parseTransactionAsync(transaction, configuration, api, remoteTimeZone, localTimeZone, combineDateTimeTranslations);
         });
@@ -66,7 +66,7 @@ function ParseAndBuildTransactionsPromiseTest(
         // // console.log('parsed transaction entity: ' + entity);
         // transactionsOutput.push(entity);
         // return;
-    console.log('After map. Before allSettled.');
+    // console.log('After map. Before allSettled.');
     return Promise.allSettled(promises);
 };
 
