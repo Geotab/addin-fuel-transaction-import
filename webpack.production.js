@@ -1,18 +1,18 @@
 const path = require('path');
-const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const ImageminPlugin = require('imagemin-webpack');
-const ImageminMozjpeg = require('imagemin-mozjpeg');
-const ImageminPngquant = require('imagemin-pngquant');
-const ImageminGiflossy = require('imagemin-giflossy');
-const ImageminSvgo = require('imagemin-svgo');
+// const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
+// const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const config = require('./src/config/production/config.json');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 /**
  * Removes "dev" element of the config tree on production build
@@ -37,7 +37,6 @@ const transform = function (content, path) {
 }
 
 module.exports = merge(common, {
-    devtool: '',
     mode:'production',
     entry: './src/app/index.js',
     module: {
@@ -58,19 +57,6 @@ module.exports = merge(common, {
                         options: { prefix: '#importFuelTransactions' }
                     }
                 ]
-            },
-            {
-                enforce: 'pre',
-                test: /\.js$/,
-                exclude: [/node_modules/, /\.dev/],
-                use: [
-                    {
-                        loader: 'eslint-loader',
-                        options: {
-                        formatter: require('eslint/lib/cli-engine/formatters/stylish')
-                        },
-                    },
-                ],
             },
             {
                 test: /\.js$/,
@@ -101,37 +87,77 @@ module.exports = merge(common, {
             }
         ]
     },
+    optimization: {
+        minimize: true,
+        minimizer: [
+            new CssMinimizerPlugin(),
+            new TerserPlugin({
+                test: /\.js(\?.*)?$/i
+            }),
+            new ImageMinimizerPlugin({
+                minimizer: {
+                    implementation: ImageMinimizerPlugin.imageminMinify,
+                    options: {
+                        // Lossless optimization with custom option
+                        // Feel free to experiment with options for better result for you
+                        plugins: [
+                            ["gifsicle", { interlaced: true }],
+                            ["jpegtran", { progressive: true }],
+                            ["optipng", { optimizationLevel: 5 }],
+                            // Svgo configuration here https://github.com/svg/svgo#configuration
+                            [
+                                "svgo",
+                                {
+                                    plugins: [
+                                        {
+                                            name: "preset-default",
+                                            params: {
+                                                overrides: {
+                                                    removeViewBox: false,
+                                                    addAttributesToSVGElement: {
+                                                        params: {
+                                                            attributes: [
+                                                                { xmlns: "http://www.w3.org/2000/svg" },
+                                                            ],
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    ],
+                                },
+                            ],
+                        ],
+                    },
+                },
+            }),
+        ]
+    }, 
     plugins: [
-        new HtmlWebpackPlugin({
-            template: "./src/app/importFuelTransactions.html", //source html file
-            filename: "importFuelTransactions.html" //dest filename in the dest folder
+        new ESLintPlugin({
+            extensions: ['js'],
+            exclude: ['/node_modules/', '/\.dev/'],
+            formatter: 'stylish'
         }),
-        new FixStyleOnlyEntriesPlugin(),
-        new OptimizeCSSAssetsPlugin({}),
-        new UglifyJsPlugin({
-            test: /\.js(\?.*)?$/i
-        }),
-        new ImageminPlugin({
-            exclude: /dev/,
-            test: /\.(jpe?g|png|gif|svg)$/,
-            plugins: [
-                ImageminMozjpeg(),
-                ImageminPngquant(),
-                ImageminGiflossy(),
-                ImageminSvgo({ cleanupIDs: false})
-            ]
-        }),
-        new CopyWebpackPlugin([
-            { from: './src/app/images/icon.svg', to: 'images/'},
-            { 
-                from: './src/config/production/config.json',
-                transform: transform
-            },
-            { from: './src/app/translations/', to: 'translations/' },
-            { from: './src/app/scripts/', to: 'scripts/'},
-            { from: './src/app/styles/', to: 'styles/'},
-            { from: './src/app/generic_fuel_card_csv_file_sample.csv', to: 'generic_fuel_card_csv_file_sample.csv'}
-        ])
+        new RemoveEmptyScriptsPlugin(),
+        // new HtmlWebpackPlugin({
+        //     template: "./src/app/importFuelTransactions.html", //source html file
+        //     filename: "importFuelTransactions.html" //dest filename in the dest folder
+        // }),
+        // new FixStyleOnlyEntriesPlugin(),
+        new CopyWebpackPlugin({
+            patterns: [    
+                { from: './src/app/images/icon.svg', to: 'images/'},
+                { 
+                    from: './src/config/production/config.json',
+                    transform: transform
+                },
+                { from: './src/app/translations/', to: 'translations/' },
+                { from: './src/app/scripts/', to: 'scripts/'},
+                { from: './src/app/styles/', to: 'styles/'},
+                { from: './src/app/generic_fuel_card_csv_file_sample.csv', to: 'generic_fuel_card_csv_file_sample.csv'}
+            ]}
+        )
     ],
     output: {
         publicPath: config.dev.dist.host

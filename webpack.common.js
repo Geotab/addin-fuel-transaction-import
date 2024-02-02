@@ -12,7 +12,7 @@ module.exports = {
             filename: './importFuelTransactions.html'
         }),
         new MiniCssExtractPlugin({
-            name: '[name].css',
+            filename: '[name].css',
             chunkFilename: '[id].css'
         }),
     ],
