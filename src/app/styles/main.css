@@ -98,3 +98,8 @@ pre {
 .header_selector:after {
 	content: "Select ";
 }
+
+.p-highlight {
+    background-color:yellow;
+    display: inline;
+}
