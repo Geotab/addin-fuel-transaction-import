@@ -10,8 +10,9 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const config = require('./src/config/production/config.json');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { defaultMinimizerOptions } = require('html-loader');
+// const config = require('./src/config/production/config.json');
+// const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
 /**
@@ -44,18 +45,9 @@ module.exports = merge(common, {
             {
                 test: /\.css$/,
                 exclude: /\.dev/,
-                use: [
-                    {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {
-                            publicPath: config.dev.dist.host
-                        }
-                    },
-                    'css-loader',
-                    {
-                        loader: './src/.dev/loaders/css-sandbox/css-sandbox.js',
-                        options: { prefix: '#importFuelTransactions' }
-                    }
+                use: [ 
+                    MiniCssExtractPlugin.loader, 
+                    'css-loader' 
                 ]
             },
             {
@@ -74,7 +66,12 @@ module.exports = merge(common, {
                 use: [
                     {
                         loader: 'html-loader',
-                        options: { minimize: true }
+                        options: { 
+                            minimize: {
+                                ...defaultMinimizerOptions,
+                                collapseWhitespace: false
+                            }
+                         }
                     }
                 ]
             },
@@ -148,18 +145,18 @@ module.exports = merge(common, {
         new CopyWebpackPlugin({
             patterns: [    
                 { from: './src/app/images/icon.svg', to: 'images/'},
-                { 
-                    from: './src/config/production/config.json',
-                    transform: transform
-                },
+                { from: './src/config/production/config.json', transform: transform },
                 { from: './src/app/translations/', to: 'translations/' },
-                { from: './src/app/scripts/', to: 'scripts/'},
-                { from: './src/app/styles/', to: 'styles/'},
+                // { from: './src/app/scripts/', to: 'scripts/'},
+                // { from: './src/app/styles/', to: 'styles/'},
                 { from: './src/app/generic_fuel_card_csv_file_sample.csv', to: 'generic_fuel_card_csv_file_sample.csv'}
             ]}
         )
     ],
     output: {
-        publicPath: config.dev.dist.host
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'importFuelTransactions.js',
+        //publicPath: config.dev.dist.host
+        clean: true
     }
 });
