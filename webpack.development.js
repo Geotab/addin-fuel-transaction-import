@@ -12,8 +12,20 @@ module.exports = merge(common, {
     module: {
         rules: [
             {
+                test: /\.html$/,
+                use: [
+                    {
+                        loader: 'html-loader',
+                        options: { minimize: true }
+                    }
+                ]
+            },
+            {
                 test: /\.css$/i,
-                use: [MiniCssExtractPlugin.loader, "css-loader"],
+                use: [
+                    MiniCssExtractPlugin.loader,  //2. Extract css into files
+                    'css-loader'     //1. Turns css into commonjs
+                ]
             },
             {
                 test: /\.js$/,
@@ -26,17 +38,7 @@ module.exports = merge(common, {
                 },
             },
             {
-                test: /\.html$/,
-                use: [
-                    {
-                        loader: 'html-loader',
-                        options: { minimize: true }
-                    }
-                ]
-            },
-            {
                 test: /\.(png|svg|jpg|gif)$/,
-                exclude: /\.dev/,
                 type: 'asset/resource'
             }
         ]
@@ -49,7 +51,7 @@ module.exports = merge(common, {
         }),
         new CopyWebpackPlugin({
             patterns: [
-            { from: './src/app/images/icon.svg', to: 'images/'}
+                { from: './src/app/images/icon.svg', to: 'images/' }
             ]
         })
     ],
@@ -62,6 +64,6 @@ module.exports = merge(common, {
         },
         compress: true,
         port: 9000,
-        open: false
+        open: true
     }
 });
