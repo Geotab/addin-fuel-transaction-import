@@ -1,0 +1,15 @@
+{
+  "name": "Fuel Transaction Import",
+  "supportEmail": "support@geotab.com",
+  "version": "3.1.1",
+  "items": [
+    {
+      "icon": "https://cdn.jsdelivr.net/gh/Geotab/addin-fuel-transaction-import@master/dist/images/icon.svg",
+      "path": "EngineMaintenanceLink/",
+      "menuName": {
+        "en": "Fuel Transaction Import"
+      },
+      "url": "https://cdn.jsdelivr.net/gh/Geotab/addin-fuel-transaction-import@master/dist/importFuelTransactions.html"
+    }
+  ]
+}
