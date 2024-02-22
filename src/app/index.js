@@ -5,7 +5,7 @@
  */
 
 // Allowing babel to work with older versions of IE
-const regeneratorRuntime = require('regenerator-runtime');
+// const regeneratorRuntime = require('regenerator-runtime');
 
 if(!geotab.addin.importFuelTransactions_fp){
     
@@ -13,13 +13,7 @@ if(!geotab.addin.importFuelTransactions_fp){
     require('bluebird');
     require('moment');    
     require('moment-timezone');
-   
-
-
-
-
-    require('./scripts/timezone');
-    
+    // require('./scripts/timezone');
 }
 
 require('./styles/main.css');

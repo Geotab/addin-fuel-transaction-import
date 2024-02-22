@@ -6,13 +6,11 @@ module.exports = {
     
     plugins: [
         new HtmlWebPackPlugin({
-            
             template: './src/app/importFuelTransactions.html',
-                        
             filename: './importFuelTransactions.html'
         }),
         new MiniCssExtractPlugin({
-            name: '[name].css',
+            filename: '[name].css',
             chunkFilename: '[id].css'
         }),
     ],

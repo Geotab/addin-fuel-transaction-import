@@ -3,9 +3,6 @@
 
 <head>
     <title>Import Fuel Transactions</title>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.js"></script>
-    <script src="scripts/main.js"></script> -->
 </head>
 
 <body>
@@ -15,23 +12,21 @@
         <div id="importFuelTransactions_fp">
             <header class="geotabPageHeader" style="color: #25477b">
                 <h1 class="geotabPageName">Fuel Transactions Import</h1>
-                <p>Version 3.1.1b</p>
+                <p>Version 3.1.1</p>
                 <em><b>
                         <p>Please ensure you have the latest config.json setting in your Add-Ins configuration
                             (Administration > System > Add-Ins). </p>
-                        <p>Copy the configuration found at this<span>&nbsp;</span><a
-                                href="https://cdn.jsdelivr.net/gh/Geotab/addin-fuel-transaction-import@master/dist/config.json"
+                        <p>Copy the configuration found at this
+                            <a href="https://cdn.jsdelivr.net/gh/Geotab/addin-fuel-transaction-import@master/dist/config.json"
                                 target="_blank" style="color:#FF0000;" style="font-weight:bold">link.</a>
                         </p>
                     </b></em>
                 <hr style="border-top: 3px solid #5293c6">
                 <div>
-                    <h2 class="p-highlight"><strong>Note:</strong><span>&nbsp;</span>If you are seeing
-                        this<span>&nbsp;</span><b>message</b><span>&nbsp;</span>then please note the following:
+                    <h2 class="p-highlight"><strong>Note:</strong> If you are seeing this <b>message</b> then please note the following:
                     </h2>
-                    <p>The version of the<span>&nbsp;</span><b>Fuel Transaction Import Add-In</b><span>&nbsp;</span>that
-                        you are attempting to
-                        reach is being<span>&nbsp;</span><b>deprecated</b>.</p>
+                    <p>The version of the <b>Fuel Transaction Import Add-In</b> that you are attempting to reach is
+                        being <b>deprecated</b>.</p>
                     <p>
                         Please update your configuration to access the new version of this add-in, which will auto
                         update with the latest
@@ -39,20 +34,18 @@
                     </p>
                     <ol>
                         <li><a
-                                href="https://geotab.rightanswers.com/portal/app/portlets/results/viewsolution.jsp?solutionid=221222143520700" target="_blank">Uninstall</a><span>&nbsp;</span>the
-                            old version.</li>
-                        <li>Instructions to<span>&nbsp;</span><a
-                                href="https://geotab.rightanswers.com/portal/app/portlets/results/viewsolution.jsp?solutionid=221222144336360" target="_blank">Install</a><span>&nbsp;</span>new
-                            version of the fuel transaction import add-in into a MyGeotab database. Please add the
+                                href="https://community.geotab.com/s/article/How-to-uninstall-remove-an-add-in-from-a-MyGeotab-database?language=en_US">Uninstall</a>
+                            the old version.</li>
+                        <li>Instructions to <a
+                                href="https://community.geotab.com/s/article/How-to-install-add-an-add-in-I-have-developed-into-a-MyGeotab-database?language=en_US">Install</a>
+                            new version of the fuel transaction import add-in into a MyGeotab database. Please add the
                             configuration that follows:</li>
                     </ol>
-                    <b>Version 4.x Add-In Configuration:</b>
                     <p>{"url": "https://app.geotab.com/addins/geotab/addin-fuel-transaction-import/manifest.json"}</p>
                     <p>
-                        <b>Note:</b><span>&nbsp;</span>If you have difficulties in updating this configuration then
-                        please contact our support desk through the standard
-                        process. The old version of the add-in will not be available after the<span>&nbsp;</span><b class="p-highlight" style="font-size: 1rem;">19th of May
-                            2024</b>.
+                        <b>Note:</b> If you have difficulties in updating this configuration then please contact our
+                        support desk through the standard
+                        process. The old version of the add-in will not be available after the <b>19th of May 2024</b>.
                     </p>
                 </div>
                 <hr style="border-top: 3px solid #5293c6">
@@ -74,9 +67,10 @@
                                 Generic Format
                                 <label style="color: blue;" title="Shows example of generic fuel card csv format">
 
-                                    <input style="display: none" type="checkbox" id="exampleButton"><span>&nbsp;</span><u>Example</u>
+                                    <input style="display: none" type="checkbox"
+                                        id="exampleButton"><u><small>Example</small></u>
                             </li>
-                            <li>Import Fuel Provider<span>&nbsp;</span><b style="color: red;">[NEW]</b><span>&nbsp;</span><a
+                            <li>Import Fuel Provider <b style="color: red;">[NEW]</b> <a
                                     href="https://docs.google.com/document/d/1nYSE4cSPlz2gSpjkyu3Aj1IXcHkoPAse5Cy5b1ppF-Q/edit#heading=h.ymsdtzsurgp4"
                                     target=”_blank”>User Manual</a></li>
                         </ul>
@@ -1007,10 +1001,10 @@
 
                                         </td>
                                     </tr>
-                                    <!-- partial -->
-                                    <!-- <script src='https://momentjs.com/downloads/moment.js'></script>
-                                    <script src='https://momentjs.com/downloads/moment-timezone-with-data.js'></script> -->
-                                    <!-- <script src="scripts/timezone.js"></script> -->
+                                    <!-- partial
+                                    <script src='https://momentjs.com/downloads/moment.js'></script>
+                                    <script src='https://momentjs.com/downloads/moment-timezone-with-data.js'></script>
+                                    <script src="scripts/timezone.js"></script> -->
 
 
                                     <tr>
@@ -1146,7 +1140,7 @@
                                         <p>Showing first <span id="listCountProvider"></span> fuel transactions. Verify
                                             the columns have the correct values then click import.</p>
                                         <div>
-                                            <table id="transactionListProvider" border="1"></table>
+                                            <table id="transactionListProvider"></table>
                                         </div>
                                     </div>
                                 </section>
