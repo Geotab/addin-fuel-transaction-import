@@ -1,36 +1,31 @@
 const path = require('path');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = merge(common, {
-    
+    mode: 'development',
     entry: './src/.dev/index.js',
-    devtool: 'none',
+    devtool: 'source-map',
     module: {
         rules: [
             {
-                test: /\.css$/,
+                test: /\.html$/,
                 use: [
                     {
-                        loader: MiniCssExtractPlugin.loader,
-                    },
-                    'css-loader'
+                        loader: 'html-loader',
+                        options: { minimize: true }
+                    }
                 ]
             },
             {
-                enforce: 'pre',
-                test: /\.js$/,
-                exclude: [/node_modules/, /\.dev/],
+                test: /\.css$/i,
                 use: [
-                    {
-                        loader: 'eslint-loader',
-                        options: {
-                        formatter: require('eslint/lib/cli-engine/formatters/stylish')
-                        },
-                    },
-                ],
+                    MiniCssExtractPlugin.loader,  //2. Extract css into files
+                    'css-loader'     //1. Turns css into commonjs
+                ]
             },
             {
                 test: /\.js$/,
@@ -43,31 +38,32 @@ module.exports = merge(common, {
                 },
             },
             {
-                test: /\.html$/,
-                use: [
-                    {
-                        loader: 'html-loader',
-                        options: { minimize: true }
-                    }
-                ]
-            },
-            {
                 test: /\.(png|svg|jpg|gif)$/,
-                use: [
-                    'file-loader'
-                ]
+                type: 'asset/resource'
             }
         ]
     },
     plugins: [
-        new CopyWebpackPlugin([
-            { from: './src/app/images/icon.svg', to: 'images/'},
-        ])
+        new ESLintPlugin({
+            extensions: ['js'],
+            exclude: ['/node_modules/', '/\.dev/'],
+            formatter: 'stylish'
+        }),
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: './src/app/images/icon.svg', to: 'images/' }
+            ]
+        })
     ],
     devServer: {
-        contentBase: path.join(__dirname),
+        static: {
+            directory: path.join(__dirname)
+        },
+        devMiddleware: {
+            index: 'importFuelTransactions.html'
+        },
         compress: true,
         port: 9000,
-        index: 'importFuelTransactions.html'
+        open: true
     }
 });
