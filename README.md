@@ -5,19 +5,7 @@ An add-in to read fuel card transactions from a file and import to MyGeotab data
 Add the configuration below to the to the system setting -> add-ins section of the MyGeotab database
 ```
 {
-  "name": "Fuel Transaction Import",
-  "supportEmail": "support@geotab.com",
-  "version": "3.1.0",
-  "items": [
-    {
-      "icon": "https://cdn.jsdelivr.net/gh/Geotab/addin-fuel-transaction-import@master/dist/images/icon.svg",
-      "path": "EngineMaintenanceLink/",
-      "menuName": {
-        "en": "Fuel Transaction Import"
-      },
-      "url": "https://cdn.jsdelivr.net/gh/Geotab/addin-fuel-transaction-import@master/dist/importFuelTransactions.html"
-    }
-  ]
+	"url": "https://app.geotab.com/addins/geotab/addin-fuel-transaction-import/manifest.json"
 }
 
 ```
