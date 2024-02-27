@@ -105,6 +105,13 @@ function combineDateAndTime(date, time, combineDateTimeErrorMessageTranslations)
       return datetime;
    } else if ((isDateObject(date) == false) && (isDateObject(time) == false)) {
       return date.trim() + ' ' + time.trim();
+   } else if ((isDateObject(date)) && (isDateObject(time) == false)) {
+      var timeSplit = time.split(':');
+      const datetime = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+      datetime.setHours(timeSplit[0]);
+      datetime.setMinutes(timeSplit[1]);
+      datetime.setSeconds(timeSplit[2]);
+      return datetime;
    } else {
       let errorMessage = `${combineDateTimeErrorMessageTranslations.part1} ${date}, ${combineDateTimeErrorMessageTranslations.part2} ${time}. ${combineDateTimeErrorMessageTranslations.part3}`;
       throw new DateError(errorMessage);
