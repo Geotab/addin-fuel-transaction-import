@@ -1,0 +1,103 @@
+{
+  "providers": [
+    {
+      "Name": "Regex1",
+      "unitVolumeLiters": "Y",
+      "unitOdoKm": "Y",
+      "isCellDateType": "Y",
+      "dateFormat": "yyyyMMdd",
+      "timeFormat": "",
+      "currencyCodeMapped": "",
+      "productTypeRegex": [
+        { "Diesel": "([w ]*[Dd]iesel[w ]*)|([w ]*[Nn]estle[w ]*)" },
+        { "CNG": "([w ]*[Pp]etrol[w ]*)|([w ]*[Ga]as[w ]*)" },
+        { "DieselExhaustFluid": "([w ]*[Aa]dblue[w ]*)" }
+      ],
+      "data": {
+        "cardNumber": "",
+        "comments": "",
+        "description": "",
+        "driverName": "",
+        "externalReference": "",
+        "licencePlate": "",
+        "provider": "",
+        "providerProductDescription": "",
+        "serialNumber": "",
+        "siteName": "",
+        "sourceData": "",
+        "vehicleIdentificationNumber": "",
+        "cost": "",
+        "currencyCode": "",
+        "dateTime": [""],
+        "location": [],
+        "odometer": "",
+        "productType": "",
+        "volume": "",
+        "address": ""
+      }
+    },
+    {
+      "Name": "Regex2",
+      "unitVolumeLiters": "Y",
+      "unitOdoKm": "Y",
+      "isCellDateType": "Y",
+      "dateFormat": "yyyyMMdd",
+      "timeFormat": "",
+      "currencyCodeMapped": "",
+      "productTypeRegex": [],
+      "data": {
+        "cardNumber": "",
+        "comments": "",
+        "description": "",
+        "driverName": "",
+        "externalReference": "",
+        "licencePlate": "",
+        "provider": "",
+        "providerProductDescription": "",
+        "serialNumber": "",
+        "siteName": "",
+        "sourceData": "",
+        "vehicleIdentificationNumber": "",
+        "cost": "",
+        "currencyCode": "",
+        "dateTime": [""],
+        "location": [],
+        "odometer": "",
+        "productType": "",
+        "volume": "",
+        "address": ""
+      }
+    },
+    {
+      "Name": "Regex3",
+      "unitVolumeLiters": "Y",
+      "unitOdoKm": "Y",
+      "isCellDateType": "Y",
+      "dateFormat": "yyyyMMdd",
+      "timeFormat": "",
+      "currencyCodeMapped": "",
+      "data": {
+        "cardNumber": "",
+        "comments": "",
+        "description": "",
+        "driverName": "",
+        "externalReference": "",
+        "licencePlate": "",
+        "provider": "",
+        "providerProductDescription": "",
+        "serialNumber": "",
+        "siteName": "",
+        "sourceData": "",
+        "vehicleIdentificationNumber": "",
+        "cost": "",
+        "currencyCode": "",
+        "dateTime": [""],
+        "location": [],
+        "odometer": "",
+        "productType": "",
+        "volume": "",
+        "address": ""
+      }
+    }
+  ]
+}

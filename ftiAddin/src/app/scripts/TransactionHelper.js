@@ -16,12 +16,12 @@ const myGeotabHelper = require('./MyGeotabHelper');
  * @returns The final parsed and ready for import transactions.
  */
 function ParseAndBuildTransactionsAsync(
-        transactionsRaw, 
-        configuration, 
-        api, 
-        remoteTimeZone, 
-        localTimeZone, 
-        combineDateTimeTranslations) {
+    transactionsRaw,
+    configuration,
+    api,
+    remoteTimeZone,
+    localTimeZone,
+    combineDateTimeTranslations) {
     return new Promise(async (resolve, reject) => {
         let transactionsOutput = [];
         let entity;
@@ -36,7 +36,7 @@ function ParseAndBuildTransactionsAsync(
                     // console.log('parsed transaction entity: ' + entity);
                     transactionsOutput.push(entity);
                 }
-                catch(error) {
+                catch (error) {
                     // Transactions are rejected if they cannot be parsed before the import process.
                     reject(error);
                 }
@@ -48,24 +48,24 @@ function ParseAndBuildTransactionsAsync(
 }
 
 function ParseAndBuildTransactionsPromiseTest(
-        transactionsRaw, 
-        configuration, 
-        api, 
-        remoteTimeZone, 
-        localTimeZone, 
-        combineDateTimeTranslations) {
+    transactionsRaw,
+    configuration,
+    api,
+    remoteTimeZone,
+    localTimeZone,
+    combineDateTimeTranslations) {
     // let transactionsOutput = [];
     // Remove the first item in the array. It is the excel header row.
     transactionsRaw.shift();
     // console.log('Before map.');
-    const promises = transactionsRaw.map( transaction => {
+    const promises = transactionsRaw.map(transaction => {
         return parseTransactionAsync(transaction, configuration, api, remoteTimeZone, localTimeZone, combineDateTimeTranslations);
-        });
-        // let entity = await parseTransactionAsync(
-        //     transaction, configuration, api, remoteTimeZone, localTimeZone);
-        // // console.log('parsed transaction entity: ' + entity);
-        // transactionsOutput.push(entity);
-        // return;
+    });
+    // let entity = await parseTransactionAsync(
+    //     transaction, configuration, api, remoteTimeZone, localTimeZone);
+    // // console.log('parsed transaction entity: ' + entity);
+    // transactionsOutput.push(entity);
+    // return;
     // console.log('After map. Before allSettled.');
     return Promise.allSettled(promises);
 };
@@ -86,8 +86,7 @@ function getObjKey(obj, value) {
  * @param {string} prefixString
  * @returns The string suffix following the prefixString argument.
  */
-function GetColumnText(sourceString, prefixString)
-{
+function GetColumnText(sourceString, prefixString) {
     let output = '';
     if (sourceString) {
         let targetIndex = prefixString.length;
@@ -108,7 +107,7 @@ function GetColumnText(sourceString, prefixString)
  * @param {*} localZone The local import time zone.
  * @returns A FuelTransaction entity ready to be imported into the database.
  */
-async function parseTransactionAsync(transactionRaw, configuration, api, remoteTimeZone, localTimeZone,                 combineDateTimeTranslations) {
+async function parseTransactionAsync(transactionRaw, configuration, api, remoteTimeZone, localTimeZone, combineDateTimeTranslations) {
 
     if (transactionRaw === undefined) {
         throw new Error('parseTransaction transaction argument not submitted.');
@@ -127,8 +126,7 @@ async function parseTransactionAsync(transactionRaw, configuration, api, remoteT
         let prefixString = 'Column';
         // console.log('Parsing provider: ' + configuration.Name);
         let configKeys = Object.keys(configuration.data);
-        for (var i = 0; i < configKeys.length; i++)
-        {
+        for (var i = 0; i < configKeys.length; i++) {
             let key = configKeys[i];
             let keyValue = configuration.data[key];
             // console.log('key: ' + key);
@@ -136,8 +134,7 @@ async function parseTransactionAsync(transactionRaw, configuration, api, remoteT
             value = [];
 
             // Formats the value Array based on whether it has multiple elements or not.
-            if (Array.isArray(keyValue))
-            {
+            if (Array.isArray(keyValue)) {
                 columnHeaderChar[0] = GetColumnText(keyValue[0], prefixString);
                 columnHeaderChar[1] = GetColumnText(keyValue[1], prefixString);
                 value[0] = transactionRaw[columnHeaderChar[0]];
@@ -147,8 +144,7 @@ async function parseTransactionAsync(transactionRaw, configuration, api, remoteT
                 // console.log('value[0]: ' + value[0]);
                 // console.log('value[1]: ' + value[1]);
             }
-            else
-            {
+            else {
                 columnHeaderChar[0] = GetColumnText(keyValue, prefixString);
                 value[0] = transactionRaw[columnHeaderChar[0]];
                 // console.log('columnHeaderChar[0]: ' + columnHeaderChar[0]);
@@ -159,7 +155,7 @@ async function parseTransactionAsync(transactionRaw, configuration, api, remoteT
                 switch (key) {
                     case 'address':
                         var coords = await myGeotabHelper.GetCoordinates(api, value[0]);
-                        if(coords){
+                        if (coords) {
                             if (Array.isArray(coords)) {
                                 entity.location = coords[0];
                             }
@@ -194,7 +190,7 @@ async function parseTransactionAsync(transactionRaw, configuration, api, remoteT
                         entity[key] = getProvider(value[0]);
                         break;
                     case 'productType':
-                        entity[key] = productTypeHelper.getProductType(value[0]);
+                        entity[key] = productTypeHelper.getProductType(value[0], configuration);
                         break;
                     case 'cost':
                         entity[key] = parsers.parseFloatValue(value[0]);
@@ -228,18 +224,18 @@ async function parseTransactionAsync(transactionRaw, configuration, api, remoteT
         }
         return entity;
     }
-    catch(error) {
+    catch (error) {
         throw new InputError(error.message, transactionRaw);
     }
 }
 
 class InputError extends Error {
     constructor(message, entity) {
-      super(message); // (1)
-      this.name = 'InputError'; // (2)
-      this.entity = entity;
+        super(message); // (1)
+        this.name = 'InputError'; // (2)
+        this.entity = entity;
     }
-  }
+}
 
 /**
  * Parses and gets the fuel card provider.
