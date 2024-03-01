@@ -70,10 +70,11 @@ const getProductTypeRegex = (productType, configuration) => {
             const keyValue = Object.keys(regexObj)[0];
             const value = Object.values(regexObj)[0];
             const regex = new RegExp(value);
-            console.log(`productType: ${productType}, regex: ${regex}, keyValue: ${keyValue}`);
+            //console.log(`productType: ${productType}, regex: ${regex}, keyValue: ${keyValue}`);
             // console.log('keyValue: ' + keyValue);
             // console.log('value: ' + value);
             if (regex.test(productType)) {
+                //console.log(`Matched/Returned keyValue: ${keyValue}`);
                 return keyValue;
             }
         }
