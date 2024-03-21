@@ -1,0 +1,144 @@
+{
+  "providers": [
+    {
+      "Name": "Test1 - Date Format Issue",
+      "unitVolumeLiters": "Y",
+      "unitOdoKm": "Y",
+      "isCellDateType": "Y",
+      "dateFormat": "hhhhhh",
+      "timeFormat": "",
+      "currencyCodeMapped": "",
+      "data": {
+        "cardNumber": "ColumnA",
+        "licencePlate": "ColumnG",
+        "provider": "ColumnB",
+        "cost": "ColumnC",
+        "currencyCode": "ColumnD",
+        "dateTime": ["ColumnE"],
+        "volume": "ColumnF"
+      }
+    },
+    {
+      "Name": "Test2 - Date format issue 2 (11 chars)",
+      "unitVolumeLiters": "Y",
+      "unitOdoKm": "Y",
+      "isCellDateType": "Y",
+      "dateFormat": "yyyyMMddAAAAAA",
+      "timeFormat": "",
+      "currencyCodeMapped": "",
+      "data": {
+        "cardNumber": "ColumnA",
+        "licencePlate": "ColumnG",
+        "provider": "ColumnB",
+        "cost": "ColumnC",
+        "currencyCode": "ColumnD",
+        "dateTime": ["ColumnE"],
+        "volume": "ColumnF"
+      }
+    },
+    {
+      "Name": "Test3 - Data issue (missing chars)",
+      "unitVolumeLiters": "Y",
+      "unitOdoKm": "Y",
+      "isCellDateType": "Y",
+      "dateFormat": "AAAAAA",
+      "timeFormat": "",
+      "currencyCodeMapped": "",
+      "data": {
+        "cardNumber": "ColumnA",
+        "licencePlate": "ColumnG",
+        "provider": "ColumnB",
+        "cost": "ColumnC",
+        "currencyCode": "ColumnD",
+        "dateTime": ["ColumnE"],
+        "volume": "ColumnF"
+      }
+    },
+    {
+      "Name": "Test4-ShorterThanSixCharacters",
+      "unitVolumeLiters": "Y",
+      "unitOdoKm": "Y",
+      "isCellDateType": "Y",
+      "dateFormat": "yyMd",
+      "timeFormat": "",
+      "currencyCodeMapped": "",
+      "data": {
+        "cardNumber": "ColumnA",
+        "licencePlate": "ColumnG",
+        "provider": "ColumnB",
+        "cost": "ColumnC",
+        "currencyCode": "ColumnD",
+        "dateTime": ["ColumnE"],
+        "volume": "ColumnF"
+      }
+    },
+    {
+      "Name": "Test5-GreaterThan24Characters",
+      "unitVolumeLiters": "Y",
+      "unitOdoKm": "Y",
+      "isCellDateType": "Y",
+      "dateFormat": "yyyyMMddhhmmssyyMMddhhmmss",
+      "timeFormat": "",
+      "currencyCodeMapped": "",
+      "data": {
+        "cardNumber": "ColumnA",
+        "licencePlate": "ColumnG",
+        "provider": "ColumnB",
+        "cost": "ColumnC",
+        "currencyCode": "ColumnD",
+        "dateTime": ["ColumnE"],
+        "volume": "ColumnF"
+      }
+    },
+    {
+      "Name": "Test6-Good",
+      "unitVolumeLiters": "Y",
+      "unitOdoKm": "Y",
+      "isCellDateType": "Y",
+      "dateFormat": "dd/MM/yyyy",
+      "timeFormat": "",
+      "currencyCodeMapped": "",
+      "data": {
+        "cardNumber": "ColumnA",
+        "licencePlate": "ColumnG",
+        "provider": "ColumnB",
+        "cost": "ColumnC",
+        "currencyCode": "ColumnD",
+        "dateTime": ["ColumnE"],
+        "volume": "ColumnF",
+        "odometer": "ColumnH"
+      }
+    },
+    {
+      "Name": "Template",
+      "unitVolumeLiters": "Y",
+      "unitOdoKm": "Y",
+      "isCellDateType": "Y",
+      "dateFormat": "yyyyMMdd",
+      "timeFormat": "",
+      "currencyCodeMapped": "",
+      "data": {
+        "cardNumber": "ColumnA",
+        "comments": "",
+        "description": "",
+        "driverName": "",
+        "externalReference": "",
+        "licencePlate": "",
+        "provider": "",
+        "providerProductDescription": "",
+        "serialNumber": "",
+        "siteName": "",
+        "sourceData": "",
+        "vehicleIdentificationNumber": "",
+        "cost": "",
+        "currencyCode": "",
+        "dateTime": [""],
+        "location": ["", ""],
+        "odometer": "",
+        "productType": "",
+        "volume": "",
+        "address": ""
+      }
+    }
+  ]
+}
