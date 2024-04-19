@@ -1,0 +1,30 @@
+{
+  "providers": [
+    {
+      "Name": "Regex",
+      "unitVolumeLiters": "Y",
+      "unitOdoKm": "Y",
+      "isCellDateType": "Y",
+      "dateFormat": "dd/MM/yyyy",
+      "timeFormat": "",
+      "currencyCodeMapped": "",
+      "productTypeRegex": [
+        { "Diesel": "([w ]*[Dd]iesel[w ]*)|([w ]*[Nn]estle[w ]*)" },
+        { "CNG": "([w ]*[Pp]etrol[w ]*)|([w ]*[Gg]as[w ]*)" },
+        {
+          "DieselExhaustFluid": "([w ]*[Aa]dblue[w ]*)|([w ]*[Ee]xhaustFluid[w ]*)"
+        }
+      ],
+      "data": {
+        "cardNumber": "ColumnA",
+        "licencePlate": "ColumnG",
+        "provider": "ColumnB",
+        "cost": "ColumnC",
+        "currencyCode": "ColumnD",
+        "dateTime": ["ColumnE"],
+        "productType": "ColumnH",
+        "volume": "ColumnF"
+      }
+    }
+  ]
+}
