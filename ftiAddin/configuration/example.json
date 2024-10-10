@@ -1,0 +1,23 @@
+{
+  "providers": [
+    {
+      "Name": "FuelProviderExample1",
+      "unitVolumeLiters": "Y",
+      "unitOdoKm": "Y",
+      "isCellDateType": "Y",
+      "dateFormat": "dd/MM/yyyy",
+      "timeFormat": "",
+      "currencyCodeMapped": "",
+      "data": {
+        "cardNumber": "ColumnA",
+        "licencePlate": "ColumnG",
+        "provider": "ColumnB",
+        "cost": "ColumnC",
+        "currencyCode": "ColumnD",
+        "dateTime": ["ColumnE"],
+        "volume": "ColumnF",
+        "odometer": "ColumnH"
+      }
+    }
+  ]
+}

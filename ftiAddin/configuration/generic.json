@@ -1,0 +1,38 @@
+{
+    "providers": [
+        {
+            "Name": "Provider Name",
+            "unitVolumeLiters": "Y",
+            "unitOdoKm": "Y",
+            "isCellDateType": "Y",
+            "dateFormat": "yyyyMMddHH:mm:ss.SSSZ",
+            "timeFormat": "",
+            "currencyCodeMapped": "",
+            "data": {
+                "cardNumber": "",
+                "comments": "ColumnE",
+                "description": "ColumnB",
+                "driverName": "ColumnM",
+                "externalReference": "",
+                "licencePlate": "ColumnD",
+                "provider": "ColumnP",
+                "serialNumber": "ColumnC",
+                "siteName": "",
+                "sourceData": "ColumnO",
+                "vehicleIdentificationNumber": "ColumnA",
+                "cost": "ColumnH",
+                "currencyCode": "ColumnI",
+                "dateTime": [
+                    "ColumnF"
+                ],
+                "location": [
+                    "ColumnK",
+                    "ColumnL"
+                ],
+                "odometer": "ColumnJ",
+                "productType": "ColumnN",
+                "volume": "ColumnG"
+            }
+        }
+    ]
+}

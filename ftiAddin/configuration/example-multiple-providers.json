@@ -1,0 +1,72 @@
+{
+  "providers": [
+    {
+      "Name": "FuelProviderExample1",
+      "unitVolumeLiters": "Y",
+      "unitOdoKm": "Y",
+      "isCellDateType": "N",
+      "dateFormat": "dd/MM/yyyy",
+      "timeFormat": "",
+      "currencyCodeMapped": "",
+      "data": {
+        "cardNumber": "ColumnA",
+        "licencePlate": "ColumnG",
+        "provider": "ColumnB",
+        "cost": "ColumnC",
+        "currencyCode": "ColumnD",
+        "dateTime": ["ColumnE"],
+        "volume": "ColumnF",
+        "odometer": "ColumnH"
+      }
+    },
+    {
+      "Name": "FuelProviderExample2",
+      "unitVolumeLiters": "N",
+      "unitOdoKm": "N",
+      "isCellDateType": "Y",
+      "dateFormat": "dd/MM/yyyy",
+      "timeFormat": "HH:mm:ss",
+      "currencyCodeMapped": "USD",
+      "data": {
+        "cardNumber": "ColumnA",
+        "comments": "ColumnE",
+        "description": "ColumnD",
+        "driverName": "ColumnM",
+        "externalReference": "",
+        "licencePlate": "ColumnC",
+        "serialNumber": "ColumnB",
+        "vehicleIdentificationNumber": "ColumnF",
+        "cost": "ColumnH",
+        "currencyCode": "ColumnI",
+        "dateTime": ["ColumnF", "ColumnL"],
+        "siteName": "ColumnK",
+        "odometer": "ColumnJ",
+        "productType": "ColumnN",
+        "volume": "ColumnG"
+      }
+    },
+    {
+      "Name": "FuelProviderExample3",
+      "unitVolumeLiters": "Y",
+      "unitOdoKm": "Y",
+      "isCellDateType": "N",
+      "dateFormat": "dd/MM/yyyy",
+      "timeFormat": "HH:mm:ss",
+      "currencyCodeMapped": "GBP",
+      "data": {
+        "cardNumber": "ColumnA",
+        "comments": "ColumnE",
+        "description": "ColumnD",
+        "driverName": "ColumnM",
+        "vehicleIdentificationNumber": "ColumnF",
+        "cost": "ColumnH",
+        "currencyCode": "ColumnI",
+        "dateTime": ["ColumnF", "ColumnO"],
+        "location": ["ColumnK", "ColumnL"],
+        "odometer": "ColumnJ",
+        "productType": "ColumnN",
+        "volume": "ColumnG"
+      }
+    }
+  ]
+}
