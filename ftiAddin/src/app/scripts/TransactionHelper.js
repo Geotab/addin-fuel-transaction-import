@@ -24,17 +24,24 @@ function ParseAndBuildTransactionsAsync(
     combineDateTimeTranslations) {
     return new Promise(async (resolve, reject) => {
         let transactionsOutput = [];
-        let entity;
+        let addressesToBatch = []
+        let entitiesToBatch = []
+        let parsedResult;
         for (var i = 0; i < transactionsRaw.length; i++) {
             var transaction = transactionsRaw[i];
             if (i === 0) {
                 // ignore the first row as it is the header...
             } else {
                 try {
-                    entity = await parseTransactionAsync(
-                        transaction, configuration, api, remoteTimeZone, localTimeZone, combineDateTimeTranslations);
+                    parsedResult = await parseTransactionAsync(
+                        transaction, configuration, remoteTimeZone, localTimeZone, combineDateTimeTranslations);
                     // console.log('parsed transaction entity: ' + entity);
-                    transactionsOutput.push(entity);
+                    if (parsedResult?.address) {
+                        addressesToBatch.push(parsedResult.address);
+                        entitiesToBatch.push(parsedResult.entity);
+                    } else {
+                        transactionsOutput.push(parsedResult.entity);
+                    }
                 }
                 catch (error) {
                     // Transactions are rejected if they cannot be parsed before the import process.
@@ -42,6 +49,18 @@ function ParseAndBuildTransactionsAsync(
                 }
             }
         }
+
+        // Process batched addresses if any exist
+        if (addressesToBatch.length > 0) {
+            try {
+                const batchProcessedEntities = await processBatchedAddressesAsync(api, addressesToBatch, entitiesToBatch);
+                transactionsOutput.push(...batchProcessedEntities);
+            } catch (error) {
+                reject(error);
+            }
+        }
+
+
         // console.log('transactionsOutput: ' + JSON.stringify(transactionsOutput));
         resolve(transactionsOutput)
     });
@@ -101,13 +120,12 @@ function GetColumnText(sourceString, prefixString) {
  * Parses a single raw transaction to produce a single FuelTransaction entity.
  * @param {JSON} transactionRaw The raw transaction to parse.
  * @param {JSON} configuration The configuration for this instance. Shows each transaction property and it's relative mapping like "cardNumber": "ColumnA", "comments": "ColumnB" etc.
- * @param {String} timeZone The currently selected time zone.
- * @param {Object} api The MyGeotab API service.
- * @param {*} remoteZone The remote time zone. The transaction time zone.
- * @param {*} localZone The local import time zone.
+ * @param {*} remoteTimeZone The remote time zone. The transaction time zone.
+ * @param {*} localTimeZone The local import time zone.
+ * @param {object} combineDateTimeTranslations Contains the error message translations for the combineDateAndTime method.
  * @returns A FuelTransaction entity ready to be imported into the database.
  */
-async function parseTransactionAsync(transactionRaw, configuration, api, remoteTimeZone, localTimeZone, combineDateTimeTranslations) {
+async function parseTransactionAsync(transactionRaw, configuration, remoteTimeZone, localTimeZone, combineDateTimeTranslations) {
 
     if (transactionRaw === undefined) {
         throw new Error('parseTransaction transaction argument not submitted.');
@@ -126,6 +144,7 @@ async function parseTransactionAsync(transactionRaw, configuration, api, remoteT
         let prefixString = 'Column';
         // console.log('Parsing provider: ' + configuration.Name);
         let configKeys = Object.keys(configuration.data);
+        let address = undefined;
         for (var i = 0; i < configKeys.length; i++) {
             let key = configKeys[i];
             let keyValue = configuration.data[key];
@@ -154,12 +173,7 @@ async function parseTransactionAsync(transactionRaw, configuration, api, remoteT
             if (value[0]) {
                 switch (key) {
                     case 'address':
-                        var coords = await myGeotabHelper.GetCoordinates(api, value[0]);
-                        if (coords) {
-                            if (Array.isArray(coords)) {
-                                entity.location = coords[0];
-                            }
-                        }
+                        address = value[0];
                         break;
                     case 'dateTime':
                         entity[key] = dateHelper.parseDate(configuration, value, remoteTimeZone, localTimeZone, combineDateTimeTranslations);
@@ -222,11 +236,47 @@ async function parseTransactionAsync(transactionRaw, configuration, api, remoteT
             }
 
         }
-        return entity;
+        return {entity: entity, address: address};
     }
     catch (error) {
         throw new InputError(error.message, transactionRaw);
     }
+}
+
+/**
+ * Processes addresses in batches and updates the corresponding entities with location data
+ * @param {Object} api The MyGeotab API service
+ * @param {Array} addresses Array of addresses to geocode
+ * @param {Array} entities Array of entities corresponding to the addresses
+ * @param {Number} batchSize Maximum number of addresses to process in one batch (default: 100)
+ * @returns Array of fuel transaction entities with updated location data
+ */
+async function processBatchedAddressesAsync(api, addresses, entities, batchSize = 100) {
+    const processedEntities = [];
+    const totalAddresses = addresses.length;
+    
+    for (let i = 0; i < totalAddresses; i += batchSize) {
+        const addressBatch = addresses.slice(i, i + batchSize);
+        const entityBatch = entities.slice(i, i + batchSize);
+        
+        try {
+            const coords = await myGeotabHelper.GetCoordinates(api, addressBatch);
+            
+            if (coords && Array.isArray(coords)) {
+                for (let j = 0; j < coords.length; j++) {
+                    if (coords[j]) {
+                        entityBatch[j].location = coords[j];
+                    }
+                }
+            }
+            
+            processedEntities.push(...entityBatch);
+        } catch (error) {
+            throw new InputError(error.message, addressBatch);
+        }
+    }
+    
+    return processedEntities;
 }
 
 class InputError extends Error {
@@ -273,5 +323,6 @@ module.exports = {
     ParseAndBuildTransactionsAsync,
     ParseAndBuildTransactionsPromiseTest,
     parseTransactionAsync,
+    processBatchedAddressesAsync,
     fuelTransactionProviders
 }

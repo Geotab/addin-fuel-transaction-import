@@ -7,7 +7,7 @@
 let GetCoordinates = (api, addresses) => {
     return new Promise((resolve, reject) => {
         api.call('GetCoordinates', {
-            'addresses': [addresses] 
+            'addresses': addresses
         }, function (result) {
             resolve(result);
         }, function (error) {
