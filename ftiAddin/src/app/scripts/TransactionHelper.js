@@ -120,10 +120,9 @@ function GetColumnText(sourceString, prefixString) {
  * Parses a single raw transaction to produce a single FuelTransaction entity.
  * @param {JSON} transactionRaw The raw transaction to parse.
  * @param {JSON} configuration The configuration for this instance. Shows each transaction property and it's relative mapping like "cardNumber": "ColumnA", "comments": "ColumnB" etc.
- * @param {String} timeZone The currently selected time zone.
- * @param {Object} api The MyGeotab API service.
- * @param {*} remoteZone The remote time zone. The transaction time zone.
- * @param {*} localZone The local import time zone.
+ * @param {*} remoteTimeZone The remote time zone. The transaction time zone.
+ * @param {*} localTimeZone The local import time zone.
+ * @param {object} combineDateTimeTranslations Contains the error message translations for the combineDateAndTime method.
  * @returns A FuelTransaction entity ready to be imported into the database.
  */
 async function parseTransactionAsync(transactionRaw, configuration, remoteTimeZone, localTimeZone, combineDateTimeTranslations) {
