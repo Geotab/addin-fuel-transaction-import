@@ -1,6 +1,6 @@
-const assert = require('chai').assert;
-const dateHelper = require('../../src/app/scripts/DateHelper');
-const { DateError } = require('../../src/app/scripts/date-error');
+import { assert } from 'chai';
+import * as dateHelper from '../../src/app/scripts/DateHelper.js';
+import { DateError } from '../../src/app/scripts/date-error.js';
 
 // getDateAdjusted tests
 describe('DateHelper Tests - getDateAdjusted tests', function(){

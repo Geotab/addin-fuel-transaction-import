@@ -1,5 +1,5 @@
-const assert = require('chai').assert;
-const converters = require('../../src/app/scripts/Converters')
+import { assert } from 'chai';
+import * as converters from '../../src/app/scripts/Converters.js';
 
 describe('Converters', function () {
     it('should convert miles to km', function () {
