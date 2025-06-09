@@ -14,7 +14,7 @@ geotab.addin.ftiAddin = function () {
   const moment = require('moment-timezone');
   const XLSX = require('xlsx');
 
-  let versionNumber = '4.2.4';
+  let versionNumber = '4.2.5';
   let api;
   let state;
   let currentUser;
