@@ -96,8 +96,9 @@ geotab.addin.ftiAddin = function () {
   let noFileSelectedText = 'No import file selected';
   let pleaseSelectFileText = 'Please select an import file prior to this operation.';
   let versionText = 'Version';
-  let transactionsOfText = 'transaction/s of';
+  let transactionsOfText = 'transactions of';
   let processedText = 'processed...';
+  let rateLimitText = '\nRate limit reached, retrying batch again in 60 seconds...';
   let validationMessages = {
     providerNameRequired: 'A provider name is required.',
     dateFormatRequired: 'The dateFormat property is required.',
@@ -392,7 +393,7 @@ geotab.addin.ftiAddin = function () {
       toggleWindowDisplayState(true, true, true);
       if (transactionsJson) {
         // Import the transactions
-        return importHelper.importTransactionsPromise(api, transactionsJson, elProgressText, elProgressBar, 200, 0, transactionsOfText, processedText);
+        return importHelper.importTransactionsPromise(api, transactionsJson, elProgressText, elProgressBar, 200, 60000, transactionsOfText, processedText, rateLimitText);
       } else {
         //setOutputDisplay('Data Issue', 'No transactions found. Please try again...');
         throw new ImportError(dataIssueText, noTransactionsFoundText);
