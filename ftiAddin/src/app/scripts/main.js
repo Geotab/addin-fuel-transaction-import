@@ -98,7 +98,7 @@ geotab.addin.ftiAddin = function () {
   let versionText = 'Version';
   let transactionsOfText = 'transactions of';
   let processedText = 'processed...';
-  let rateLimitText = '\nRate limit reached, retrying batch again in 60 seconds...';
+  let rateLimitText = '\nRate limit reached, retrying again in 60 seconds, please leave importer running.';
   let validationMessages = {
     providerNameRequired: 'A provider name is required.',
     dateFormatRequired: 'The dateFormat property is required.',

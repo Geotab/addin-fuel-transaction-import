@@ -45,6 +45,7 @@ async function postFuelTransCallBatchesNewAsync(api, transactions, elProgressTex
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
     let transactionCount = transactions.length;
     let i = 0;
+    let isRetryAttempt = false;
 
     await updateProgress(0, transactionCount, elProgressText, elprogressBar, transactionsOfText, processedText);
     
@@ -53,20 +54,24 @@ async function postFuelTransCallBatchesNewAsync(api, transactions, elProgressTex
         let transBatch = transactions.slice(i, endPoint);
         
         try {
-            let transactionChunks = postFuelTransCallsPromise(api, transBatch, importSummary);
+            let transactionChunks = postFuelTransCallsPromise(api, transBatch, importSummary, isRetryAttempt);
             await Promise.all(transactionChunks);
             
             await updateProgress(endPoint, transactionCount, elProgressText, elprogressBar, transactionsOfText, processedText);
             
             i = endPoint;
+            isRetryAttempt = false;
         } catch (error) {
             // If we catch a rate limit error wait and retry the same batch
             if ((error instanceof Object && error.name.includes('OverLimitException')) ||
                 (typeof error === 'string' && error.includes('OverLimitException'))) {
                 await updateProgress(endPoint - batchSize, transactionCount, elProgressText, elprogressBar, transactionsOfText, processedText, rateLimitText);
                 await sleep(pauseLengthMs);
+                isRetryAttempt = true;
             } else {
+                importSummary.errors.count += Math.min(batchSize, transactionCount - i);
                 i = endPoint;
+                isRetryAttempt = false;
             }
         }
     }
@@ -96,9 +101,10 @@ async function updateProgress(numberCompleted, total, elProgressText, elprogress
  * @param {Object} api The Geotab api.
  * @param {Array} transactions An Array of JSON transactions to be inserted
  * @param {JSON} importSummary The import summary.
+ * @param {boolean} isRetryAttempt Indicates if this is a retry attempt after a rate limit error.
  * @returns A promise
  * */
-function postFuelTransCallsPromise(api, transactions, importSummary) {
+function postFuelTransCallsPromise(api, transactions, importSummary, isRetryAttempt) {
     return transactions.map(transaction => 
         new Promise((resolve, reject) => {
             var currentCall = { typeName: 'FuelTransaction', entity: transaction };
@@ -119,7 +125,9 @@ function postFuelTransCallsPromise(api, transactions, importSummary) {
                         // console.log('isDBInitializingException: ' + error.isDBInitializingException);
                         // console.log('isServerException: ' + error.isDBInitializingException);
                         if (error.name.includes('DuplicateException')) {
-                            importSummary.skipped += 1;
+                            if (!isRetryAttempt) {
+                                importSummary.skipped += 1;
+                            }
                         } else if (error.name.includes('OverLimitException')) {
                             reject(error);
                             return;
@@ -132,7 +140,9 @@ function postFuelTransCallsPromise(api, transactions, importSummary) {
                         // string error instance
                         // console.log('string error instance, value: ' + error);
                         if (error.includes('DuplicateException')) {
-                            importSummary.skipped += 1;
+                            if (!isRetryAttempt) {
+                                importSummary.skipped += 1;
+                            }
                         } else if (error.includes('OverLimitException')) {
                             reject(error);
                             return;
