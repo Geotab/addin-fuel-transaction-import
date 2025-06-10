@@ -1,6 +1,6 @@
-const providerConfigMock = require('./mocks/configurationMockRegex.json');
-const productTypeHelper = require('../../src/app/scripts/ProductTypeHelper');
-const assert = require('yeoman-assert');
+import providerConfigMock from './mocks/configurationMockRegex.json' assert { type: 'json' };
+import * as productTypeHelper from '../../src/app/scripts/ProductTypeHelper.js';
+import { assert } from 'chai';
 
 describe('Regex tests', function () {
    it('Regex - basic functionality should succeed', function () {

@@ -1,9 +1,8 @@
-const transactionHelper = require('../../src/app/scripts/TransactionHelper');
-const assert = require('chai').assert;
-const transactionsExcelMock = require('./mocks/transactionsExcelMock.json');
-const transactionsExcelErrorMock = require('./mocks/transactionsExcelErrorMock.json');
-const configurationMock = require('./mocks/configurationMock.json');
-const { expect } = require('chai');
+import { assert } from 'chai';
+import * as transactionHelper from '../../src/app/scripts/TransactionHelper.js';
+import transactionsExcelMock from './mocks/transactionsExcelMock.json' assert { type: 'json' };
+import transactionsExcelErrorMock from './mocks/transactionsExcelErrorMock.json' assert { type: 'json' };
+import configurationMock from './mocks/configurationMock.json' assert { type: 'json' };
 
 describe('Transaction parsing tests', () => {
     let entity;
