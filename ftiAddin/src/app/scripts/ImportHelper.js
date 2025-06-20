@@ -91,7 +91,7 @@ async function updateProgress(numberCompleted, total, elProgressText, elprogress
     return new Promise(resolve => {
         numberCompleted = Math.min(numberCompleted, total);
         elprogressBar.value = (numberCompleted / total) * 100;
-        elProgressText.innerText = numberCompleted + '\u00a0' + transactionsOfText + '\u00a0' + total + '\u00a0' + processedText + rateLimitText;
+        elProgressText.innerText = numberCompleted + '\u00a0' + transactionsOfText + '\u00a0' + total + '\u00a0' + processedText + '\n' + rateLimitText;
         resolve();
     });
 }
