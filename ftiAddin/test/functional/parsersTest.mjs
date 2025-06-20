@@ -1,7 +1,5 @@
-const assert = require('chai').assert;
-const parsers = require('../../src/app/scripts/Parsers');
-const transactionsExcelMock = require('./mocks/transactionsExcelMock.json');
-const configurationMock = require('./mocks/configurationMock.json');
+import { assert } from 'chai';
+import * as parsers from '../../src/app/scripts/Parsers.js';
 
 describe('Parsers', function(){
     it('String parsing 1', function(){

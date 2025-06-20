@@ -46,6 +46,7 @@
   "Progress": "Progression",
   "transaction/s of": "transaction(s) sur",
   "processed...": "traitée(s)...",
+  "Rate limit reached, retrying again in 60 seconds, please leave importer running.": "Limite de débit atteinte. Nouvelle tentative automatique dans 60 secondes. Veuillez laisser l'outil d'importation en cours d'exécution.",
   "A provider name is required.": "Un nom de fournisseur est requis.",
   "The dateFormat property is required.": "La propriété dateFormat est obligatoire.",
   "No device identifier has been defined.": "Aucun identifiant de boîtier n’a été défini.",

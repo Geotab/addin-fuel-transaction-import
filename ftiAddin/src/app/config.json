@@ -1,7 +1,7 @@
 {
   "name": "Fuel Transaction Import",
-  "supportEmail": "support@geotab.com",
-  "version": "4.2.4",
+  "supportEmail": "integrations@geotab.com",
+  "version": "4.2.5",
   "items": [{
     "url": "ftiAddin.html",
     "path": "EngineMaintenanceLink/",
@@ -16,7 +16,7 @@
     "name":"Fuel Transaction Import Test",
     "root": "ftiAddin",
     "dist": {
-      "host": "https://apptest.geotab.com/fuel-transaction-import-addin/"
+      "host": "https://apptest.geotab.com/fuel-transaction-import-addin/4.2.5/"
     },
     "menuName": {
       "en": "FTI Test"

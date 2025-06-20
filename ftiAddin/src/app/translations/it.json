@@ -46,6 +46,7 @@
   "Progress": "Progresso",
   "transaction/s of": "transazione/i di",
   "processed...": "elaborata/e...",
+  "Rate limit reached, retrying again in 60 seconds, please leave importer running.": "Limite di chiamate raggiunto. Riproveremo automaticamente tra 60 secondi. Lasciare l'importatore in esecuzione.",
   "A provider name is required.": "Il nome del fornitore è obbligatorio.",
   "The dateFormat property is required.": "La proprietà dateFormat è obbligatoria.",
   "No device identifier has been defined.": "Non è stato definito alcun identificatore del dispositivo.",
