@@ -14,7 +14,7 @@ geotab.addin.ftiAddin = function () {
   const moment = require('moment-timezone');
   const XLSX = require('xlsx');
 
-  let versionNumber = '4.2.4';
+  let versionNumber = '4.2.5';
   let api;
   let state;
   let currentUser;
@@ -98,6 +98,7 @@ geotab.addin.ftiAddin = function () {
   let versionText = 'Version';
   let transactionsOfText = 'transaction/s of';
   let processedText = 'processed...';
+  let rateLimitText = 'Rate limit reached, retrying again in 60 seconds, please leave importer running.';
   let validationMessages = {
     providerNameRequired: 'A provider name is required.',
     dateFormatRequired: 'The dateFormat property is required.',
@@ -392,7 +393,7 @@ geotab.addin.ftiAddin = function () {
       toggleWindowDisplayState(true, true, true);
       if (transactionsJson) {
         // Import the transactions
-        return importHelper.importTransactionsPromise(api, transactionsJson, elProgressText, elProgressBar, 200, 0, transactionsOfText, processedText);
+        return importHelper.importTransactionsPromise(api, transactionsJson, elProgressText, elProgressBar, 250, 60000, transactionsOfText, processedText, rateLimitText);
       } else {
         //setOutputDisplay('Data Issue', 'No transactions found. Please try again...');
         throw new ImportError(dataIssueText, noTransactionsFoundText);
@@ -635,6 +636,7 @@ geotab.addin.ftiAddin = function () {
     versionText = state.translate(versionText);
     transactionsOfText = state.translate(transactionsOfText);
     processedText = state.translate(processedText);
+    rateLimitText = state.translate(rateLimitText);
     validationMessages.dateFormatRequired = state.translate(validationMessages.dateFormatRequired);
     validationMessages.dateTimeIncorrectFormat = state.translate(validationMessages.dateTimeIncorrectFormat);
     validationMessages.noCost = state.translate(validationMessages.noCost);

@@ -1,7 +1,7 @@
-const dotenv = require('dotenv');
-const puppeteer = require('puppeteer');
-// const mocks = require('./mocks/mocks.js');
-// const assert = require('chai').assert;
+import dotenv from 'dotenv';
+import puppeteer from 'puppeteer';
+// import mocks from './mocks/mocks.js';
+// import { assert } from 'chai';
 
 dotenv.config({
    path: '../../.env'
