@@ -14,7 +14,7 @@ geotab.addin.ftiAddin = function () {
   const moment = require('moment-timezone');
   const XLSX = require('xlsx');
 
-  let versionNumber = '4.2.5';
+  let versionNumber = '4.2.6';
   let api;
   let state;
   let currentUser;
@@ -678,13 +678,14 @@ geotab.addin.ftiAddin = function () {
   }
 
   /**
-   * Sets the secondary user guide link based on the browser language.
-   * @param {*} navLang The navigator language. 
+   * Sets the user guide link based on the selected MyGeotab language.
+   * Falls back to the browser language when the add-in is opened outside MyGeotab.
+   * @param {*} language The MyGeotab or browser language.
    */
-  const setUserGuide = (navLang) => {
+  const setUserGuide = (language) => {
     let href = '';
     elUserGuide.innerHTML = '';
-    switch (navLang) {
+    switch (language) {
       case 'fr':
       case 'fr-FR':
         // console.log('French');
@@ -699,6 +700,7 @@ geotab.addin.ftiAddin = function () {
         break;
       case 'es':
       case 'es-ES':
+      case 'es-419':
         // console.log('Spanish');
         href = 'https://docs.google.com/document/d/1e1YHyWjLSTdBu1WD690zTwCEOMaEtqkhwgHd8PH-iEk/edit?usp=sharing';
         setGuide(href, 'Guía del usuario (ES)');
@@ -709,9 +711,10 @@ geotab.addin.ftiAddin = function () {
         href = 'https://docs.google.com/document/d/18HJQxlfHjyGKLfNqy60cJS8zMm0PUGz0U28zNwkXNOA/edit?usp=sharing';
         setGuide(href, 'Guida per l\'utente (IT)');
         break;
-      // default:
-      //   console.log('English and other');
-      //   break;
+      default:
+        href = 'https://docs.google.com/document/d/107SMVKVLsNefd3tucIhxIH0pchnvsX8aoqqgxUMVUlE/edit?usp=sharing';
+        setGuide(href, 'User Guide (EN)');
+        break;
     }
   };
 
@@ -737,7 +740,7 @@ geotab.addin.ftiAddin = function () {
         freshState.translate(elAddin || '');
       }
 
-      setUserGuide(navigator.language);
+      setUserGuide(document.documentElement.lang || navigator.language);
       addEvents();
       translateText();
 
