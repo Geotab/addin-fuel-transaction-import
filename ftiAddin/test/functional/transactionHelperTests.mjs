@@ -1,8 +1,8 @@
 import { assert } from 'chai';
 import * as transactionHelper from '../../src/app/scripts/TransactionHelper.js';
-import transactionsExcelMock from './mocks/transactionsExcelMock.json' assert { type: 'json' };
-import transactionsExcelErrorMock from './mocks/transactionsExcelErrorMock.json' assert { type: 'json' };
-import configurationMock from './mocks/configurationMock.json' assert { type: 'json' };
+import transactionsExcelMock from './mocks/transactionsExcelMock.json' with { type: 'json' };
+import transactionsExcelErrorMock from './mocks/transactionsExcelErrorMock.json' with { type: 'json' };
+import configurationMock from './mocks/configurationMock.json' with { type: 'json' };
 
 describe('Transaction parsing tests', () => {
     let entity;
