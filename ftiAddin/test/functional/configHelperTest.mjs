@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import configHelper from '../../src/app/scripts/ConfigHelper.js';
-import providerConfigMock from './mocks/providerConfigMock.json' assert { type: 'json' };
+import providerConfigMock from './mocks/providerConfigMock.json' with { type: 'json' };
 
 let validationMessages = {
     providerNameRequired: 'A provider name is required.',
