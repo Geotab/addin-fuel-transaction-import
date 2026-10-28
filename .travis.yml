@@ -1,4 +1,3 @@
 language: node_js
 node_js:
-  - lts/*
-  - v8
+  - 24.22.1
