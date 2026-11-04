@@ -154,3 +154,40 @@ describe('DateHelper Tests - New getDate tests', function () {
       )
    });
 });
+
+describe('Date/time parsing from Excel date cells and text time cells', function () {
+   const config = {
+      dateFormat: 'dd/MM/yyyy',
+      timeFormat: 'HH:mm'
+   };
+
+   it('trims padded HH:mm and defaults seconds to zero', function () {
+      // EDC sample row: Excel date cell plus padded time text from column C.
+      const date = new Date(2026, 8, 10, 0, 0, 0, 0);
+      const result = dateHelper.getDate(config, [date, '  09:57']);
+
+      assert.deepEqual(
+         [result.getFullYear(), result.getMonth(), result.getDate(), result.getHours(), result.getMinutes(), result.getSeconds(), result.getMilliseconds()],
+         [2026, 8, 10, 9, 57, 0, 0]
+      );
+   });
+
+   it('trims padded HH:mm:ss and preserves explicit seconds', function () {
+      const date = new Date(2026, 8, 10, 0, 0, 0, 0);
+      const result = dateHelper.getDate(config, [date, '  09:57:42 ']);
+
+      assert.deepEqual(
+         [result.getFullYear(), result.getMonth(), result.getDate(), result.getHours(), result.getMinutes(), result.getSeconds(), result.getMilliseconds()],
+         [2026, 8, 10, 9, 57, 42, 0]
+      );
+   });
+
+   it('rejects malformed and out-of-range text times', function () {
+      const date = new Date(2026, 8, 10, 0, 0, 0, 0);
+      const invalidTimes = ['9', '   ', '24:00', '09:60', '09:57:60', '09:57:59.9', '09:57:', '09::57', '09:57:00:01', 957, 0.415];
+
+      invalidTimes.forEach(time => {
+         assert.throws(() => dateHelper.getDate(config, [date, time]), DateError);
+      });
+   });
+});
