@@ -184,7 +184,7 @@ describe('Date/time parsing from Excel date cells and text time cells', function
 
    it('rejects malformed and out-of-range text times', function () {
       const date = new Date(2026, 8, 10, 0, 0, 0, 0);
-      const invalidTimes = ['9', '24:00', '09:60', '09:57:61', '09::57', '09:57:00:01'];
+      const invalidTimes = ['9', '   ', '24:00', '09:60', '09:57:60', '09:57:59.9', '09:57:', '09::57', '09:57:00:01', 957, 0.415];
 
       invalidTimes.forEach(time => {
          assert.throws(() => dateHelper.getDate(config, [date, time]), DateError);
