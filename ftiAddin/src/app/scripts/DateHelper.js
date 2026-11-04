@@ -108,10 +108,9 @@ function combineDateAndTime(date, time, combineDateTimeErrorMessageTranslations)
    } else if ((isDateObject(date)) && (isDateObject(time) == false)) {
       const timeSplit = String(time).trim().split(':').map(part => part.trim());
       const [hours, minutes, seconds = '0'] = timeSplit;
-      const validSeconds = /^\d{1,2}(?:\.\d+)?$/.test(seconds);
       if (timeSplit.length < 2 || timeSplit.length > 3 ||
-         !/^\d{1,2}$/.test(hours) || !/^\d{1,2}$/.test(minutes) || !validSeconds ||
-         Number(hours) > 23 || Number(minutes) > 59 || Number(seconds) >= 60) {
+         !/^\d{1,2}$/.test(hours) || !/^\d{1,2}$/.test(minutes) || !/^\d{1,2}$/.test(seconds) ||
+         Number(hours) > 23 || Number(minutes) > 59 || Number(seconds) > 59) {
          throw new DateError('Invalid time found.');
       }
       const datetime = new Date(date.getFullYear(), date.getMonth(), date.getDate());
