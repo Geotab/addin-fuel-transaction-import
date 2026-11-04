@@ -106,11 +106,18 @@ function combineDateAndTime(date, time, combineDateTimeErrorMessageTranslations)
    } else if ((isDateObject(date) == false) && (isDateObject(time) == false)) {
       return date.trim() + ' ' + time.trim();
    } else if ((isDateObject(date)) && (isDateObject(time) == false)) {
-      var timeSplit = time.split(':');
-      const datetime = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-      datetime.setHours(timeSplit[0]);
-      datetime.setMinutes(timeSplit[1]);
-      datetime.setSeconds(timeSplit[2]);
+      const timeSplit = String(time).trim().split(':').map(part => part.trim());
+      const [hours, minutes, seconds = '0'] = timeSplit;
+      const validSeconds = /^\d{1,2}(?:\.\d+)?$/.test(seconds);
+      if (timeSplit.length < 2 || timeSplit.length > 3 ||
+         !/^\d{1,2}$/.test(hours) || !/^\d{1,2}$/.test(minutes) || !validSeconds ||
+         Number(hours) > 23 || Number(minutes) > 59 || Number(seconds) >= 60) {
+         throw new DateError('Invalid time found.');
+      }
+      const datetime = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      datetime.setHours(Number(hours));
+      datetime.setMinutes(Number(minutes));
+      datetime.setSeconds(Number(seconds));
       return datetime;
    } else {
       let errorMessage = `${combineDateTimeErrorMessageTranslations.part1} ${date}, ${combineDateTimeErrorMessageTranslations.part2} ${time}. ${combineDateTimeErrorMessageTranslations.part3}`;
