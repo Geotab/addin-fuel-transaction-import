@@ -1,4 +1,4 @@
-import providerConfigMock from './mocks/configurationMockRegex.json' assert { type: 'json' };
+import providerConfigMock from './mocks/configurationMockRegex.json' with { type: 'json' };
 import * as productTypeHelper from '../../src/app/scripts/ProductTypeHelper.js';
 import { assert } from 'chai';
 

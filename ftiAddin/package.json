@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "preinstall": "npm install --package-lock-only --ignore-scripts && npx npm-force-resolutions",
     "build:template": "node ./utils/templateBuilder.js",
     "template": "start-server-and-test serve http://localhost:9000 build:template",
     "build": "webpack --mode production --config webpack.production.js",
@@ -14,11 +13,14 @@
     "test": "start-server-and-test serve http://localhost:9000 mocha",
     "mocha": "mocha test/**/*.{js,mjs}"
   },
-  "resolutions": {
-    "semver-regex": "4.0.5",
+  "overrides": {
+    "semver-regex": "$semver-regex",
     "trim-newlines": "3.0.1",
     "http-cache-semantics": "4.1.1",
     "got": "11.8.5"
+  },
+  "engines": {
+    "node": "^22.23.4 || ^24.22.1 || >=26.12.1"
   },
   "keywords": [],
   "author": "",
@@ -40,11 +42,6 @@
     "html-webpack-plugin": "^5.6.0",
     "image-minimizer-webpack-plugin": "^4.0.0",
     "imagemin": "^8.0.1",
-    "imagemin-gifsicle": "^7.0.0",
-    "imagemin-jpegtran": "^7.0.0",
-    "imagemin-mozjpeg": "^10.0.0",
-    "imagemin-optipng": "^8.0.0",
-    "imagemin-pngquant": "^9.0.2",
     "imagemin-svgo": "^10.0.1",
     "mini-css-extract-plugin": "^2.9.0",
     "mocha": "^10.4.0",
